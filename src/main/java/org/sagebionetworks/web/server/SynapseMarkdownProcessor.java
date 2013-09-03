@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +41,11 @@ import org.sagebionetworks.web.server.markdownparser.TableParser;
 import org.sagebionetworks.web.server.markdownparser.UnderscoreParser;
 import org.sagebionetworks.web.server.markdownparser.UrlAutoLinkParser;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.Weigher;
+
 public class SynapseMarkdownProcessor {
 	private static SynapseMarkdownProcessor singleton = null;
 	private List<MarkdownElementParser> allElementParsers = new ArrayList<MarkdownElementParser>();
@@ -47,6 +53,9 @@ public class SynapseMarkdownProcessor {
 	//efficient hack to preserve strings that the html stripping process ruins
 	private Map<Pattern, String> preservers = new HashMap<Pattern, String>();
 	private Map<Pattern, String> restorers = new HashMap<Pattern, String>();
+	
+	//the cache
+	private LoadingCache<MarkdownInput, String> markdown2HtmlCache;
 	
 	private CodeParser codeParser;
 	private MathParser mathParser;
@@ -107,6 +116,21 @@ public class SynapseMarkdownProcessor {
 		restorers.put(Pattern.compile("("+Pattern.quote(ServerMarkdownUtils.TEMP_SPACE_DELIMITER)+")"), " ");
 		restorers.put(Pattern.compile("("+Pattern.quote(ServerMarkdownUtils.TEMP_LESS_THAN_DELIMITER)+")"), "&lt;");
 		restorers.put(Pattern.compile("("+Pattern.quote(ServerMarkdownUtils.TEMP_GREATER_THAN_DELIMITER)+")"), "&gt;");
+		
+		markdown2HtmlCache = CacheBuilder.newBuilder()
+				.maximumWeight(50000000)	//50 million characters
+				.weigher(new Weigher<MarkdownInput, String>() {
+					public int weigh(MarkdownInput k, String html) {
+						if (html == null) return 0;
+						return html.length();
+					}
+				})
+				.build(
+						new CacheLoader<MarkdownInput, String>() {
+							public String load(MarkdownInput input) throws IOException {
+								return markdown2HtmlWorker(input.markdown, input.isPreview);
+							}
+						});
 	}
 	
 	private String applyPatternReplacements(String markdown, Map<Pattern, String> pattern2Replacement) {
@@ -129,7 +153,21 @@ public class SynapseMarkdownProcessor {
 	 * @param panel
 	 * @throws IOException 
 	 */
-	public String markdown2Html(String markdown, Boolean isPreview) throws IOException {
+	public String markdown2Html(String markdown, Boolean isPreview) throws Exception {
+		return markdown2HtmlCache.get(new MarkdownInput(markdown, isPreview));
+	}
+	
+	public class MarkdownInput {
+		public String markdown;
+		public Boolean isPreview;
+		public MarkdownInput(String markdown, Boolean isPreview) {
+			super();
+			this.markdown = markdown;
+			this.isPreview = isPreview;
+		}
+	};
+	
+	public String markdown2HtmlWorker(String markdown, Boolean isPreview) {
 		String originalMarkdown = markdown;
 		if (markdown == null) return SharedMarkdownUtils.getDefaultWikiMarkdown();
 		

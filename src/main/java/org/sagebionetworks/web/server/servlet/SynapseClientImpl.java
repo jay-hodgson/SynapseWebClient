@@ -1044,7 +1044,7 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 			logInfo("Markdown processing took " + (elapsedTime/1000f) + " seconds.  In alpha mode? " + isAlphaMode);
 			
 			return html;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new RestServiceException(e.getMessage());
 		}
 	}
