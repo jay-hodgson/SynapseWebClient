@@ -308,9 +308,12 @@ public class FileHandleServlet extends HttpServlet {
 	public static void fixNameAndLockDown(FileEntity fileEntity, FileHandle newFileHandle, boolean isRestricted, Synapse client) throws SynapseException {
 		String originalFileEntityName = fileEntity.getName();
 		try{
-			//and try to set the name to the filename
-			fileEntity.setName(newFileHandle.getFileName());
-			fileEntity = client.putEntity(fileEntity);
+			//SWC-598:  If file entity name is a synapse id, then
+			//try to set the name to the filename
+			if (originalFileEntityName != null && originalFileEntityName.matches("syn\\d+")) {
+				fileEntity.setName(newFileHandle.getFileName());
+				fileEntity = client.putEntity(fileEntity);
+			}
 		} catch(Throwable t){
 			fileEntity.setName(originalFileEntityName);
 		};

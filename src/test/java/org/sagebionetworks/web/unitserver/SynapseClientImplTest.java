@@ -764,6 +764,7 @@ public class SynapseClientImplTest {
 	@Test
 	public void testCompleteUpload() throws JSONObjectAdapterException, SynapseException, RestServiceException {
 		FileEntity testFileEntity = getTestFileEntity();
+		testFileEntity.setName("syn12345");
 		when(mockSynapse.createEntity(any(FileEntity.class))).thenReturn(testFileEntity);
 		when(mockSynapse.putEntity(any(FileEntity.class))).thenReturn(testFileEntity);
 		boolean isRestricted = true;
@@ -789,8 +790,8 @@ public class SynapseClientImplTest {
 		
 		//it should have tried to find the entity
 		verify(mockSynapse).getEntityById(anyString());
-		//update the data file handle id, and update the name
-		verify(mockSynapse, Mockito.times(2)).putEntity(any(FileEntity.class));
+		//update the data file handle id, but does not update the name this time
+		verify(mockSynapse).putEntity(any(FileEntity.class));
 		//do not lock down (restricted=false)
 		verify(mockSynapse, Mockito.times(0)).createLockAccessRequirement(anyString());
 	}
