@@ -12,6 +12,7 @@ import org.sagebionetworks.web.client.place.ProjectsHome;
 import org.sagebionetworks.web.client.place.Search;
 import org.sagebionetworks.web.client.place.Settings;
 import org.sagebionetworks.web.client.place.Synapse;
+import org.sagebionetworks.web.client.place.TeamPlace;
 import org.sagebionetworks.web.client.place.Wiki;
 import org.sagebionetworks.web.client.place.WikiPlace;
 import org.sagebionetworks.web.client.place.users.PasswordReset;
@@ -32,6 +33,6 @@ import com.google.gwt.place.shared.WithTokenizers;
 		ComingSoon.Tokenizer.class, Synapse.Tokenizer.class, Wiki.Tokenizer.class,
 		Search.Tokenizer.class, Settings.Tokenizer.class,
 		Challenges.Tokenizer.class, Governance.Tokenizer.class,
-		WikiPlace.Tokenizer.class, Down.Tokenizer.class})
+		WikiPlace.Tokenizer.class, Down.Tokenizer.class, TeamPlace.Tokenizer.class})
 public interface AppPlaceHistoryMapper extends PlaceHistoryMapper {
 }
