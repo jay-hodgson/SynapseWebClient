@@ -23,7 +23,7 @@ public interface ProfileView extends IsWidget, SynapseView {
 	public void render();
 	
 	public void updateView(UserProfile profile, boolean editable, boolean isOwner, Widget profileFormView);
-	
+	public void updateOpenInvitations(PaginatedResults<MembershipInvitation> openInvitations);
 	public void refreshHeader();
 	
 	public interface Presenter extends SynapsePresenter {

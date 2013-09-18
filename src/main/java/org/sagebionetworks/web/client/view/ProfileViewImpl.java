@@ -140,7 +140,6 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	@Override
 	public void updateView(UserProfile profile, boolean isEditing, boolean isOwner, Widget profileFormWidget) {
 		//when editable, show profile form and linkedin import ui
-		clear();
 		if (isEditing)
 		{
 			updateUserInfoPanel.add(profileFormWidget);

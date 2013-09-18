@@ -171,7 +171,7 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 	}
 	
 	private void updateProfileView(String userId, final boolean editable) {
-		
+		view.clear();
 		final boolean isOwner = userId == null;
 		synapseClient.getUserProfile(userId, new AsyncCallback<String>() {
 				@Override
@@ -191,6 +191,19 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 					DisplayUtils.handleServiceException(caught, globalApplicationState.getPlaceChanger(), authenticationController.isLoggedIn(), view);    					    				
 				}
 			});
+		//if owner, then also ask for the pending invites
+		if (editable) {
+			synapseClient.getOpenInvitations(new AsyncCallback<T>() {
+				public void onSuccess(T result) {
+					//should return PaginatedResults<MembershipInvitation>.  Update view with these
+					view.updateOpenInvitations(membershipInvites);
+				};
+				@Override
+				public void onFailure(Throwable caught) {
+				}
+			};
+			
+		}
 	}
 	
 	@Override

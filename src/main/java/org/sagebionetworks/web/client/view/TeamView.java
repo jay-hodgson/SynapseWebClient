@@ -19,19 +19,17 @@ public interface TeamView extends IsWidget, SynapseView {
 	
 	/**
 	 * @param team
-	 * @param state MembershipState could be ADMIN, MEMBER, REQUEST_SENT, or NON-MEMBER
 	 * @param totalMemberCount
 	 * @param members
 	 * @param openMembershipRequests  contain the membership request along with the UserGroupHeader associated with each one
 	 */
-	public void initView(Team team, MembershipState state, int totalMemberCount, List<UserGroupHeader> members, List<MembershipRequestBundle> openMembershipRequests);
+	public void initView(Team team, boolean isAdmin, boolean isMember, boolean hasRequested, int totalMemberCount, List<UserGroupHeader> members, List<MembershipRequest> openMembershipRequests);
 	public void updateMemberPage(int currentPage, List<UserGroupHeader> members);
 	public interface Presenter extends SynapsePresenter {
 		void goTo(Place place);
 		void sendInvitation(String principalId, String message);
 		void requestToJoin(String message);
 		void deleteRequestToJoin();
-		void updateMembersVisible(boolean visible);
 		void acceptJoinRequest(String principalId);
 		void rejectJoinRequest(String principalId);
 		void setPermissionLevel(String principalId, String level);

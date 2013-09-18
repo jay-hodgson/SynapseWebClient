@@ -582,6 +582,15 @@ public class PortalGinModule extends AbstractGinModule {
 		
 		bind(PublicPrivateBadgeView.class).to(PublicPrivateBadgeViewImpl.class);
 
+		// Open Team Invitations widget
+		bind(OpenTeamInvitationsWidgetViewImpl.class).in(Singleton.class);
+		bind(OpenTeamInvitationsWidgetView.class).to(OpenTeamInvitationsWidgetViewImpl.class);
+		
+		// Pending Team Join Requests widget
+		bind(PendingJoinRequestsWidgetViewImpl.class).in(Singleton.class);
+		bind(PendingJoinRequestsWidgetView.class).to(PendingJoinRequestsWidgetViewImpl.class);
+				
+		
 	}
 
 }
