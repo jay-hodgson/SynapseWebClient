@@ -54,6 +54,7 @@ import org.sagebionetworks.web.client.view.SettingsView;
 import org.sagebionetworks.web.client.view.SettingsViewImpl;
 import org.sagebionetworks.web.client.view.SynapseWikiView;
 import org.sagebionetworks.web.client.view.SynapseWikiViewImpl;
+import org.sagebionetworks.web.client.view.TeamView;
 import org.sagebionetworks.web.client.view.WikiView;
 import org.sagebionetworks.web.client.view.WikiViewImpl;
 import org.sagebionetworks.web.client.view.table.ColumnFactory;
@@ -590,7 +591,18 @@ public class PortalGinModule extends AbstractGinModule {
 		bind(PendingJoinRequestsWidgetViewImpl.class).in(Singleton.class);
 		bind(PendingJoinRequestsWidgetView.class).to(PendingJoinRequestsWidgetViewImpl.class);
 				
+		// Team List widget (link to search teams page, optionally can create team)
+		bind(TeamListWidgetViewImpl.class).in(Singleton.class);
+		bind(TeamListWidgetView.class).to(TeamListWidgetViewImpl.class);
 		
+		// Team Page
+		bind(TeamView.class).in(Singleton.class);
+		bind(TeamView.class).to(TeamViewImpl.class);
+
+		// Team Search Page
+		bind(TeamSearchView.class).in(Singleton.class);
+		bind(TeamSearchView.class).to(TeamSearchViewImpl.class);
+				
 	}
 
 }
