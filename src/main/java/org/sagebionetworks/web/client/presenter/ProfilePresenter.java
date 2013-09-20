@@ -191,19 +191,6 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 					DisplayUtils.handleServiceException(caught, globalApplicationState.getPlaceChanger(), authenticationController.isLoggedIn(), view);    					    				
 				}
 			});
-		//if owner, then also ask for the pending invites
-		if (editable) {
-			synapseClient.getOpenInvitations(new AsyncCallback<T>() {
-				public void onSuccess(T result) {
-					//should return PaginatedResults<MembershipInvitation>.  Update view with these
-					view.updateOpenInvitations(membershipInvites);
-				};
-				@Override
-				public void onFailure(Throwable caught) {
-				}
-			};
-			
-		}
 	}
 	
 	@Override

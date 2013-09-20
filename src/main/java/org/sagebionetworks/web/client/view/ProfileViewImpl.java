@@ -53,6 +53,11 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	@UiField
 	SimplePanel viewProfilePanel;
 	@UiField
+	SimplePanel myTeamsPanel;
+	@UiField
+	SimplePanel myTeamInvitesPanel;
+
+	@UiField
 	SimplePanel editProfileButtonPanel;
 	@UiField
 	SimplePanel breadcrumbsPanel;
@@ -83,11 +88,13 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 
 	private Footer footerWidget;
 	private SynapseJSNIUtils synapseJSNIUtils;
+	private OpenInvitationsWidget openInvitesWidget;
+	private TeamListWidget myTeamsWidget;
 	
 	@Inject
 	public ProfileViewImpl(ProfileViewImplUiBinder binder,
 			Header headerWidget, Footer footerWidget, IconsImageBundle icons,
-			SageImageBundle imageBundle, SageImageBundle sageImageBundle,Breadcrumb breadcrumb, SynapseJSNIUtils synapseJSNIUtils) {		
+			SageImageBundle imageBundle, SageImageBundle sageImageBundle,Breadcrumb breadcrumb, SynapseJSNIUtils synapseJSNIUtils, OpenInvitationsWidget openInvitesWidget, TeamListWidget myTeamsWidget) {		
 		initWidget(binder.createAndBindUi(this));
 
 		this.iconsImageBundle = icons;
@@ -96,6 +103,8 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		this.sageImageBundle = sageImageBundle;
 		this.synapseJSNIUtils = synapseJSNIUtils;
 		this.breadcrumb = breadcrumb;
+		this.openInvitesWidget = openInvitesWidget;
+		this.myTeamsWidget = myTeamsWidget;
 		headerWidget.configure(false);
 		header.add(headerWidget.asWidget());
 		footer.add(footerWidget.asWidget());
@@ -122,6 +131,8 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		
 		pictureCanvasContainer.add(profilePictureContainer);
 		pictureCanvasContainer.add(editPhotoButtonContainer);
+		openInvitesWidget.configure();
+		myTeamsWidget.configure();
 	}
 
 
@@ -139,6 +150,7 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	
 	@Override
 	public void updateView(UserProfile profile, boolean isEditing, boolean isOwner, Widget profileFormWidget) {
+		openInvitesWidget.configure(isOwner);
 		//when editable, show profile form and linkedin import ui
 		if (isEditing)
 		{
@@ -155,6 +167,8 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 				editPhotoButtonContainer.add(editPhotoLink);
 				editPhotoButtonContainer.layout();
 				editProfileButtonPanel.add(editProfileCommandPanel);
+				myTeamsPanel.add(teamsWidget);
+				myTeamInvitesPanel.add(openInvitesWidget);
 			}
 				
 		}
@@ -352,8 +366,11 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		updateUserInfoPanel.clear();
 		viewProfilePanel.clear();
 		editProfileButtonPanel.clear();
+		myTeamInvitesPanel.clear();
+		myTeamsPanel.clear();
 		editPhotoButtonContainer.removeAll();
 		profilePictureContainer.removeAll();
 		pictureCanvasContainer.setVisible(false);
+		
 	}
 }

@@ -40,6 +40,8 @@
 						
 						<div class="span-18 notopmargin last">
 							<g:SimplePanel ui:field="viewProfilePanel" />
+							<g:SimplePanel ui:field="myTeamsPanel" />
+							<g:SimplePanel ui:field="myTeamInvitesPanel" />
 						</div>
 					</div>
 					<div class="user-profile-linkedin-bar span-13 push-11 last notopmargin">

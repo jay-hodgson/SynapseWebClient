@@ -27,19 +27,16 @@ public class TeamPresenter extends AbstractActivity implements TeamView.Presente
 	private NodeModelCreator nodeModelCreator;
 	private AuthenticationController authenticationController;
 	private UserAccountServiceAsync userService;
-	private LinkedInServiceAsync linkedInService;
 	private GlobalApplicationState globalApplicationState;
 	private CookieProvider cookieProvider;
 	private Team team;
 	private GWTWrapper gwt;
 	private JSONObjectAdapter jsonObjectAdapter;
-	private ProfileUpdatedCallback profileUpdatedCallback;
 	
 	@Inject
 	public TeamPresenter(TeamView view,
 			AuthenticationController authenticationController,
 			UserAccountServiceAsync userService,
-			LinkedInServiceAsync linkedInService,
 			GlobalApplicationState globalApplicationState,
 			SynapseClientAsync synapseClient,
 			NodeModelCreator nodeModelCreator,
@@ -48,7 +45,6 @@ public class TeamPresenter extends AbstractActivity implements TeamView.Presente
 		this.view = view;
 		this.authenticationController = authenticationController;
 		this.userService = userService;
-		this.linkedInService = linkedInService;
 		this.globalApplicationState = globalApplicationState;
 		this.cookieProvider = cookieProvider;
 		this.synapseClient = synapseClient;

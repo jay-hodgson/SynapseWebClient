@@ -42,9 +42,6 @@ import org.sagebionetworks.web.client.view.HomeView;
 import org.sagebionetworks.web.client.view.HomeViewImpl;
 import org.sagebionetworks.web.client.view.LoginView;
 import org.sagebionetworks.web.client.view.LoginViewImpl;
-import org.sagebionetworks.web.client.view.MemberListWidgetView;
-import org.sagebionetworks.web.client.view.OpenTeamInvitationsWidgetView;
-import org.sagebionetworks.web.client.view.PendingJoinRequestsWidgetView;
 import org.sagebionetworks.web.client.view.ProfileFormView;
 import org.sagebionetworks.web.client.view.ProfileFormViewImpl;
 import org.sagebionetworks.web.client.view.ProfileView;
@@ -57,7 +54,6 @@ import org.sagebionetworks.web.client.view.SettingsView;
 import org.sagebionetworks.web.client.view.SettingsViewImpl;
 import org.sagebionetworks.web.client.view.SynapseWikiView;
 import org.sagebionetworks.web.client.view.SynapseWikiViewImpl;
-import org.sagebionetworks.web.client.view.TeamListWidgetView;
 import org.sagebionetworks.web.client.view.TeamSearchView;
 import org.sagebionetworks.web.client.view.TeamView;
 import org.sagebionetworks.web.client.view.WikiView;
@@ -222,6 +218,14 @@ import org.sagebionetworks.web.client.widget.statictable.StaticTableView;
 import org.sagebionetworks.web.client.widget.statictable.StaticTableViewImpl;
 import org.sagebionetworks.web.client.widget.table.QueryServiceTableView;
 import org.sagebionetworks.web.client.widget.table.QueryServiceTableViewGxtImpl;
+import org.sagebionetworks.web.client.widget.team.MemberListWidgetView;
+import org.sagebionetworks.web.client.widget.team.MemberListWidgetViewImpl;
+import org.sagebionetworks.web.client.widget.team.OpenTeamInvitationsWidgetView;
+import org.sagebionetworks.web.client.widget.team.OpenTeamInvitationsWidgetViewImpl;
+import org.sagebionetworks.web.client.widget.team.PendingJoinRequestsWidgetView;
+import org.sagebionetworks.web.client.widget.team.PendingJoinRequestsWidgetViewImpl;
+import org.sagebionetworks.web.client.widget.team.TeamListWidgetView;
+import org.sagebionetworks.web.client.widget.team.TeamListWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.user.UserBadgeView;
 import org.sagebionetworks.web.client.widget.user.UserBadgeViewImpl;
 
@@ -588,6 +592,20 @@ public class PortalGinModule extends AbstractGinModule {
 		
 		bind(PublicPrivateBadgeView.class).to(PublicPrivateBadgeViewImpl.class);
 
+		/*
+		 * Teams Places
+		 */
+		// Team Page
+		bind(TeamViewImpl.class).in(Singleton.class);
+		bind(TeamView.class).to(TeamViewImpl.class);
+
+		// Team Search Page
+		bind(TeamSearchViewImpl.class).in(Singleton.class);
+		bind(TeamSearchView.class).to(TeamSearchViewImpl.class);
+
+		/*
+		 * Teams Widgets
+		 */
 		// Open Team Invitations widget
 		bind(OpenTeamInvitationsWidgetViewImpl.class).in(Singleton.class);
 		bind(OpenTeamInvitationsWidgetView.class).to(OpenTeamInvitationsWidgetViewImpl.class);
@@ -604,13 +622,7 @@ public class PortalGinModule extends AbstractGinModule {
 		bind(MemberListWidgetViewImpl.class).in(Singleton.class);
 		bind(MemberListWidgetView.class).to(MemberListWidgetViewImpl.class);
 
-		// Team Page
-		bind(TeamViewImpl.class).in(Singleton.class);
-		bind(TeamView.class).to(TeamViewImpl.class);
-
-		// Team Search Page
-		bind(TeamSearchViewImpl.class).in(Singleton.class);
-		bind(TeamSearchView.class).to(TeamSearchViewImpl.class);
+		
 				
 	}
 

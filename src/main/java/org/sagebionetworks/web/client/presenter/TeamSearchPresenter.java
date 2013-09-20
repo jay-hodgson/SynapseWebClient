@@ -31,7 +31,6 @@ public class TeamSearchPresenter extends AbstractActivity implements TeamSearchV
 	private NodeModelCreator nodeModelCreator;
 	private AuthenticationController authenticationController;
 	private UserAccountServiceAsync userService;
-	private LinkedInServiceAsync linkedInService;
 	private GlobalApplicationState globalApplicationState;
 	private CookieProvider cookieProvider;
 	private List<Team> teamList;
@@ -45,7 +44,6 @@ public class TeamSearchPresenter extends AbstractActivity implements TeamSearchV
 	public TeamSearchPresenter(TeamSearchView view,
 			AuthenticationController authenticationController,
 			UserAccountServiceAsync userService,
-			LinkedInServiceAsync linkedInService,
 			GlobalApplicationState globalApplicationState,
 			SynapseClientAsync synapseClient,
 			NodeModelCreator nodeModelCreator,
@@ -54,7 +52,6 @@ public class TeamSearchPresenter extends AbstractActivity implements TeamSearchV
 		this.view = view;
 		this.authenticationController = authenticationController;
 		this.userService = userService;
-		this.linkedInService = linkedInService;
 		this.globalApplicationState = globalApplicationState;
 		this.cookieProvider = cookieProvider;
 		this.synapseClient = synapseClient;
