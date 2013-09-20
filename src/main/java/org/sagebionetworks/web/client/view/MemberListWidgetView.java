@@ -17,7 +17,7 @@ public interface MemberListWidgetView extends IsWidget, SynapseView {
 	 */
 	public void setPresenter(Presenter presenter);
 	
-	public void initView(List<UserGroupHeader> members);
+	public void initView(List<UserGroupHeader> members, int currentPage, int pageCount);
 	
 	public interface Presenter extends SynapsePresenter {
 		void configure(Team team);

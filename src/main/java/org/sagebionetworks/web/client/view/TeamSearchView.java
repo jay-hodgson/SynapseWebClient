@@ -17,7 +17,7 @@ public interface TeamSearchView extends IsWidget, SynapseView {
 	 */
 	public void setPresenter(Presenter presenter);
 	
-	public void initView(List<Team> teams, int page, int pageCount);
+	public void initView(List<Team> teams, int currentPage, int pageCount);
 	public interface Presenter extends SynapsePresenter {
 		void goTo(Place place);
 		void nextPage();
