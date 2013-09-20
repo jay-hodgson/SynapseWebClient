@@ -42,6 +42,8 @@ import org.sagebionetworks.web.client.view.HomeView;
 import org.sagebionetworks.web.client.view.HomeViewImpl;
 import org.sagebionetworks.web.client.view.LoginView;
 import org.sagebionetworks.web.client.view.LoginViewImpl;
+import org.sagebionetworks.web.client.view.OpenTeamInvitationsWidgetView;
+import org.sagebionetworks.web.client.view.PendingJoinRequestsWidgetView;
 import org.sagebionetworks.web.client.view.ProfileFormView;
 import org.sagebionetworks.web.client.view.ProfileFormViewImpl;
 import org.sagebionetworks.web.client.view.ProfileView;
@@ -54,6 +56,8 @@ import org.sagebionetworks.web.client.view.SettingsView;
 import org.sagebionetworks.web.client.view.SettingsViewImpl;
 import org.sagebionetworks.web.client.view.SynapseWikiView;
 import org.sagebionetworks.web.client.view.SynapseWikiViewImpl;
+import org.sagebionetworks.web.client.view.TeamListWidgetView;
+import org.sagebionetworks.web.client.view.TeamSearchView;
 import org.sagebionetworks.web.client.view.TeamView;
 import org.sagebionetworks.web.client.view.WikiView;
 import org.sagebionetworks.web.client.view.WikiViewImpl;
@@ -594,13 +598,17 @@ public class PortalGinModule extends AbstractGinModule {
 		// Team List widget (link to search teams page, optionally can create team)
 		bind(TeamListWidgetViewImpl.class).in(Singleton.class);
 		bind(TeamListWidgetView.class).to(TeamListWidgetViewImpl.class);
-		
+
+		// Member List widget
+		bind(MemberListWidgetViewImpl.class).in(Singleton.class);
+		bind(MemberListWidgetView.class).to(MemberListWidgetViewImpl.class);
+
 		// Team Page
-		bind(TeamView.class).in(Singleton.class);
+		bind(TeamViewImpl.class).in(Singleton.class);
 		bind(TeamView.class).to(TeamViewImpl.class);
 
 		// Team Search Page
-		bind(TeamSearchView.class).in(Singleton.class);
+		bind(TeamSearchViewImpl.class).in(Singleton.class);
 		bind(TeamSearchView.class).to(TeamSearchViewImpl.class);
 				
 	}

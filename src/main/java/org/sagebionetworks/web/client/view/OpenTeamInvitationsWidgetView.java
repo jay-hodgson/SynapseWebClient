@@ -9,7 +9,7 @@ import org.sagebionetworks.web.client.SynapseView;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface TeamView extends IsWidget, SynapseView {
+public interface OpenTeamInvitationsWidgetView extends IsWidget, SynapseView {
 	
 	/**
 	 * Set this view's presenter
@@ -17,17 +17,16 @@ public interface TeamView extends IsWidget, SynapseView {
 	 */
 	public void setPresenter(Presenter presenter);
 	
-	public void initView(Team team, boolean isAdmin, boolean isMember, boolean hasRequested);
-	
+	/**
+	 * shows nothing if membershipInvitations is empty.
+	 */
+	public void initView(List<MembershipInvitation> membershipInvitations);
 	public interface Presenter extends SynapsePresenter {
+		//use to go to team page
 		void goTo(Place place);
-		void sendInvitation(String principalId, String message);
-		void requestToJoin(String message);
-		void deleteRequestToJoin();
-		void acceptJoinRequest(String principalId);
-		void rejectJoinRequest(String principalId);
-		void deleteTeam();
-		void leaveTeam();
-		void updateTeamInfo(String name, String description);
+		void joinTeam(String teamId);
+		void ignoreTeam(String teamId);
+		void joinAllTeams();
+		void ignoreAllTeams();
 	}
 }
