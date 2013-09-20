@@ -42,6 +42,7 @@ import org.sagebionetworks.web.client.view.HomeView;
 import org.sagebionetworks.web.client.view.HomeViewImpl;
 import org.sagebionetworks.web.client.view.LoginView;
 import org.sagebionetworks.web.client.view.LoginViewImpl;
+import org.sagebionetworks.web.client.view.MemberListWidgetView;
 import org.sagebionetworks.web.client.view.OpenTeamInvitationsWidgetView;
 import org.sagebionetworks.web.client.view.PendingJoinRequestsWidgetView;
 import org.sagebionetworks.web.client.view.ProfileFormView;

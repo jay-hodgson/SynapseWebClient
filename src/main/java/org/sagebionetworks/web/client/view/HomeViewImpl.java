@@ -316,7 +316,7 @@ public class HomeViewImpl extends Composite implements HomeView {
 		LayoutContainer favoritesContainer = new LayoutContainer();
 		favoritesContainer.setStyleName("span-8 notopmargin last");
 		favoritesContainer.add(
-				new HTML(SafeHtmlUtils.fromSafeConstant("<h3>" + DisplayConstants.FAVORITES + " " + AbstractImagePrototype.create(iconsImageBundle.star16()).getHTML() + "</h3>")));
+				new HTML(SafeHtmlUtils.fromSafeConstant("<h3>" + DisplayConstants.MY_FAVORITES + " " + AbstractImagePrototype.create(iconsImageBundle.star16()).getHTML() + "</h3>")));
 		favoritesContainer.add(favoritesTreeBrowser.asWidget());
 		return favoritesContainer;
 	}
