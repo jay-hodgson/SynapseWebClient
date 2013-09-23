@@ -6,12 +6,12 @@ import org.sagebionetworks.web.client.SageImageBundle;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.inject.Inject;
 
-public class PendingTeamInvitationsWidgetViewImpl extends Composite implements PendingTeamInvitationsWidgetView {
+public class OpenTeamInvitationsWidgetViewImpl extends Composite implements OpenTeamInvitationsWidgetView {
 	
 	private SageImageBundle sageImageBundle;
-	private PendingTeamInvitationsWidgetView.Presenter presenter;
+	private OpenTeamInvitationsWidgetView.Presenter presenter;
 	@Inject
-	public PendingTeamInvitationsWidgetViewImpl(SageImageBundle sageImageBundle) {
+	public OpenTeamInvitationsWidgetViewImpl(SageImageBundle sageImageBundle) {
 		this.sageImageBundle = sageImageBundle;
 	}
 	

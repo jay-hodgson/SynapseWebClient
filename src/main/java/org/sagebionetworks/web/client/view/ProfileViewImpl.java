@@ -13,6 +13,8 @@ import org.sagebionetworks.web.client.widget.entity.dialog.AddAttachmentDialog;
 import org.sagebionetworks.web.client.widget.footer.Footer;
 import org.sagebionetworks.web.client.widget.header.Header;
 import org.sagebionetworks.web.client.widget.header.Header.MenuItems;
+import org.sagebionetworks.web.client.widget.team.OpenTeamInvitationsWidget;
+import org.sagebionetworks.web.client.widget.team.TeamListWidget;
 import org.sagebionetworks.web.shared.WebConstants;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -88,13 +90,13 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 
 	private Footer footerWidget;
 	private SynapseJSNIUtils synapseJSNIUtils;
-	private OpenInvitationsWidget openInvitesWidget;
+	private OpenTeamInvitationsWidget openInvitesWidget;
 	private TeamListWidget myTeamsWidget;
 	
 	@Inject
 	public ProfileViewImpl(ProfileViewImplUiBinder binder,
 			Header headerWidget, Footer footerWidget, IconsImageBundle icons,
-			SageImageBundle imageBundle, SageImageBundle sageImageBundle,Breadcrumb breadcrumb, SynapseJSNIUtils synapseJSNIUtils, OpenInvitationsWidget openInvitesWidget, TeamListWidget myTeamsWidget) {		
+			SageImageBundle imageBundle, SageImageBundle sageImageBundle,Breadcrumb breadcrumb, SynapseJSNIUtils synapseJSNIUtils, OpenTeamInvitationsWidget openInvitesWidget, TeamListWidget myTeamsWidget) {		
 		initWidget(binder.createAndBindUi(this));
 
 		this.iconsImageBundle = icons;

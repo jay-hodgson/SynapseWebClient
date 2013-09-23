@@ -2,19 +2,29 @@ package org.sagebionetworks.web.client.widget.team;
 
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GlobalApplicationState;
+import org.sagebionetworks.web.client.SynapseClientAsync;
 
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 
-public class PendingTeamInvitationsWidget implements PendingTeamInvitationsWidgetView.Presenter {
-	private PendingTeamInvitationsWidgetView view;
+public class OpenTeamInvitationsWidget implements OpenTeamInvitationsWidgetView.Presenter {
+	private OpenTeamInvitationsWidgetView view;
 	private GlobalApplicationState globalApplicationState;
+	private SynapseClientAsync synapseClient;
 	
 	@Inject
-	public PendingTeamInvitationsWidget(PendingTeamInvitationsWidgetView view, GlobalApplicationState globalApplicationState) {
+	public OpenTeamInvitationsWidget(OpenTeamInvitationsWidgetView view, SynapseClientAsync synapseClient, GlobalApplicationState globalApplicationState) {
 		this.view = view;
+		this.synapseClient = synapseClient;
+		this.globalApplicationState = globalApplicationState;
 	}
 
+	public void configure() {
+		//using the current user, ask for all of the open invitations extended to this user.
+		DisplayUtils.showErrorMessage("TODO: configure()");
+	};
+
+	
 	@Override
 	public void goTo(Place place) {
 		globalApplicationState.getPlaceChanger().goTo(place);

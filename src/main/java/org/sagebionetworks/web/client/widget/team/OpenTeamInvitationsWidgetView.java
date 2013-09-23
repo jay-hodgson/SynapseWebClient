@@ -9,7 +9,7 @@ import org.sagebionetworks.web.client.SynapseView;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface PendingTeamInvitationsWidgetView extends IsWidget, SynapseView {
+public interface OpenTeamInvitationsWidgetView extends IsWidget, SynapseView {
 	
 	/**
 	 * Set this view's presenter
