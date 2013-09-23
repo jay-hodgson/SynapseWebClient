@@ -5,6 +5,7 @@ import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class MemberListWidget implements MemberListWidgetView.Presenter {
@@ -60,6 +61,11 @@ public class MemberListWidget implements MemberListWidgetView.Presenter {
 		DisplayUtils.showErrorMessage("TODO: search()");
 		
 	}
+	
+	public Widget asWidget() {
+		return view.asWidget();
+	}
+
 	
 
 }

@@ -5,6 +5,7 @@ import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class TeamListWidget implements TeamListWidgetView.Presenter{
@@ -28,9 +29,16 @@ public class TeamListWidget implements TeamListWidgetView.Presenter{
 	@Override
 	public void createTeam(String teamName) {
 		DisplayUtils.showErrorMessage("TODO: createTeam()");
-		
 	}
 	
+	public void configure(String userId) {
+		DisplayUtils.showErrorMessage("TODO: configure()");
+		//get the teams associated to the given user
+	}
+	
+	public Widget asWidget() {
+		return view.asWidget();
+	}
 	
 
 }

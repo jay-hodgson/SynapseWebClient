@@ -133,8 +133,6 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		
 		pictureCanvasContainer.add(profilePictureContainer);
 		pictureCanvasContainer.add(editPhotoButtonContainer);
-		openInvitesWidget.configure();
-		myTeamsWidget.configure();
 	}
 
 
@@ -152,7 +150,8 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	
 	@Override
 	public void updateView(UserProfile profile, boolean isEditing, boolean isOwner, Widget profileFormWidget) {
-		openInvitesWidget.configure(isOwner);
+		myTeamsWidget.configure(profile.getOwnerId());
+		myTeamsPanel.add(myTeamsWidget.asWidget());
 		//when editable, show profile form and linkedin import ui
 		if (isEditing)
 		{
@@ -169,8 +168,8 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 				editPhotoButtonContainer.add(editPhotoLink);
 				editPhotoButtonContainer.layout();
 				editProfileButtonPanel.add(editProfileCommandPanel);
-				myTeamsPanel.add(teamsWidget);
-				myTeamInvitesPanel.add(openInvitesWidget);
+				openInvitesWidget.configure();
+				myTeamInvitesPanel.add(openInvitesWidget.asWidget());
 			}
 				
 		}

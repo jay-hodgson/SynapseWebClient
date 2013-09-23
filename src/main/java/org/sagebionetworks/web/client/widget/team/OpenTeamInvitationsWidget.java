@@ -5,6 +5,7 @@ import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class OpenTeamInvitationsWidget implements OpenTeamInvitationsWidgetView.Presenter {
@@ -54,6 +55,14 @@ public class OpenTeamInvitationsWidget implements OpenTeamInvitationsWidgetView.
 		
 	}
 	
+	public void clear() {
+		view.clear();
+	}
+	
+	public Widget asWidget() {
+		return view.asWidget();
+	}
+
 	
 
 }
