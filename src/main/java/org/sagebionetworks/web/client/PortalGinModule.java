@@ -222,8 +222,8 @@ import org.sagebionetworks.web.client.widget.table.QueryServiceTableView;
 import org.sagebionetworks.web.client.widget.table.QueryServiceTableViewGxtImpl;
 import org.sagebionetworks.web.client.widget.team.MemberListWidgetView;
 import org.sagebionetworks.web.client.widget.team.MemberListWidgetViewImpl;
-import org.sagebionetworks.web.client.widget.team.OpenTeamInvitationsWidgetView;
-import org.sagebionetworks.web.client.widget.team.OpenTeamInvitationsWidgetViewImpl;
+import org.sagebionetworks.web.client.widget.team.PendingTeamInvitationsWidgetView;
+import org.sagebionetworks.web.client.widget.team.PendingTeamInvitationsWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.team.PendingJoinRequestsWidgetView;
 import org.sagebionetworks.web.client.widget.team.PendingJoinRequestsWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.team.TeamListWidgetView;
@@ -609,8 +609,8 @@ public class PortalGinModule extends AbstractGinModule {
 		 * Teams Widgets
 		 */
 		// Open Team Invitations widget
-		bind(OpenTeamInvitationsWidgetViewImpl.class).in(Singleton.class);
-		bind(OpenTeamInvitationsWidgetView.class).to(OpenTeamInvitationsWidgetViewImpl.class);
+		bind(PendingTeamInvitationsWidgetViewImpl.class).in(Singleton.class);
+		bind(PendingTeamInvitationsWidgetView.class).to(PendingTeamInvitationsWidgetViewImpl.class);
 		
 		// Pending Team Join Requests widget
 		bind(PendingJoinRequestsWidgetViewImpl.class).in(Singleton.class);

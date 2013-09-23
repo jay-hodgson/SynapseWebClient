@@ -6,12 +6,12 @@ import org.sagebionetworks.web.client.GlobalApplicationState;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 
-public class OpenTeamInvitationsWidget implements OpenTeamInvitationsWidgetView.Presenter {
-	private OpenTeamInvitationsWidgetView view;
+public class PendingTeamInvitationsWidget implements PendingTeamInvitationsWidgetView.Presenter {
+	private PendingTeamInvitationsWidgetView view;
 	private GlobalApplicationState globalApplicationState;
 	
 	@Inject
-	public OpenTeamInvitationsWidget(OpenTeamInvitationsWidgetView view, GlobalApplicationState globalApplicationState) {
+	public PendingTeamInvitationsWidget(PendingTeamInvitationsWidgetView view, GlobalApplicationState globalApplicationState) {
 		this.view = view;
 	}
 

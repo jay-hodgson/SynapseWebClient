@@ -274,7 +274,7 @@ public class HomeViewImpl extends Composite implements HomeView {
 		
 		// Create a project
 		LayoutContainer createProjectContainer = new LayoutContainer();
-		createProjectContainer.addStyleName("span-16 last");		
+		createProjectContainer.addStyleName("span-8 notopmargin ");		
 		
 		final TextBox input = new TextBox();
 		input.addStyleName("form-signinInput displayInline");
@@ -305,10 +305,14 @@ public class HomeViewImpl extends Composite implements HomeView {
 				globalApplicationState.getPlaceChanger().goTo(new ProjectsHome(ClientProperties.DEFAULT_PLACE_TOKEN));
 			}
 		});
-		createProjectContainer.add(whatProj, new MarginData(0, 0, 0, 15));
-		
 		container.add(createProjectContainer);
-
+		
+		LayoutContainer whatProjContainer = new LayoutContainer();
+		whatProjContainer.addStyleName("span-8 notopmargin ");		
+		whatProjContainer.add(whatProj);
+		
+		container.add(whatProjContainer);
+		
 		projectPanel.add(container);		
 	}
 	
