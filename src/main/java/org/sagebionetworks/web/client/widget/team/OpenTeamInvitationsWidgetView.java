@@ -2,7 +2,7 @@ package org.sagebionetworks.web.client.widget.team;
 
 import java.util.List;
 
-import org.sagebionetworks.repo.model.UserGroupHeader;
+import org.sagebionetworks.repo.model.MembershipInvitation;
 import org.sagebionetworks.web.client.SynapsePresenter;
 import org.sagebionetworks.web.client.SynapseView;
 

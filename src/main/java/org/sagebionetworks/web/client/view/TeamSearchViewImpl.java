@@ -1,5 +1,8 @@
 package org.sagebionetworks.web.client.view;
 
+import java.util.List;
+
+import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.SageImageBundle;
 
@@ -41,5 +44,11 @@ public class TeamSearchViewImpl extends Composite implements TeamSearchView {
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
+	}
+	
+	@Override
+	public void configure(List<Team> teams, int currentPage, int pageCount) {
+		DisplayUtils.showErrorMessage("TODO: TeamSearchViewImpl.configure()");
+		
 	}
 }

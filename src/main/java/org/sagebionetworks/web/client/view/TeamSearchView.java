@@ -2,6 +2,7 @@ package org.sagebionetworks.web.client.view;
 
 import java.util.List;
 
+import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.repo.model.UserGroupHeader;
 import org.sagebionetworks.web.client.SynapsePresenter;
 import org.sagebionetworks.web.client.SynapseView;
@@ -17,7 +18,7 @@ public interface TeamSearchView extends IsWidget, SynapseView {
 	 */
 	public void setPresenter(Presenter presenter);
 	
-	public void initView(List<Team> teams, int currentPage, int pageCount);
+	public void configure(List<Team> teams, int currentPage, int pageCount);
 	public interface Presenter extends SynapsePresenter {
 		void goTo(Place place);
 		void nextPage();

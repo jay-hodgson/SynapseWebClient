@@ -1,5 +1,6 @@
 package org.sagebionetworks.web.client.widget.team;
 
+import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseClientAsync;
@@ -21,7 +22,6 @@ public class MemberListWidget implements MemberListWidgetView.Presenter {
 		this.synapseClient = synapseClient;
 	}
 
-	@Override
 	public void configure(Team team) {
 		DisplayUtils.showErrorMessage("TODO: MemberlistWidget.configure()");
 	};

@@ -1,5 +1,8 @@
 package org.sagebionetworks.web.client.widget.team;
 
+import java.util.List;
+
+import org.sagebionetworks.repo.model.MembershipRequest;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.SageImageBundle;
 
@@ -43,4 +46,8 @@ public class OpenMembershipRequestsWidgetViewImpl extends Composite implements
 		this.presenter = presenter;
 	}
 
+	@Override
+	public void configure(List<MembershipRequest> membershipRequests) {
+		DisplayUtils.showErrorMessage("TODO: OpenMembershipRequestsWidgetViewImpl.initView()");
+	}
 }

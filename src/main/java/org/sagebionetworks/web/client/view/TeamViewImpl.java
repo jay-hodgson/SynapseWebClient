@@ -1,5 +1,6 @@
 package org.sagebionetworks.web.client.view;
 
+import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.SageImageBundle;
 
@@ -41,6 +42,13 @@ public class TeamViewImpl extends Composite implements TeamView {
 	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
+	}
+	
+	@Override
+	public void configure(Team team, boolean isAdmin, boolean isMember,
+			boolean hasRequested) {
+		DisplayUtils.showErrorMessage("TODO: TeamViewImpl.configure()");
+		
 	}
 
 }

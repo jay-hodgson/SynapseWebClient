@@ -2,6 +2,7 @@ package org.sagebionetworks.web.client.presenter;
 
 import java.util.List;
 
+import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GWTWrapper;

@@ -2,6 +2,7 @@ package org.sagebionetworks.web.client.widget.team;
 
 import java.util.List;
 
+import org.sagebionetworks.repo.model.MembershipRequest;
 import org.sagebionetworks.repo.model.UserGroupHeader;
 import org.sagebionetworks.web.client.SynapsePresenter;
 import org.sagebionetworks.web.client.SynapseView;
@@ -21,7 +22,7 @@ public interface OpenMembershipRequestsWidgetView extends IsWidget, SynapseView 
 	 * shows nothing if membershipRequests is empty.
 	 * @param membershipRequests
 	 */
-	public void initView(List<MembershipRequest> membershipRequests);
+	public void configure(List<MembershipRequest> membershipRequests);
 	public interface Presenter extends SynapsePresenter {
 		//use to go to user profile page
 		void goTo(Place place);

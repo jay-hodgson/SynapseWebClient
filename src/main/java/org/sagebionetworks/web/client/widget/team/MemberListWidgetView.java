@@ -20,8 +20,6 @@ public interface MemberListWidgetView extends IsWidget, SynapseView {
 	public void configure(List<UserGroupHeader> members, int currentPage, int pageCount);
 	
 	public interface Presenter extends SynapsePresenter {
-		void configure(Team team);
-
 		//used for the user profile links
 		void goTo(Place place);
 		void setPermissionLevel(String principalId, String level);
