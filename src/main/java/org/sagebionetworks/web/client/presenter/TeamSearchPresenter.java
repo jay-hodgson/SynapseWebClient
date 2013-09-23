@@ -3,6 +3,7 @@ package org.sagebionetworks.web.client.presenter;
 import java.util.List;
 
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
+import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.LinkedInServiceAsync;
@@ -97,5 +98,25 @@ public class TeamSearchPresenter extends AbstractActivity implements TeamSearchV
 		String searchTerm = place.getSearchTerm();
 		search(searchTerm);
 	}
+
+	@Override
+	public void nextPage() {
+		DisplayUtils.showErrorMessage("TODO: nextPage()");
+		
+	}
+
+	@Override
+	public void previousPage() {
+		DisplayUtils.showErrorMessage("TODO: previousPage()");
+		
+	}
+
+	@Override
+	public void jumpToPage(int pageNumber) {
+		DisplayUtils.showErrorMessage("TODO: jumpToPage()");
+		
+	}
+	
+	
 }
 

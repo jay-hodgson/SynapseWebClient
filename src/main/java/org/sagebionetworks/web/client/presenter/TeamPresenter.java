@@ -1,6 +1,7 @@
 package org.sagebionetworks.web.client.presenter;
 
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
+import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.LinkedInServiceAsync;
@@ -90,5 +91,55 @@ public class TeamPresenter extends AbstractActivity implements TeamView.Presente
 		//TODO: get team, and find out if we have admin access on this team
 		updateView(false);
 	}
+
+	@Override
+	public void sendInvitation(String principalId, String message) {
+		DisplayUtils.showErrorMessage("TODO: sendInvitation()");
+		
+	}
+
+	@Override
+	public void requestToJoin(String message) {
+		DisplayUtils.showErrorMessage("TODO: requestToJoin()");
+		
+	}
+
+	@Override
+	public void deleteRequestToJoin() {
+		DisplayUtils.showErrorMessage("TODO: deleteRequestToJoin()");
+		
+	}
+
+	@Override
+	public void acceptJoinRequest(String principalId) {
+		DisplayUtils.showErrorMessage("TODO: acceptJoinRequest()");
+		
+	}
+
+	@Override
+	public void rejectJoinRequest(String principalId) {
+		DisplayUtils.showErrorMessage("TODO: rejectJoinRequest()");
+		
+	}
+
+	@Override
+	public void deleteTeam() {
+		DisplayUtils.showErrorMessage("TODO: deleteTeam()");
+		
+	}
+
+	@Override
+	public void leaveTeam() {
+		DisplayUtils.showErrorMessage("TODO: leaveTeam()");
+		
+	}
+
+	@Override
+	public void updateTeamInfo(String name, String description) {
+		DisplayUtils.showErrorMessage("TODO: updateTeamInfo()");
+		
+	}
+	
+	
 }
 
