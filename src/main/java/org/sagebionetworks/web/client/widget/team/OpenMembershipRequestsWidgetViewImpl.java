@@ -7,9 +7,11 @@ import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.SageImageBundle;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.Inject;
 
-public class OpenMembershipRequestsWidgetViewImpl extends Composite implements
+public class OpenMembershipRequestsWidgetViewImpl extends SimplePanel implements
 		OpenMembershipRequestsWidgetView {
 	private Presenter presenter;
 	private SageImageBundle sageImageBundle;
@@ -23,7 +25,7 @@ public class OpenMembershipRequestsWidgetViewImpl extends Composite implements
 	@Override
 	public void showLoading() {
 		clear();
-		this.initWidget(DisplayUtils.getLoadingWidget(sageImageBundle));
+		add(DisplayUtils.getLoadingWidget(sageImageBundle));
 	}
 
 	@Override
@@ -37,17 +39,13 @@ public class OpenMembershipRequestsWidgetViewImpl extends Composite implements
 	}
 
 	@Override
-	public void clear() {
-		this.clear();
-	}
-
-	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
 	}
 
 	@Override
 	public void configure(List<MembershipRequest> membershipRequests) {
-		DisplayUtils.showErrorMessage("TODO: OpenMembershipRequestsWidgetViewImpl.initView()");
+		clear();
+		add(new HTML(DisplayUtils.getWarningHtml("NOT IMPLEMENTED", "OpenMembershipRequestsWidget Not Yet Implemented")));
 	}
 }

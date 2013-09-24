@@ -7,9 +7,11 @@ import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.SageImageBundle;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.Inject;
 
-public class MemberListWidgetViewImpl extends Composite implements	MemberListWidgetView {
+public class MemberListWidgetViewImpl extends SimplePanel implements	MemberListWidgetView {
 
 	private Presenter presenter;
 	private SageImageBundle sageImageBundle;
@@ -22,7 +24,7 @@ public class MemberListWidgetViewImpl extends Composite implements	MemberListWid
 	@Override
 	public void showLoading() {
 		clear();
-		this.initWidget(DisplayUtils.getLoadingWidget(sageImageBundle));
+		add(DisplayUtils.getLoadingWidget(sageImageBundle));
 	}
 
 	@Override
@@ -47,7 +49,8 @@ public class MemberListWidgetViewImpl extends Composite implements	MemberListWid
 
 	@Override
 	public void configure(List<UserGroupHeader> members, int currentPage, int pageCount) {
-		DisplayUtils.showErrorMessage("TODO: initView()");
+		clear();
+		add(new HTML(DisplayUtils.getWarningHtml("NOT IMPLEMENTED", "MemberListWidget Not Yet Implemented")));
 	}
 
 }

@@ -7,9 +7,11 @@ import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.SageImageBundle;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.Inject;
 
-public class TeamListWidgetViewImpl extends Composite implements TeamListWidgetView {
+public class TeamListWidgetViewImpl extends SimplePanel implements TeamListWidgetView {
 
 	private SageImageBundle sageImageBundle;
 	private Presenter presenter;
@@ -22,7 +24,7 @@ public class TeamListWidgetViewImpl extends Composite implements TeamListWidgetV
 	@Override
 	public void showLoading() {
 		clear();
-		this.initWidget(DisplayUtils.getLoadingWidget(sageImageBundle));
+		add(DisplayUtils.getLoadingWidget(sageImageBundle));
 	}
 
 	@Override
@@ -42,14 +44,9 @@ public class TeamListWidgetViewImpl extends Composite implements TeamListWidgetV
 	}
 	
 	@Override
-	public void clear() {
-		this.clear();
-	}
-
-	@Override
 	public void configure(List<Team> teams, boolean showSearchLink,
 			boolean showCreateTeam) {
-		DisplayUtils.showErrorMessage("TODO: TeamListWidgetViewImpl.configure()");
-		
+		clear();
+		add(new HTML(DisplayUtils.getWarningHtml("NOT IMPLEMENTED", "TeamListWidiget Not Yet Implemented")));
 	}
 }

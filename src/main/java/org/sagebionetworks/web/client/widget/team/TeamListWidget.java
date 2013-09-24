@@ -31,8 +31,9 @@ public class TeamListWidget implements TeamListWidgetView.Presenter{
 		DisplayUtils.showErrorMessage("TODO: createTeam()");
 	}
 	
-	public void configure(String userId) {
+	public void configure(String userId, final boolean showSearchLink, final boolean showCreateTeam) {
 		DisplayUtils.showErrorMessage("TODO: configure()");
+		view.configure(null, showSearchLink, showCreateTeam);
 		//get the teams associated to the given user
 	}
 	

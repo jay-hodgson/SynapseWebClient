@@ -280,7 +280,7 @@ public class HomeViewImpl extends Composite implements HomeView {
 		favsAndTeams.setStyleName("span-8 notopmargin last");
 		favsAndTeams.add(getFavoritesContainer());
 		LayoutContainer teamsContainer = getTeamsContainer();
-		if (teamsContainer != null)
+		if (teamsContainer.getItemCount() > 0)
 			favsAndTeams.add(teamsContainer);
 		
 		projectPanelContainer.add(favsAndTeams);
@@ -340,20 +340,19 @@ public class HomeViewImpl extends Composite implements HomeView {
 	@Override
 	public void refreshMyTeams(String userId) {
 		if (DisplayUtils.isInTestWebsite(cookies)) {
-			teamsListWidget.configure(userId);
+			teamsListWidget.configure(userId, true, true);
 		}
 	}
 	
 	private LayoutContainer getTeamsContainer() {
+		LayoutContainer myTeamsContainer = new LayoutContainer();
+		myTeamsContainer.setStyleName("span-8 margin-top-5 last");
 		if (DisplayUtils.isInTestWebsite(cookies)) {
-			LayoutContainer myTeamsContainer = new LayoutContainer();
-			myTeamsContainer.setStyleName("span-8 margin-top-5 last");
 			myTeamsContainer.add(
 					new HTML(SafeHtmlUtils.fromSafeConstant("<h3>" + DisplayConstants.MY_TEAMS + "</h3>")));
 			myTeamsContainer.add(teamsListWidget.asWidget());
-			return myTeamsContainer;
 		}
-		else return null;
+		return myTeamsContainer;
 	}
 	
 	private LayoutContainer getMyEvaluationsContainer() {

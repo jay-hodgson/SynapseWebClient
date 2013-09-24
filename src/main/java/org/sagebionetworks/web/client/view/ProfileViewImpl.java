@@ -150,7 +150,7 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	
 	@Override
 	public void updateView(UserProfile profile, boolean isEditing, boolean isOwner, Widget profileFormWidget) {
-		myTeamsWidget.configure(profile.getOwnerId());
+		myTeamsWidget.configure(profile.getOwnerId(), false, false);
 		myTeamsPanel.add(myTeamsWidget.asWidget());
 		//when editable, show profile form and linkedin import ui
 		if (isEditing)
