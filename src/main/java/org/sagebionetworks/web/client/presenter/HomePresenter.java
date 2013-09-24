@@ -166,7 +166,7 @@ public class HomePresenter extends AbstractActivity implements HomeView.Presente
 			}
 		});
 		
-		
+		view.refreshMyTeams(authenticationController.getCurrentUserPrincipalId());
 		
 		EntityBrowserUtils.loadUserUpdateable(searchService, adapterFactory, globalApplicationState, authenticationController, new AsyncCallback<List<EntityHeader>>() {
 			@Override

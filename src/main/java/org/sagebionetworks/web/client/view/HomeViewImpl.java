@@ -9,6 +9,7 @@ import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.IconsImageBundle;
 import org.sagebionetworks.web.client.SageImageBundle;
+import org.sagebionetworks.web.client.cookie.CookieProvider;
 import org.sagebionetworks.web.client.place.Challenges;
 import org.sagebionetworks.web.client.place.LoginPlace;
 import org.sagebionetworks.web.client.place.ProjectsHome;
@@ -19,6 +20,7 @@ import org.sagebionetworks.web.client.widget.entity.browse.EntityTreeBrowser;
 import org.sagebionetworks.web.client.widget.footer.Footer;
 import org.sagebionetworks.web.client.widget.header.Header;
 import org.sagebionetworks.web.client.widget.search.HomeSearchBox;
+import org.sagebionetworks.web.client.widget.team.TeamListWidget;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -106,6 +108,8 @@ public class HomeViewImpl extends Composite implements HomeView {
 	private EntityTreeBrowser favoritesTreeBrowser;
 	IconsImageBundle iconsImageBundle;
 	private MyEvaluationEntitiesList myEvaluationsList;
+	private TeamListWidget teamsListWidget;
+	private CookieProvider cookies;
 	
 	@Inject
 	public HomeViewImpl(HomeViewImplUiBinder binder, 
@@ -117,7 +121,9 @@ public class HomeViewImpl extends Composite implements HomeView {
 			HomeSearchBox homeSearchBox, 
 			EntityTreeBrowser myProjectsTreeBrowser,
 			EntityTreeBrowser favoritesTreeBrowser,
-			MyEvaluationEntitiesList myEvaluationsList) {
+			MyEvaluationEntitiesList myEvaluationsList,
+			CookieProvider cookies,
+			TeamListWidget teamsListWidget) {
 		initWidget(binder.createAndBindUi(this));
 		this.headerWidget = headerWidget;
 		this.footerWidget = footerWidget;
@@ -127,6 +133,8 @@ public class HomeViewImpl extends Composite implements HomeView {
 		this.favoritesTreeBrowser = favoritesTreeBrowser;
 		this.myEvaluationsList = myEvaluationsList;
 		this.iconsImageBundle = icons;
+		this.teamsListWidget = teamsListWidget;
+		this.cookies = cookies;
 		
 		headerWidget.configure(true);
 		header.add(headerWidget.asWidget());
@@ -174,7 +182,6 @@ public class HomeViewImpl extends Composite implements HomeView {
 		// Other links
 		configureNewWindowLink(aboutSynapseLink, ClientProperties.ABOUT_SYNAPSE_URL, DisplayConstants.MORE_DETAILS_SYNAPSE);
 		configureNewWindowLink(restApiLink, ClientProperties.REST_API_URL, DisplayConstants.REST_API_DOCUMENTATION);
-		
 	}	
 
 	@Override
@@ -261,20 +268,26 @@ public class HomeViewImpl extends Composite implements HomeView {
 	 */
 	private void injectProjectPanel() {
 		projectPanel.clear();
-		// Overall container
-		LayoutContainer container = new LayoutContainer();
-		container.setStyleName("span-16 notopmargin last");			
+		LayoutContainer projectPanelContainer = new LayoutContainer();
 		
 		LayoutContainer evalsAndProjects = new LayoutContainer();
 		evalsAndProjects.setStyleName("span-8 notopmargin");
 		evalsAndProjects.add(getMyEvaluationsContainer());
 		evalsAndProjects.add(getMyProjectsContainer());
-		container.add(evalsAndProjects);
-		container.add(getFavoritesContainer());
+		projectPanelContainer.add(evalsAndProjects);
+		
+		LayoutContainer favsAndTeams = new LayoutContainer();
+		favsAndTeams.setStyleName("span-8 notopmargin last");
+		favsAndTeams.add(getFavoritesContainer());
+		LayoutContainer teamsContainer = getTeamsContainer();
+		if (teamsContainer != null)
+			favsAndTeams.add(teamsContainer);
+		
+		projectPanelContainer.add(favsAndTeams);
 		
 		// Create a project
 		LayoutContainer createProjectContainer = new LayoutContainer();
-		createProjectContainer.addStyleName("span-8 notopmargin ");		
+		createProjectContainer.addStyleName("span-8 margin-top-5 ");		
 		
 		final TextBox input = new TextBox();
 		input.addStyleName("form-signinInput displayInline");
@@ -305,15 +318,14 @@ public class HomeViewImpl extends Composite implements HomeView {
 				globalApplicationState.getPlaceChanger().goTo(new ProjectsHome(ClientProperties.DEFAULT_PLACE_TOKEN));
 			}
 		});
-		container.add(createProjectContainer);
+		evalsAndProjects.add(createProjectContainer);
 		
 		LayoutContainer whatProjContainer = new LayoutContainer();
 		whatProjContainer.addStyleName("span-8 notopmargin ");		
 		whatProjContainer.add(whatProj);
 		
-		container.add(whatProjContainer);
-		
-		projectPanel.add(container);		
+		evalsAndProjects.add(whatProjContainer);
+		projectPanel.add(projectPanelContainer);
 	}
 	
 	private LayoutContainer getFavoritesContainer() {
@@ -323,6 +335,25 @@ public class HomeViewImpl extends Composite implements HomeView {
 				new HTML(SafeHtmlUtils.fromSafeConstant("<h3>" + DisplayConstants.MY_FAVORITES + " " + AbstractImagePrototype.create(iconsImageBundle.star16()).getHTML() + "</h3>")));
 		favoritesContainer.add(favoritesTreeBrowser.asWidget());
 		return favoritesContainer;
+	}
+	
+	@Override
+	public void refreshMyTeams(String userId) {
+		if (DisplayUtils.isInTestWebsite(cookies)) {
+			teamsListWidget.configure(userId);
+		}
+	}
+	
+	private LayoutContainer getTeamsContainer() {
+		if (DisplayUtils.isInTestWebsite(cookies)) {
+			LayoutContainer myTeamsContainer = new LayoutContainer();
+			myTeamsContainer.setStyleName("span-8 margin-top-5 last");
+			myTeamsContainer.add(
+					new HTML(SafeHtmlUtils.fromSafeConstant("<h3>" + DisplayConstants.MY_TEAMS + "</h3>")));
+			myTeamsContainer.add(teamsListWidget.asWidget());
+			return myTeamsContainer;
+		}
+		else return null;
 	}
 	
 	private LayoutContainer getMyEvaluationsContainer() {

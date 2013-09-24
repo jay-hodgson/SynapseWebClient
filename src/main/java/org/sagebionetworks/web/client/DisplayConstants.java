@@ -546,6 +546,7 @@ public class DisplayConstants {
 	public static final String MY_EVALUATIONS = "My Challenges";
 	public static final String SUBMITTER_ALIAS = "your alias (or team name)";
 	public static final String MY_FAVORITES = "My Favorites";
+	public static final String MY_TEAMS = "My Teams";
 	public static final String ERROR_LOADING_FAVORITES = "Error loading Favorites.";
 	public static final String ERROR_SAVE_FAVORITE_MESSAGE = "Saving your Favorite change failed. Please try again.";
 	public static final String EXTERNAL_URL = "External URL";

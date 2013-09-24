@@ -36,4 +36,6 @@ public interface HomeView extends IsWidget, SynapseView {
 	
 	public void setMyEvaluationList(List<EntityHeader> myEvaluationEntities);
 	public void setMyEvaluationsError(String string);
+	
+	public void refreshMyTeams(String userId);
 }
