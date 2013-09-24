@@ -346,7 +346,7 @@ public class HomeViewImpl extends Composite implements HomeView {
 	
 	private LayoutContainer getTeamsContainer() {
 		LayoutContainer myTeamsContainer = new LayoutContainer();
-		myTeamsContainer.setStyleName("span-8 margin-top-5 last");
+		myTeamsContainer.setStyleName("span-8 margin-top-10-imp last");
 		if (DisplayUtils.isInTestWebsite(cookies)) {
 			myTeamsContainer.add(
 					new HTML(SafeHtmlUtils.fromSafeConstant("<h3>" + DisplayConstants.MY_TEAMS + "</h3>")));

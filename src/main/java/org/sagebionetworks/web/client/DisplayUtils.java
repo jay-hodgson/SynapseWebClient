@@ -63,6 +63,7 @@ import org.sagebionetworks.web.client.place.Home;
 import org.sagebionetworks.web.client.place.LoginPlace;
 import org.sagebionetworks.web.client.place.Search;
 import org.sagebionetworks.web.client.place.Synapse;
+import org.sagebionetworks.web.client.place.TeamPlace;
 import org.sagebionetworks.web.client.place.Wiki;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.utils.TOOLTIP_POSITION;
@@ -610,6 +611,11 @@ public class DisplayUtils {
 		return "#!" + getWikiPlaceString(Wiki.class) + ":" + place.toToken();
 	}
 	
+	public static String getTeamHistoryToken(String teamId) {
+		TeamPlace place = new TeamPlace(teamId);
+		return "#!" + getTeamPlaceString(TeamPlace.class) + ":" + place.toToken();
+	}
+	
 	public static String getSearchHistoryToken(String searchQuery) {
 		Search place = new Search(searchQuery);
 		return "#!" + getSearchPlaceString(Search.class) + ":" + place.toToken();
@@ -688,6 +694,12 @@ public class DisplayUtils {
 	}
 	
 	private static String getWikiPlaceString(Class<Wiki> place) {
+		String fullPlaceName = place.getName();		
+		fullPlaceName = fullPlaceName.replaceAll(".+\\.", "");
+		return fullPlaceName;
+	}
+	
+	private static String getTeamPlaceString(Class<TeamPlace> place) {
 		String fullPlaceName = place.getName();		
 		fullPlaceName = fullPlaceName.replaceAll(".+\\.", "");
 		return fullPlaceName;

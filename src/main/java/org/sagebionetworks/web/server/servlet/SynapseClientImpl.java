@@ -47,6 +47,7 @@ import org.sagebionetworks.repo.model.Reference;
 import org.sagebionetworks.repo.model.RestResourceList;
 import org.sagebionetworks.repo.model.RestrictableObjectDescriptor;
 import org.sagebionetworks.repo.model.RestrictableObjectType;
+import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.repo.model.UserGroup;
 import org.sagebionetworks.repo.model.UserGroupHeaderResponsePage;
 import org.sagebionetworks.repo.model.UserProfile;
@@ -1289,6 +1290,43 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 			return EntityFactory.createJSONStringForEntity(favorites);
 		} catch (SynapseException e) {
 			throw ExceptionUtil.convertSynapseException(e);
+		} catch (JSONObjectAdapterException e) {
+			throw new UnknownErrorException(e.getMessage());
+		}
+	}
+	
+	private static PaginatedResults<Team> getTestTeams() {
+		PaginatedResults<Team> teams = new PaginatedResults<Team>();
+		teams.setTotalNumberOfResults(2);
+		List<Team> teamList = new ArrayList<Team>();
+		Team team = new Team();
+		team.setId("42");
+		team.setName("Springfield Isotopes");
+		team.setDescription("Springfield's only minor league baseball team.");
+		teamList.add(team);
+		team = new Team();
+		team.setId("43");
+		team.setName("Rogue Squadron");
+		team.setDescription("We need you.");
+		teamList.add(team);
+		teams.setResults(teamList);
+		return teams;
+	}
+	
+	@Override
+	public String getTeams(String userId, Integer limit, Integer offset)
+			throws RestServiceException {
+		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
+		try {
+//			PaginatedResults<Team> teams = synapseClient.getTeams(limit, offset);
+
+			//////////////TEST
+			PaginatedResults<Team> teams = getTestTeams();
+			//////////////
+			
+			return EntityFactory.createJSONStringForEntity(teams);
+//		} catch (SynapseException e) {
+//			throw ExceptionUtil.convertSynapseException(e);
 		} catch (JSONObjectAdapterException e) {
 			throw new UnknownErrorException(e.getMessage());
 		}

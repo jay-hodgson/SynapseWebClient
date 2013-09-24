@@ -47,6 +47,11 @@ public class TeamListWidgetViewImpl extends SimplePanel implements TeamListWidge
 	public void configure(List<Team> teams, boolean showSearchLink,
 			boolean showCreateTeam) {
 		clear();
-		add(new HTML(DisplayUtils.getWarningHtml("NOT IMPLEMENTED", "TeamListWidiget Not Yet Implemented")));
+		StringBuilder sb = new StringBuilder();
+		
+		for (Team team : teams) {
+			sb.append("<div><a href=\""+DisplayUtils.getTeamHistoryToken(team.getId())+"\">"+team.getName()+"</a></div>");
+		}
+		add(new HTML(sb.toString()));
 	}
 }
