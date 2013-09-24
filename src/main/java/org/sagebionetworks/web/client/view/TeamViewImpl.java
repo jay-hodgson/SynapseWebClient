@@ -5,9 +5,11 @@ import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.SageImageBundle;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.Inject;
 
-public class TeamViewImpl extends Composite implements TeamView {
+public class TeamViewImpl extends SimplePanel implements TeamView {
 
 	private Presenter presenter;
 	private SageImageBundle sageImageBundle;
@@ -20,7 +22,7 @@ public class TeamViewImpl extends Composite implements TeamView {
 	@Override
 	public void showLoading() {
 		clear();
-		this.initWidget(DisplayUtils.getLoadingWidget(sageImageBundle));
+		add(DisplayUtils.getLoadingWidget(sageImageBundle));
 	}
 
 	@Override
@@ -35,11 +37,6 @@ public class TeamViewImpl extends Composite implements TeamView {
 	}
 	
 	@Override
-	public void clear() {
-		this.clear();
-	}
-
-	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
 	}
@@ -48,7 +45,7 @@ public class TeamViewImpl extends Composite implements TeamView {
 	public void configure(Team team, boolean isAdmin, boolean isMember,
 			boolean hasRequested) {
 		DisplayUtils.showErrorMessage("TODO: TeamViewImpl.configure()");
-		
+		add(new HTML(DisplayUtils.getWarningHtml("NOT IMPLEMENTED", "Team Not Yet Implemented")));
 	}
 
 }

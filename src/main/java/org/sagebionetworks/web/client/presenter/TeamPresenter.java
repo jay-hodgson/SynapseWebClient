@@ -1,16 +1,13 @@
 package org.sagebionetworks.web.client.presenter;
 
-import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.GlobalApplicationState;
-import org.sagebionetworks.web.client.LinkedInServiceAsync;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.UserAccountServiceAsync;
 import org.sagebionetworks.web.client.cookie.CookieProvider;
-import org.sagebionetworks.web.client.place.TeamPlace;
-import org.sagebionetworks.web.client.presenter.ProfileFormWidget.ProfileUpdatedCallback;
+import org.sagebionetworks.web.client.place.Team;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.transform.NodeModelCreator;
 import org.sagebionetworks.web.client.view.TeamView;
@@ -21,9 +18,9 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
-public class TeamPresenter extends AbstractActivity implements TeamView.Presenter, Presenter<TeamPlace> {
+public class TeamPresenter extends AbstractActivity implements TeamView.Presenter, Presenter<Team> {
 		
-	private TeamPlace place;
+	private Team place;
 	private TeamView view;
 	private SynapseClientAsync synapseClient;
 	private NodeModelCreator nodeModelCreator;
@@ -31,7 +28,6 @@ public class TeamPresenter extends AbstractActivity implements TeamView.Presente
 	private UserAccountServiceAsync userService;
 	private GlobalApplicationState globalApplicationState;
 	private CookieProvider cookieProvider;
-	private Team team;
 	private GWTWrapper gwt;
 	private JSONObjectAdapter jsonObjectAdapter;
 	
@@ -64,7 +60,7 @@ public class TeamPresenter extends AbstractActivity implements TeamView.Presente
 	}
 
 	@Override
-	public void setPlace(TeamPlace place) {
+	public void setPlace(Team place) {
 		this.place = place;
 		this.view.setPresenter(this);
 		this.view.clear();
@@ -83,14 +79,10 @@ public class TeamPresenter extends AbstractActivity implements TeamView.Presente
 		globalApplicationState.getPlaceChanger().goTo(place);
 	}
 	
-	private void updateView(boolean isAdmin) {
-		
-	}
-	
-	private void showView(TeamPlace place) {
+	private void showView(Team place) {
 		String teamId = place.getTeamId();
 		//TODO: get team, and find out if we have admin access on this team
-		updateView(false);
+		view.configure(null, true, true, true);
 	}
 
 	@Override

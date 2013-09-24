@@ -6,10 +6,11 @@ import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.SageImageBundle;
 
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.Inject;
 
-public class TeamSearchViewImpl extends Composite implements TeamSearchView {
+public class TeamSearchViewImpl extends SimplePanel implements TeamSearchView {
 
 	private SageImageBundle sageImageBundle;
 	private Presenter presenter;
@@ -22,7 +23,7 @@ public class TeamSearchViewImpl extends Composite implements TeamSearchView {
 	@Override
 	public void showLoading() {
 		clear();
-		this.initWidget(DisplayUtils.getLoadingWidget(sageImageBundle));
+		add(DisplayUtils.getLoadingWidget(sageImageBundle));
 	}
 
 	@Override
@@ -37,11 +38,6 @@ public class TeamSearchViewImpl extends Composite implements TeamSearchView {
 	}
 	
 	@Override
-	public void clear() {
-		this.clear();
-	}
-
-	@Override
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;
 	}
@@ -49,6 +45,6 @@ public class TeamSearchViewImpl extends Composite implements TeamSearchView {
 	@Override
 	public void configure(List<Team> teams, int currentPage, int pageCount) {
 		DisplayUtils.showErrorMessage("TODO: TeamSearchViewImpl.configure()");
-		
+		add(new HTML(DisplayUtils.getWarningHtml("NOT IMPLEMENTED", "TeamSearch Not Yet Implemented")));
 	}
 }

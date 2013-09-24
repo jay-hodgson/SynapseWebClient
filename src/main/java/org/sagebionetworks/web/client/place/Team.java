@@ -4,11 +4,11 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
-public class TeamPlace extends Place{
+public class Team extends Place{
 	
 	private String teamId;
 
-	public TeamPlace(String token) {
+	public Team(String token) {
 		this.teamId = token;
 	}
 
@@ -21,15 +21,15 @@ public class TeamPlace extends Place{
 	}
 	
 	@Prefix("!Team")
-	public static class Tokenizer implements PlaceTokenizer<TeamPlace> {
+	public static class Tokenizer implements PlaceTokenizer<Team> {
         @Override
-        public String getToken(TeamPlace place) {
+        public String getToken(Team place) {
             return place.toToken();
         }
 
         @Override
-        public TeamPlace getPlace(String token) {
-            return new TeamPlace(token);
+        public Team getPlace(String token) {
+            return new Team(token);
         }
     }
 
