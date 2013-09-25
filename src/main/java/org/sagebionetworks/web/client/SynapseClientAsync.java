@@ -138,6 +138,10 @@ public interface SynapseClientAsync {
 	
 	void getTeams(String userId, Integer limit, Integer offset, AsyncCallback<String> callback);
 	
+	void getTeam(String teamId, AsyncCallback<String> callback);
+	
+	void getTeamAcl(String teamId, AsyncCallback<String> callback);
+	
 	void getFavoritesList(Integer limit, Integer offset, AsyncCallback<ArrayList<String>> callback);
 
 	void getUserEvaluationState(String evaluationId, AsyncCallback<UserEvaluationState> callback) throws RestServiceException;

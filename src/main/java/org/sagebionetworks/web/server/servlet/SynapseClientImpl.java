@@ -1314,8 +1314,7 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 	}
 	
 	@Override
-	public String getTeams(String userId, Integer limit, Integer offset)
-			throws RestServiceException {
+	public String getTeams(String userId, Integer limit, Integer offset) throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
 //			PaginatedResults<Team> teams = synapseClient.getTeams(limit, offset);
@@ -1328,6 +1327,46 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 //		} catch (SynapseException e) {
 //			throw ExceptionUtil.convertSynapseException(e);
 		} catch (JSONObjectAdapterException e) {
+			throw new UnknownErrorException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public String getTeam(String teamId) throws RestServiceException {
+		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
+		try {
+//			Team team = synapseClient.getTeam(teamId);
+
+			//////////////TEST
+			PaginatedResults<Team> teams = getTestTeams();
+			Team team = null;;
+			for (Team t : teams.getResults()) {
+				if(t.getId().equals(teamId)){
+					team = t;
+					break;
+				}
+			}
+			//////////////
+			
+			return EntityFactory.createJSONStringForEntity(team);
+//		} catch (SynapseException e) {
+//			throw ExceptionUtil.convertSynapseException(e);
+		} catch (JSONObjectAdapterException e) {
+			throw new UnknownErrorException(e.getMessage());
+		}
+	}
+	
+	public String getTeamAcl(String teamId) throws RestServiceException {
+		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
+		try {
+//			AccessControlList acl = synapseClient.getTeamAcl(teamId);
+
+			////////TEST
+			AccessControlList acl = new AccessControlList();
+			////////
+			JSONObjectAdapter json = acl.writeToJSONObject(adapterFactory.createNew());
+			return json.toJSONString();
+		} catch (Exception e) {
 			throw new UnknownErrorException(e.getMessage());
 		}
 	}

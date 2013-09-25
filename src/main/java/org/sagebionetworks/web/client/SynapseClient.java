@@ -219,6 +219,10 @@ public interface SynapseClient extends RemoteService {
 	
 	public String getTeams(String userId, Integer limit, Integer offset) throws RestServiceException;
 	
+	public String getTeam(String teamId) throws RestServiceException;
+	
+	public String getTeamAcl(String teamId) throws RestServiceException;
+	
 	public ArrayList<String> getFavoritesList(Integer limit, Integer offset) throws RestServiceException;
 	
 	public UserEvaluationState getUserEvaluationState(String evaluationId) throws RestServiceException;

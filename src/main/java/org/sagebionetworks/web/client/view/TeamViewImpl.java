@@ -44,8 +44,7 @@ public class TeamViewImpl extends SimplePanel implements TeamView {
 	@Override
 	public void configure(Team team, boolean isAdmin, boolean isMember,
 			boolean hasRequested) {
-		DisplayUtils.showErrorMessage("TODO: TeamViewImpl.configure()");
-		add(new HTML(DisplayUtils.getWarningHtml("NOT IMPLEMENTED", "Team Not Yet Implemented")));
+		add(new HTML("<div><h2>"+team.getName()+"</h2></div>"));
 	}
 
 }
