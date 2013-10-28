@@ -46,7 +46,9 @@ public class WidgetConstants {
 	public static final String USERBADGE_CONTENT_TYPE = "userbadge";
 	public static final String USERBADGE_FRIENDLY_NAME ="User Badge";
 	
-	public static final String JOIN_EVALUATION_CONTENT_TYPE = "joinevaluation";
+	public static final String OLD_JOIN_EVALUATION_CONTENT_TYPE = "joinevaluation";
+	public static final String JOIN_EVALUATION_CONTENT_TYPE = "joineval";
+	public static final String JOIN_TEAM_CONTENT_TYPE = "jointeam";
 	public static final String JOIN_EVALUATION_FRIENDLY_NAME ="Join Evaluation";
 	
 	public static final String BUTTON_LINK_CONTENT_TYPE = "buttonlink";
@@ -73,6 +75,7 @@ public class WidgetConstants {
 	public static final String IMAGE_WIDGET_SYNAPSE_ID_KEY = "synapseId";
 	public static final String JOIN_WIDGET_EVALUATION_ID_KEY = "evaluationId";
 	public static final String JOIN_WIDGET_TEAM_ID_KEY = "teamId";
+	public static final String JOIN_WIDGET_SHOW_PROFILE_FORM_KEY = "showProfileForm";
 	public static final String JOIN_WIDGET_SUBCHALLENGE_ID_LIST_KEY = "subchallengeIdList";
 	public static final String JOIN_WIDGET_SUBCHALLENGE_ID_LIST_DELIMETER = ",";
 	public static final String FLOAT_NONE = "None";

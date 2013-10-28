@@ -11,6 +11,7 @@ import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.repo.model.UserSessionData;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.web.client.DisplayConstants;
+import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.exceptions.IllegalArgumentException;
@@ -35,7 +36,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class JoinWidget implements JoinWidgetView.Presenter, WidgetRendererPresenter {
+public class OldJoinWidget implements JoinWidgetView.Presenter, WidgetRendererPresenter {
 	
 	private JoinWidgetView view;
 	private Map<String,String> descriptor;
@@ -47,10 +48,9 @@ public class JoinWidget implements JoinWidgetView.Presenter, WidgetRendererPrese
 	private JSONObjectAdapter jsonObjectAdapter;
 	private EvaluationSubmitter evaluationSubmitter;
 	private String[] evaluationIds;
-	private String teamId;
 	
 	@Inject
-	public JoinWidget(JoinWidgetView view, SynapseClientAsync synapseClient,
+	public OldJoinWidget(JoinWidgetView view, SynapseClientAsync synapseClient,
 			AuthenticationController authenticationController,
 			GlobalApplicationState globalApplicationState,
 			NodeModelCreator nodeModelCreator,
@@ -80,10 +80,6 @@ public class JoinWidget implements JoinWidgetView.Presenter, WidgetRendererPrese
 		if(subchallengeIdList != null) {
 			evaluationIds = subchallengeIdList.split(WidgetConstants.JOIN_WIDGET_SUBCHALLENGE_ID_LIST_DELIMETER);
 		}
-		
-		teamId = null;
-		if (descriptor.containsKey(WidgetConstants.JOIN_WIDGET_TEAM_ID_KEY)) 
-			teamId = descriptor.get(WidgetConstants.JOIN_WIDGET_TEAM_ID_KEY);
 		
 		//figure out if we should show anything
 		try {
@@ -245,45 +241,14 @@ public class JoinWidget implements JoinWidgetView.Presenter, WidgetRendererPrese
 		synapseClient.createParticipants(evaluationIds, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
-				try {
-					if (teamId != null)
-						registerOptionalStep5();
-					else
-						registrationDone();
-				} catch (RestServiceException e) {
-					onFailure(e);
-				}
+				view.showInfo("Successfully Joined!", "");
+				configure(wikiKey, descriptor);
 			}
 			@Override
 			public void onFailure(Throwable caught) {
 				view.showError(DisplayConstants.EVALUATION_REGISTRATION_ERROR + caught.getMessage());
 			}
 		});
-	}
-	
-	/**
-	 * If provided, then also set the team id
-	 * @throws RestServiceException
-	 */
-	public void registerOptionalStep5() throws RestServiceException {
-		//attempt to join team
-		synapseClient.requestMembership(authenticationController.getCurrentUserPrincipalId(), 
-				teamId, "", new AsyncCallback<Void>() {
-			@Override
-			public void onSuccess(Void result) {
-				registrationDone();
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-				view.showError(DisplayConstants.EVALUATION_JOIN_TEAM_ERROR + caught.getMessage());
-			}
-		});
-	}
-
-	
-	public void registrationDone(){
-		view.showInfo("Successfully Joined!", "");
-		configure(wikiKey, descriptor);
 	}
 
 	@Override

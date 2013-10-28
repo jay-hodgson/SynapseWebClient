@@ -36,6 +36,7 @@ import org.sagebionetworks.web.client.widget.entity.EvaluationSubmitter;
 import org.sagebionetworks.web.client.widget.entity.registration.WidgetConstants;
 import org.sagebionetworks.web.client.widget.entity.renderer.JoinWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.JoinWidgetView;
+import org.sagebionetworks.web.client.widget.entity.renderer.OldJoinWidget;
 import org.sagebionetworks.web.shared.PaginatedResults;
 import org.sagebionetworks.web.shared.WikiPageKey;
 import org.sagebionetworks.web.test.helper.AsyncMockStubber;
@@ -43,8 +44,7 @@ import org.sagebionetworks.web.test.helper.AsyncMockStubber;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class JoinWidgetTest {
-	
-	JoinWidget widget;
+	OldJoinWidget widget;
 	JoinWidgetView mockView;
 	AuthenticationController mockAuthenticationController;
 	EvaluationSubmitter mockEvaluationSubmitter;
@@ -86,7 +86,7 @@ public class JoinWidgetTest {
 		AsyncMockStubber.callSuccessWith("").when(mockSynapseClient).getUnmetEvaluationAccessRequirements(anyString(), any(AsyncCallback.class));
 		AsyncMockStubber.callSuccessWith(UserEvaluationState.EVAL_REGISTRATION_UNAVAILABLE).when(mockSynapseClient).getUserEvaluationState(anyString(), any(AsyncCallback.class));
 		
-		widget = new JoinWidget(mockView, mockSynapseClient,
+		widget = new OldJoinWidget(mockView, mockSynapseClient,
 				mockAuthenticationController, mockGlobalApplicationState,
 				mockNodeModelCreator, mockJSONObjectAdapter, mockEvaluationSubmitter);
 		descriptor = new HashMap<String, String>();

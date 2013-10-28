@@ -9,7 +9,6 @@ import org.sagebionetworks.evaluation.model.Submission;
 import org.sagebionetworks.repo.model.AccessRequirement;
 import org.sagebionetworks.repo.model.Entity;
 import org.sagebionetworks.repo.model.Reference;
-import org.sagebionetworks.repo.model.RestResourceList;
 import org.sagebionetworks.repo.model.TermsOfUseAccessRequirement;
 import org.sagebionetworks.repo.model.UserSessionData;
 import org.sagebionetworks.repo.model.Versionable;
@@ -26,7 +25,6 @@ import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.utils.CallbackP;
 import org.sagebionetworks.web.client.utils.GovernanceServiceHelper;
 import org.sagebionetworks.web.client.widget.entity.EvaluationSubmitterView.Presenter;
-import org.sagebionetworks.web.shared.AccessRequirementsTransport;
 import org.sagebionetworks.web.shared.EntityWrapper;
 import org.sagebionetworks.web.shared.PaginatedResults;
 import org.sagebionetworks.web.shared.exceptions.RestServiceException;
@@ -270,6 +268,17 @@ public class EvaluationSubmitter implements Presenter {
 			view.showErrorMessage(DisplayConstants.ERROR_GENERIC_NOTIFY);
 		}
 		try {
+			//add the content source as a fav
+			synapseClient.addFavorite(evaluation.getContentSource(), new AsyncCallback<String>() {			
+				@Override
+				public void onSuccess(String result) {
+				}
+				@Override
+				public void onFailure(Throwable caught) {
+					if(!DisplayUtils.handleServiceException(caught, globalApplicationState.getPlaceChanger(), authenticationController.isLoggedIn(), view))
+						view.showErrorMessage(caught.getMessage());
+				}
+			});
 			synapseClient.createSubmission(adapter.toJSONString(), etag, new AsyncCallback<String>() {			
 				@Override
 				public void onSuccess(String result) {

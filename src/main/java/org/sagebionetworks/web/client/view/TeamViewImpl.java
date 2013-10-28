@@ -176,7 +176,7 @@ public class TeamViewImpl extends Composite implements TeamView {
 		if (teamMembershipStatus != null) {
 			if (!teamMembershipStatus.getIsMember()) {
 				//not a member, add Join widget
-				joinTeamWidget.configure(team.getId(), teamMembershipStatus, getRefreshCallback(team.getId()));
+				joinTeamWidget.configure(team.getId(), false, teamMembershipStatus, getRefreshCallback(team.getId()));
 				Widget joinTeamView = joinTeamWidget.asWidget();
 				joinTeamView.addStyleName("margin-top-15");	
 				mainContainer.add(joinTeamView);

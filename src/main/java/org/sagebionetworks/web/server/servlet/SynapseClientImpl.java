@@ -932,6 +932,26 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 	}
 	
 	@Override
+	public String getUnmetTeamAccessRequirements(String teamId) throws RestServiceException {
+		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
+		try {
+			RestrictableObjectDescriptor subjectId = new RestrictableObjectDescriptor();
+			subjectId.setId(teamId);
+			subjectId.setType(RestrictableObjectType.TEAM);
+
+			VariableContentPaginatedResults<AccessRequirement> accessRequirements = 
+				synapseClient.getUnmetAccessRequirements(subjectId);
+			JSONObjectAdapter arJson = accessRequirements.writeToJSONObject(adapterFactory.createNew());
+			return arJson.toJSONString();
+		} catch (SynapseException e) {
+			throw ExceptionUtil.convertSynapseException(e);
+		} catch (JSONObjectAdapterException e) {
+			throw new UnknownErrorException(e.getMessage());
+		} 
+	}
+
+	
+	@Override
 	public EntityWrapper createAccessApproval(EntityWrapper aaEW) throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
@@ -1397,6 +1417,19 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 //			}
 		} catch (SynapseException e) {
 			throw ExceptionUtil.convertSynapseException(e);
+		}
+	}
+	
+
+	public String getTeamMembershipState(String currentUserId, String teamId) throws RestServiceException {
+		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
+		try {
+			TeamMembershipStatus membershipStatus = synapseClient.getTeamMembershipStatus(teamId, currentUserId);
+			return EntityFactory.createJSONStringForEntity(membershipStatus);
+		} catch (SynapseException e) {
+			throw ExceptionUtil.convertSynapseException(e);
+		} catch (JSONObjectAdapterException e) {
+			throw new UnknownErrorException(e.getMessage());
 		}
 	}
 	

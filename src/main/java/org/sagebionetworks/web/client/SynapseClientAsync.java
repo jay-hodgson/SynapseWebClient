@@ -100,6 +100,8 @@ public interface SynapseClientAsync {
 	 * @param callback returns VariableContentPaginatedResults<AccessRequirement> json
 	 */
 	public void getUnmetEvaluationAccessRequirements(String evalId, AsyncCallback<String> callback);
+	
+	public void getUnmetTeamAccessRequirements(String teamId, AsyncCallback<String> callback);
 
 	public void createAccessApproval(EntityWrapper aaEW, AsyncCallback<EntityWrapper> callback);
 
@@ -155,7 +157,9 @@ public interface SynapseClientAsync {
 	void deleteTeamMember(String currentUserId, String targetUserId, String teamId, AsyncCallback<Void> callback);
 	void setIsTeamAdmin(String currentUserId, String targetUserId, String teamId, boolean isTeamAdmin, AsyncCallback<Void> callback);
 	void getTeamMembers(String teamId, String fragment, Integer limit, Integer offset, AsyncCallback<String> callback);	
+//	void getTeamMembershipState(String currentUserId, String teamId, AsyncCallback<String> callback);
 	void requestMembership(String currentUserId, String teamId, String message, AsyncCallback<Void> callback);
+	
 	void deleteOpenMembershipRequests(String currentUserId, String teamId, AsyncCallback<Void> callback);
 	void inviteMember(String userGroupId, String teamId, String message, AsyncCallback<Void> callback);
 	/////////////////
@@ -163,7 +167,7 @@ public interface SynapseClientAsync {
 	void getFavoritesList(Integer limit, Integer offset, AsyncCallback<ArrayList<String>> callback);
 
 	void getUserEvaluationState(String evaluationId, AsyncCallback<UserEvaluationState> callback) throws RestServiceException;
-
+	
 	/**
 	 * Returns json string representation of created Participant
 	 * @param evaluationId
