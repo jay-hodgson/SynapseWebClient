@@ -172,8 +172,8 @@ import org.sagebionetworks.web.client.widget.entity.renderer.EntityListWidgetVie
 import org.sagebionetworks.web.client.widget.entity.renderer.EntityListWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.entity.renderer.ImageWidgetView;
 import org.sagebionetworks.web.client.widget.entity.renderer.ImageWidgetViewImpl;
-import org.sagebionetworks.web.client.widget.entity.renderer.JoinWidgetView;
-import org.sagebionetworks.web.client.widget.entity.renderer.JoinWidgetViewImpl;
+import org.sagebionetworks.web.client.widget.entity.renderer.OldJoinWidgetView;
+import org.sagebionetworks.web.client.widget.entity.renderer.OldJoinWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.entity.renderer.OldImageWidgetView;
 import org.sagebionetworks.web.client.widget.entity.renderer.OldImageWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.entity.renderer.ReferenceWidgetView;
@@ -578,7 +578,7 @@ public class PortalGinModule extends AbstractGinModule {
 		bind(APITableWidgetView.class).to(APITableWidgetViewImpl.class);
 		bind(TableOfContentsWidgetView.class).to(TableOfContentsWidgetViewImpl.class);
 		bind(WikiFilesPreviewWidgetView.class).to(WikiFilesPreviewWidgetViewImpl.class);
-		bind(JoinWidgetView.class).to(JoinWidgetViewImpl.class);
+		bind(OldJoinWidgetView.class).to(OldJoinWidgetViewImpl.class);
 		bind(WikiSubpagesView.class).to(WikiSubpagesViewImpl.class);
 		bind(ButtonLinkWidgetView.class).to(ButtonLinkWidgetViewImpl.class);
 		

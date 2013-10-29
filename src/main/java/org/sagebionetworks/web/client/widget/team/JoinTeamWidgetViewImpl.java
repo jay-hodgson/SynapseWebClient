@@ -107,7 +107,7 @@ public class JoinTeamWidgetViewImpl extends FlowPanel implements JoinTeamWidgetV
 				}
 			});
 			
-			acceptInviteButton = DisplayUtils.createButton("Accept Invitation to Join", ButtonType.SUCCESS);
+			acceptInviteButton = DisplayUtils.createButton("Join", ButtonType.SUCCESS);
 			acceptInviteButton.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {

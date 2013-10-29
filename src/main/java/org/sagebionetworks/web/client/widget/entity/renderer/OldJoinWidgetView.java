@@ -1,6 +1,5 @@
 package org.sagebionetworks.web.client.widget.entity.renderer;
 
-import org.sagebionetworks.evaluation.model.UserEvaluationState;
 import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.web.client.SynapseView;
 import org.sagebionetworks.web.client.utils.Callback;
@@ -10,7 +9,7 @@ import org.sagebionetworks.web.shared.WikiPageKey;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface JoinWidgetView extends IsWidget, SynapseView {
+public interface OldJoinWidgetView extends IsWidget, SynapseView {
 
 	/**
 	 * Set the presenter.
@@ -18,7 +17,7 @@ public interface JoinWidgetView extends IsWidget, SynapseView {
 	 */
 	void setPresenter(Presenter presenter);
 	
-	void configure(WikiPageKey wikiKey, UserEvaluationState state);
+	void configure(WikiPageKey wikiKey, boolean canSubmit);
 	
 	void showError(String message);
 	
@@ -38,11 +37,6 @@ public interface JoinWidgetView extends IsWidget, SynapseView {
 	 * Presenter interface
 	 */
 	public interface Presenter {
-		/**
-		 * Called when Join button is clicked
-		 */
-		void register();
-		
 		void gotoLoginPage();
 		
 		void submitToChallengeClicked();

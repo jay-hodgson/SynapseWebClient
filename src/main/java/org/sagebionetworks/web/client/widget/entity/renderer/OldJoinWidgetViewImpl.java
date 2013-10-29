@@ -1,10 +1,8 @@
 package org.sagebionetworks.web.client.widget.entity.renderer;
 
-import org.sagebionetworks.evaluation.model.UserEvaluationState;
 import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.DisplayUtils;
-import org.sagebionetworks.web.client.DisplayUtils.ButtonType;
 import org.sagebionetworks.web.client.presenter.ProfileFormWidget;
 import org.sagebionetworks.web.client.presenter.ProfileFormWidget.ProfileUpdatedCallback;
 import org.sagebionetworks.web.client.utils.Callback;
@@ -30,97 +28,78 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class JoinWidgetViewImpl extends LayoutContainer implements JoinWidgetView {
+public class OldJoinWidgetViewImpl extends LayoutContainer implements OldJoinWidgetView {
 	private Presenter presenter;
 	private ProfileFormWidget profileForm;
 	private TutorialWizard tutorialWizard;
 	
 	@Inject
-	public JoinWidgetViewImpl(ProfileFormWidget profileForm, TutorialWizard tutorialWizard) {
+	public OldJoinWidgetViewImpl(ProfileFormWidget profileForm, TutorialWizard tutorialWizard) {
 		this.profileForm = profileForm;
 		this.tutorialWizard = tutorialWizard;
 	}
 	
 	@Override
-	public void configure(WikiPageKey wikiKey, UserEvaluationState state) {
+	public void configure(WikiPageKey wikiKey, boolean canSubmit) {
 		this.removeAll();
-		
-		if (!UserEvaluationState.EVAL_REGISTRATION_UNAVAILABLE.equals(state)) {
-			//show a register/unregister button
-			if (UserEvaluationState.EVAL_OPEN_USER_NOT_REGISTERED.equals(state)) {
-				
-				Button applyForChallengeBtn = DisplayUtils.createButton(DisplayConstants.JOIN_CHALLENGE, ButtonType.PRIMARY);
-				applyForChallengeBtn.addClickHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						presenter.register();
-					}
-				});
-				applyForChallengeBtn.addStyleName("btn-lg margin-top-10");
-				SimplePanel wrapper = new SimplePanel();
-				wrapper.add(applyForChallengeBtn);
-				add(wrapper);
-			}
-			else if (UserEvaluationState.EVAL_OPEN_USER_REGISTERED.equals(state)) {
-				//add info on how to get started!
-				FlowPanel p = new FlowPanel();
-				p.addStyleName("mainPageHeader inline-block");
-				p.add(new HTML("<h3>You are registered for this challenge!</h3>"));
-				
-				UnorderedListPanel listPanel = new UnorderedListPanel();
-				listPanel.addStyleName("list arrow-list");
-				listPanel.add(new HTML("Download the file(s) by going to the Files section of this page."));
-				
-				//add link and text
-				FlowPanel tutorialLinkPanel = new FlowPanel();
-				tutorialLinkPanel.addStyleName("inline-block");
-				tutorialLinkPanel.add(new InlineLabel("Read the "));
-				Anchor link = new Anchor("Submission Guide");
-				link.addStyleName("link inline-block");
-				link.addClickHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						presenter.showSubmissionGuide(null);
-					}
-				});
-				tutorialLinkPanel.add(link);
-				tutorialLinkPanel.add(new InlineLabel(" to learn how to upload and submit a file."));
-				listPanel.add(tutorialLinkPanel);
-				//add link and text
-				tutorialLinkPanel = new FlowPanel();
-				tutorialLinkPanel.addStyleName("inline-block");
-				tutorialLinkPanel.add(new InlineLabel("Read the "));
-				link = new Anchor("Write-Up Guide");
-				link.addStyleName("link inline-block");
-				link.addClickHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						presenter.showWriteupGuide();
-					}
-				});
-				tutorialLinkPanel.add(link);
-				tutorialLinkPanel.add(new InlineLabel(" to describe your work and provide source code."));
-				listPanel.add(tutorialLinkPanel);
-				
-				p.add(listPanel);
-				Button button = new Button("Submit To Challenge");
-				button.removeStyleName("gwt-Button");
-				button.addStyleName("btn btn-primary btn-lg margin-top-10");
-				button.addClickHandler(new ClickHandler() {			
-					@Override
-					public void onClick(ClickEvent event) {
-						presenter.submitToChallengeClicked();
-					}
-				});				
-				p.add(button);
-				add(p);
-			}
+		//this widget no longer supports registration
+		if (canSubmit) {
+			//add info on how to get started!
+			FlowPanel p = new FlowPanel();
+			p.addStyleName("mainPageHeader inline-block");
+			p.add(new HTML("<h3>You are registered for this challenge!</h3>"));
+			
+			UnorderedListPanel listPanel = new UnorderedListPanel();
+			listPanel.addStyleName("list arrow-list");
+			listPanel.add(new HTML("Download the file(s) by going to the Files section of this page."));
+			
+			//add link and text
+			FlowPanel tutorialLinkPanel = new FlowPanel();
+			tutorialLinkPanel.addStyleName("inline-block");
+			tutorialLinkPanel.add(new InlineLabel("Read the "));
+			Anchor link = new Anchor("Submission Guide");
+			link.addStyleName("link inline-block");
+			link.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					presenter.showSubmissionGuide(null);
+				}
+			});
+			tutorialLinkPanel.add(link);
+			tutorialLinkPanel.add(new InlineLabel(" to learn how to upload and submit a file."));
+			listPanel.add(tutorialLinkPanel);
+			//add link and text
+			tutorialLinkPanel = new FlowPanel();
+			tutorialLinkPanel.addStyleName("inline-block");
+			tutorialLinkPanel.add(new InlineLabel("Read the "));
+			link = new Anchor("Write-Up Guide");
+			link.addStyleName("link inline-block");
+			link.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					presenter.showWriteupGuide();
+				}
+			});
+			tutorialLinkPanel.add(link);
+			tutorialLinkPanel.add(new InlineLabel(" to describe your work and provide source code."));
+			listPanel.add(tutorialLinkPanel);
+			
+			p.add(listPanel);
+			Button button = new Button("Submit To Challenge");
+			button.removeStyleName("gwt-Button");
+			button.addStyleName("btn btn-primary btn-lg margin-top-10");
+			button.addClickHandler(new ClickHandler() {			
+				@Override
+				public void onClick(ClickEvent event) {
+					presenter.submitToChallengeClicked();
+				}
+			});				
+			p.add(button);
+			add(p);
 		}
-		
 		this.layout(true);
 	}
 	

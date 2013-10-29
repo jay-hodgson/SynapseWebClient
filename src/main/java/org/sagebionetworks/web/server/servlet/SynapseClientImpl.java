@@ -25,10 +25,8 @@ import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.client.exceptions.SynapseNotFoundException;
 import org.sagebionetworks.evaluation.model.Evaluation;
 import org.sagebionetworks.evaluation.model.EvaluationStatus;
-import org.sagebionetworks.evaluation.model.Participant;
 import org.sagebionetworks.evaluation.model.Submission;
 import org.sagebionetworks.evaluation.model.UserEvaluationPermissions;
-import org.sagebionetworks.evaluation.model.UserEvaluationState;
 import org.sagebionetworks.repo.model.ACCESS_TYPE;
 import org.sagebionetworks.repo.model.AccessApproval;
 import org.sagebionetworks.repo.model.AccessControlList;
@@ -937,9 +935,7 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 		try {
 			RestrictableObjectDescriptor subjectId = new RestrictableObjectDescriptor();
 			subjectId.setId(teamId);
-//			TODO: uncomment when new object type is available!
 //			subjectId.setType(RestrictableObjectType.TEAM);
-			subjectId.setType(RestrictableObjectType.EVALUATION);
 			
 			VariableContentPaginatedResults<AccessRequirement> accessRequirements = 
 				synapseClient.getUnmetAccessRequirements(subjectId);
@@ -1658,30 +1654,6 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
 			synapseClient.createEntityDoi(entityId, versionNumber);
-		} catch (SynapseException e) {
-			throw ExceptionUtil.convertSynapseException(e);
-		}
-	}
-	
-	@Deprecated
-	@Override
-	public UserEvaluationState getUserEvaluationState(String evaluationId) throws RestServiceException{
-		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
-		try {
-			return synapseClient.getUserEvaluationState(evaluationId);
-		} catch (SynapseException e) {
-			throw ExceptionUtil.convertSynapseException(e);
-		}
-	}
-	
-	@Override
-	public void createParticipants(String[] evaluationIds)
-			throws RestServiceException {
-		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
-		try {
-			for (int i = 0; i < evaluationIds.length; i++) {
-				Participant participant = synapseClient.createParticipant(evaluationIds[i]);	
-			}
 		} catch (SynapseException e) {
 			throw ExceptionUtil.convertSynapseException(e);
 		}

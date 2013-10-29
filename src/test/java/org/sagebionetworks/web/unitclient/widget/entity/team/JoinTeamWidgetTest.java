@@ -8,10 +8,12 @@ import static org.mockito.Mockito.verify;
 import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.repo.model.TeamMembershipStatus;
+import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.security.AuthenticationController;
+import org.sagebionetworks.web.client.transform.NodeModelCreator;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.widget.team.JoinTeamWidget;
 import org.sagebionetworks.web.client.widget.team.JoinTeamWidgetView;
@@ -28,6 +30,8 @@ public class JoinTeamWidgetTest {
 	JoinTeamWidget joinWidget;
 	AuthenticationController mockAuthenticationController;
 	Callback mockTeamUpdatedCallback;
+	JSONObjectAdapter mockJSONObjectAdapter;
+	NodeModelCreator mockNodeModelCreator;
 	
 	@Before
 	public void before() throws JSONObjectAdapterException {
@@ -36,13 +40,16 @@ public class JoinTeamWidgetTest {
 		mockView = mock(JoinTeamWidgetView.class);
 		mockAuthenticationController = mock(AuthenticationController.class);
 		mockTeamUpdatedCallback = mock(Callback.class);
-		joinWidget = new JoinTeamWidget(mockView, mockSynapseClient, mockGlobalApplicationState, mockAuthenticationController);
+		mockNodeModelCreator = mock(NodeModelCreator.class);
+		mockJSONObjectAdapter = mock(JSONObjectAdapter.class);
+		
+		joinWidget = new JoinTeamWidget(mockView, mockSynapseClient, mockGlobalApplicationState, mockAuthenticationController, mockNodeModelCreator, mockJSONObjectAdapter);
 		TeamMembershipStatus status = new TeamMembershipStatus();
 		status.setHasOpenInvitation(false);
 		status.setCanJoin(false);
 		status.setHasOpenRequest(false);
 		status.setIsMember(false);
-		joinWidget.configure(teamId, status, mockTeamUpdatedCallback);
+		joinWidget.configure(teamId, false, status, mockTeamUpdatedCallback);
 		
 		AsyncMockStubber.callSuccessWith(null).when(mockSynapseClient).deleteOpenMembershipRequests(anyString(), anyString(), any(AsyncCallback.class));
 		AsyncMockStubber.callSuccessWith(null).when(mockSynapseClient).requestMembership(anyString(), anyString(), anyString(), any(AsyncCallback.class));

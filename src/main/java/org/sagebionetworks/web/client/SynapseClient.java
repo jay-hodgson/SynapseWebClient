@@ -241,10 +241,6 @@ public interface SynapseClient extends RemoteService {
 	
 	public ArrayList<String> getFavoritesList(Integer limit, Integer offset) throws RestServiceException;
 	
-	public UserEvaluationState getUserEvaluationState(String evaluationId) throws RestServiceException;
-	
-	public void createParticipants(String[] evaluationIds) throws RestServiceException;
-	
 	public String getDescendants(String nodeId, int pageSize, String lastDescIdExcl) throws RestServiceException;
 	
 	public String getChunkedFileToken(String fileName, String contentType, String contentMD5) throws RestServiceException;

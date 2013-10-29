@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.sagebionetworks.evaluation.model.UserEvaluationState;
 import org.sagebionetworks.web.shared.AccessRequirementsTransport;
 import org.sagebionetworks.web.shared.EntityBundleTransport;
 import org.sagebionetworks.web.shared.EntityWrapper;
@@ -167,17 +166,6 @@ public interface SynapseClientAsync {
 	
 	void getFavoritesList(Integer limit, Integer offset, AsyncCallback<ArrayList<String>> callback);
 
-	@Deprecated
-	void getUserEvaluationState(String evaluationId, AsyncCallback<UserEvaluationState> callback) throws RestServiceException;
-	
-	/**
-	 * Returns json string representation of created Participant
-	 * @param evaluationId
-	 * @return
-	 * @throws RestServiceException
-	 */
-	void createParticipants(String[] evaluationIds, AsyncCallback<Void> callback) throws RestServiceException;
-	
 	void getDescendants(String nodeId, int pageSize, String lastDescIdExcl, AsyncCallback<String> callback);
 	void getChunkedFileToken(String fileName,  String contentType, String contentMD5, AsyncCallback<String> callback) throws RestServiceException;
 	void getChunkedPresignedUrl(String requestJson, AsyncCallback<String> callback) throws RestServiceException;
