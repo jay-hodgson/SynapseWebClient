@@ -269,17 +269,17 @@ public class EvaluationSubmitter implements Presenter {
 			view.showErrorMessage(DisplayConstants.ERROR_GENERIC_NOTIFY);
 		}
 		try {
-			//add the content source as a fav
-			synapseClient.addFavorite(evaluation.getContentSource(), new AsyncCallback<String>() {			
-				@Override
-				public void onSuccess(String result) {
-				}
-				@Override
-				public void onFailure(Throwable caught) {
-					if(!DisplayUtils.handleServiceException(caught, globalApplicationState.getPlaceChanger(), authenticationController.isLoggedIn(), view))
-						view.showErrorMessage(caught.getMessage());
-				}
-			});
+//			//TODO: add the content source as a fav instead of My Challenges area
+//			synapseClient.addFavorite(evaluation.getContentSource(), new AsyncCallback<String>() {			
+//				@Override
+//				public void onSuccess(String result) {
+//				}
+//				@Override
+//				public void onFailure(Throwable caught) {
+//					if(!DisplayUtils.handleServiceException(caught, globalApplicationState.getPlaceChanger(), authenticationController.isLoggedIn(), view))
+//						view.showErrorMessage(caught.getMessage());
+//				}
+//			});
 			synapseClient.createSubmission(adapter.toJSONString(), etag, new AsyncCallback<String>() {			
 				@Override
 				public void onSuccess(String result) {
