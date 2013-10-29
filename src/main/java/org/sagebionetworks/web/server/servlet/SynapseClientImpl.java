@@ -939,7 +939,8 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 			subjectId.setId(teamId);
 //			TODO: uncomment when new object type is available!
 //			subjectId.setType(RestrictableObjectType.TEAM);
-
+			subjectId.setType(RestrictableObjectType.EVALUATION);
+			
 			VariableContentPaginatedResults<AccessRequirement> accessRequirements = 
 				synapseClient.getUnmetAccessRequirements(subjectId);
 			JSONObjectAdapter arJson = accessRequirements.writeToJSONObject(adapterFactory.createNew());

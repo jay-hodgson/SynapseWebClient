@@ -90,13 +90,17 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 	
 	@Override
 	public void configure(WikiPageKey wikiKey, Map<String, String> descriptor) {
-		teamId = null;
+		this.teamId = null;
 		if (descriptor.containsKey(WidgetConstants.JOIN_WIDGET_TEAM_ID_KEY)) 
-			teamId = descriptor.get(WidgetConstants.JOIN_WIDGET_TEAM_ID_KEY);
+			this.teamId = descriptor.get(WidgetConstants.JOIN_WIDGET_TEAM_ID_KEY);
 		
-		final Boolean showProfileForm = descriptor.containsKey(WidgetConstants.JOIN_WIDGET_SHOW_PROFILE_FORM_KEY) ? 
+		this.showUserProfileForm = descriptor.containsKey(WidgetConstants.JOIN_WIDGET_SHOW_PROFILE_FORM_KEY) ? 
 				Boolean.parseBoolean(descriptor.get(WidgetConstants.JOIN_WIDGET_SHOW_PROFILE_FORM_KEY)) : 
 				false;
+		refresh();
+	}
+	
+	private void refresh() {
 		boolean isLoggedIn = authenticationController.isLoggedIn();
 		if (isLoggedIn) {
 			synapseClient.getTeamBundle(authenticationController.getCurrentUserPrincipalId(), teamId, isLoggedIn, new AsyncCallback<TeamBundle>() {
@@ -107,7 +111,7 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 						TeamMembershipStatus teamMembershipStatus = null;
 						if (result.getTeamMembershipStatusJson() != null)
 							teamMembershipStatus = nodeModelCreator.createJSONEntity(result.getTeamMembershipStatusJson(), TeamMembershipStatus.class);
-						configure(team.getId(), showProfileForm, teamMembershipStatus, null);
+						configure(team.getId(), showUserProfileForm, teamMembershipStatus, null);
 					} catch (JSONObjectAdapterException e) {
 						onFailure(e);
 					}
@@ -120,7 +124,7 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 				}
 			});
 		} else {
-			configure(teamId, showProfileForm, null, null);
+			configure(teamId, showUserProfileForm, null, null);
 		}
 	}
 	
@@ -232,8 +236,10 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 			public void onSuccess(Void result) {
 				String message = isAcceptingInvite ? "Invitation Accepted" : "Request Sent";
 				view.showInfo(message, "");
+				refresh();
 				if (teamUpdatedCallback != null)
 					teamUpdatedCallback.invoke();
+				
 			}
 			@Override
 			public void onFailure(Throwable caught) {

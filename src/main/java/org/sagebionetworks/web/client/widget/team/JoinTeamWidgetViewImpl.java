@@ -114,7 +114,7 @@ public class JoinTeamWidgetViewImpl extends FlowPanel implements JoinTeamWidgetV
 					presenter.sendJoinRequest("", true);
 				}
 			});
-			requestedMessage = new HTML(DisplayUtils.getAlertHtml("Request open.", "Your request to join this team has been sent.", BootstrapAlertType.INFO));
+			requestedMessage = new HTML(DisplayUtils.getAlertHtmlSpan("Request open.", "Your request to join this team has been sent.", BootstrapAlertType.INFO));
 			requestUIPanel = new LayoutContainer();
 			requestUIPanel.addStyleName("margin-top-0 highlight-box highlight-line-min");
 			requestButton = DisplayUtils.createIconButton("Request to Join Team", ButtonType.DEFAULT, "glyphicon-plus");
