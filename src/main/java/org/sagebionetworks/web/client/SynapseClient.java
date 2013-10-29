@@ -2,6 +2,7 @@ package org.sagebionetworks.web.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.evaluation.model.UserEvaluationState;
@@ -260,6 +261,8 @@ public interface SynapseClient extends RemoteService {
 	public String getEvaluations(List<String> evaluationIds) throws RestServiceException;
 	
 	public String getAvailableEvaluations() throws RestServiceException;
+	public String getAvailableEvaluations(Set<String> targetEvaluationIds) throws RestServiceException;
+	
 	public ArrayList<String> getSharableEvaluations(String entityId) throws RestServiceException;
 	public String getAvailableEvaluationEntities() throws RestServiceException;
 	public ArrayList<String> getAvailableEvaluationEntitiesList() throws RestServiceException;

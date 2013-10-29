@@ -180,6 +180,8 @@ import org.sagebionetworks.web.client.widget.entity.renderer.ReferenceWidgetView
 import org.sagebionetworks.web.client.widget.entity.renderer.ReferenceWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.entity.renderer.ShinySiteWidgetView;
 import org.sagebionetworks.web.client.widget.entity.renderer.ShinySiteWidgetViewImpl;
+import org.sagebionetworks.web.client.widget.entity.renderer.SubmitToEvaluationWidgetView;
+import org.sagebionetworks.web.client.widget.entity.renderer.SubmitToEvaluationWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.entity.renderer.TableOfContentsWidgetView;
 import org.sagebionetworks.web.client.widget.entity.renderer.TableOfContentsWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.entity.renderer.WikiFilesPreviewWidgetView;
@@ -636,6 +638,8 @@ public class PortalGinModule extends AbstractGinModule {
 		
 		//Request Team membership widget
 		bind(JoinTeamWidgetView.class).to(JoinTeamWidgetViewImpl.class);
+		//Submit to evaluation widget
+		bind(SubmitToEvaluationWidgetView.class).to(SubmitToEvaluationWidgetViewImpl.class);
 		//Team renderer
 		bind(TeamBadgeView.class).to(TeamBadgeViewImpl.class);
 		bind(BigTeamBadgeView.class).to(BigTeamBadgeViewImpl.class);

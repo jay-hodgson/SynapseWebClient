@@ -937,7 +937,8 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 		try {
 			RestrictableObjectDescriptor subjectId = new RestrictableObjectDescriptor();
 			subjectId.setId(teamId);
-			subjectId.setType(RestrictableObjectType.TEAM);
+//			TODO: uncomment when new object type is available!
+//			subjectId.setType(RestrictableObjectType.TEAM);
 
 			VariableContentPaginatedResults<AccessRequirement> accessRequirements = 
 				synapseClient.getUnmetAccessRequirements(subjectId);
@@ -1661,6 +1662,7 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 		}
 	}
 	
+	@Deprecated
 	@Override
 	public UserEvaluationState getUserEvaluationState(String evaluationId) throws RestServiceException{
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
@@ -1831,6 +1833,32 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 		try {
 			PaginatedResults<Evaluation> results = synapseClient.getAvailableEvaluationsPaginated(EvaluationStatus.OPEN, EVALUATION_PAGINATION_OFFSET, EVALUATION_PAGINATION_LIMIT);
 			JSONObjectAdapter evaluationsJson = results.writeToJSONObject(adapterFactory.createNew());
+			return evaluationsJson.toJSONString();
+		} catch (Exception e) {
+			throw new UnknownErrorException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public String getAvailableEvaluations(Set<String> targetEvaluationIds)
+			throws RestServiceException {
+		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
+		try {
+			PaginatedResults<Evaluation> returnResults = new PaginatedResults<Evaluation>();
+			List<Evaluation> returnList = new ArrayList<Evaluation>();
+			if (targetEvaluationIds.size() > 0) {
+				PaginatedResults<Evaluation> results = synapseClient.getAvailableEvaluationsPaginated(EvaluationStatus.OPEN, EVALUATION_PAGINATION_OFFSET, EVALUATION_PAGINATION_LIMIT);
+				//filter down to the target evaluation ids
+				for (Evaluation evaluation : results.getResults()) {
+					if (targetEvaluationIds.contains(evaluation.getId())) {
+						returnList.add(evaluation);
+					}
+				}
+			}
+			returnResults.setResults(returnList);
+			returnResults.setTotalNumberOfResults(returnList.size());
+			//filter results down to the targetEvaluationIds
+			JSONObjectAdapter evaluationsJson = returnResults.writeToJSONObject(adapterFactory.createNew());
 			return evaluationsJson.toJSONString();
 		} catch (Exception e) {
 			throw new UnknownErrorException(e.getMessage());

@@ -97,27 +97,31 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 		final Boolean showProfileForm = descriptor.containsKey(WidgetConstants.JOIN_WIDGET_SHOW_PROFILE_FORM_KEY) ? 
 				Boolean.parseBoolean(descriptor.get(WidgetConstants.JOIN_WIDGET_SHOW_PROFILE_FORM_KEY)) : 
 				false;
-		
-		synapseClient.getTeamBundle(authenticationController.getCurrentUserPrincipalId(), teamId, authenticationController.isLoggedIn(), new AsyncCallback<TeamBundle>() {
-			@Override
-			public void onSuccess(TeamBundle result) {
-				try {
-					Team team = nodeModelCreator.createJSONEntity(result.getTeamJson(), Team.class);
-					TeamMembershipStatus teamMembershipStatus = null;
-					if (result.getTeamMembershipStatusJson() != null)
-						teamMembershipStatus = nodeModelCreator.createJSONEntity(result.getTeamMembershipStatusJson(), TeamMembershipStatus.class);
-					configure(team.getId(), showProfileForm, teamMembershipStatus, null);
-				} catch (JSONObjectAdapterException e) {
-					onFailure(e);
+		boolean isLoggedIn = authenticationController.isLoggedIn();
+		if (isLoggedIn) {
+			synapseClient.getTeamBundle(authenticationController.getCurrentUserPrincipalId(), teamId, isLoggedIn, new AsyncCallback<TeamBundle>() {
+				@Override
+				public void onSuccess(TeamBundle result) {
+					try {
+						Team team = nodeModelCreator.createJSONEntity(result.getTeamJson(), Team.class);
+						TeamMembershipStatus teamMembershipStatus = null;
+						if (result.getTeamMembershipStatusJson() != null)
+							teamMembershipStatus = nodeModelCreator.createJSONEntity(result.getTeamMembershipStatusJson(), TeamMembershipStatus.class);
+						configure(team.getId(), showProfileForm, teamMembershipStatus, null);
+					} catch (JSONObjectAdapterException e) {
+						onFailure(e);
+					}
 				}
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-				if(!DisplayUtils.handleServiceException(caught, globalApplicationState.getPlaceChanger(), authenticationController.isLoggedIn(), view)) {					
-					view.showErrorMessage(caught.getMessage());
-				} 
-			}
-		});
+				@Override
+				public void onFailure(Throwable caught) {
+					if(!DisplayUtils.handleServiceException(caught, globalApplicationState.getPlaceChanger(), authenticationController.isLoggedIn(), view)) {					
+						view.showErrorMessage(caught.getMessage());
+					} 
+				}
+			});
+		} else {
+			configure(teamId, showProfileForm, null, null);
+		}
 	}
 	
 	@Override

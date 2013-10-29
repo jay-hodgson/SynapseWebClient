@@ -3,6 +3,7 @@ package org.sagebionetworks.web.client.widget.entity;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.sagebionetworks.evaluation.model.Evaluation;
 import org.sagebionetworks.evaluation.model.Submission;
@@ -64,14 +65,14 @@ public class EvaluationSubmitter implements Presenter {
 	 * @param submissionEntity set to null if an entity finder should be shown
 	 * @param evaluationIds set to null if we should query for all available evaluations
 	 */
-	public void configure(Entity submissionEntity, List<String> evaluationIds) {
+	public void configure(Entity submissionEntity, Set<String> evaluationIds) {
 		view.showLoading();
 		this.submissionEntity = submissionEntity;
 		try {
 			if (evaluationIds == null)
 				synapseClient.getAvailableEvaluations(getEvalCallback());
 			else
-				synapseClient.getEvaluations(evaluationIds, getEvalCallback());
+				synapseClient.getAvailableEvaluations(evaluationIds, getEvalCallback());
 		} catch (RestServiceException e) {
 			view.showErrorMessage(e.getMessage());
 		}

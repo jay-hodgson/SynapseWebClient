@@ -1,8 +1,10 @@
 package org.sagebionetworks.web.client.widget.entity.renderer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.sagebionetworks.evaluation.model.UserEvaluationState;
 import org.sagebionetworks.repo.model.AccessRequirement;
@@ -306,7 +308,7 @@ public class OldJoinWidget implements JoinWidgetView.Presenter, WidgetRendererPr
 	}
 	
 	public void showSubmissionDialog() {
-		List<String> evaluationIdsList = new ArrayList<String>();
+		Set<String> evaluationIdsList = new HashSet<String>();
 		for (int i = 0; i < evaluationIds.length; i++) {
 			evaluationIdsList.add(evaluationIds[i]);
 		}

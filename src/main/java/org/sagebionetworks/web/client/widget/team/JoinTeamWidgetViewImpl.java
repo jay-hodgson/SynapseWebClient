@@ -79,7 +79,7 @@ public class JoinTeamWidgetViewImpl extends FlowPanel implements JoinTeamWidgetV
 		}
 	}
 	
-	private void showAnonymousRegistrationMessage() {
+	private void showAnonymousMessage() {
 		MessageBox box = new MessageBox();
 	    box.setButtons(MessageBox.OK);
 	    box.setIcon(MessageBox.INFO);
@@ -98,12 +98,12 @@ public class JoinTeamWidgetViewImpl extends FlowPanel implements JoinTeamWidgetV
 	private void initView() {
 		if (requestUIPanel == null) {
 			
-			anonymousUserButton = DisplayUtils.createButton("Join", ButtonType.DEFAULT);
+			anonymousUserButton = DisplayUtils.createButton("Join", ButtonType.SUCCESS);
 			anonymousUserButton.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
 					//redirect to login page
-					showAnonymousRegistrationMessage();
+					showAnonymousMessage();
 				}
 			});
 			
