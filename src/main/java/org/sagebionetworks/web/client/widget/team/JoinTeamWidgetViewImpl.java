@@ -53,14 +53,14 @@ public class JoinTeamWidgetViewImpl extends FlowPanel implements JoinTeamWidgetV
 	}
 	
 	@Override
-	public void configure(boolean isLoggedIn, TeamMembershipStatus teamMembershipStatus) {
+	public void configure(boolean isLoggedIn, boolean canPublicJoin, TeamMembershipStatus teamMembershipStatus) {
 		clear();
 		initView();
 		if (isLoggedIn) {
 			if (!teamMembershipStatus.getIsMember()) {
 				//add request UI, different based on membership state
-				if (teamMembershipStatus.getCanJoin() || teamMembershipStatus.getHasOpenInvitation()) {
-					//Team admin invited you!
+				if (canPublicJoin || teamMembershipStatus.getHasOpenInvitation()) {
+					//team administrator has either directly or indirectly invited you to join
 					add(acceptInviteButton);
 				} else if (teamMembershipStatus.getHasOpenRequest()) {
 					//already requested membership
@@ -168,7 +168,8 @@ public class JoinTeamWidgetViewImpl extends FlowPanel implements JoinTeamWidgetV
 
 	@Override
 	public void showErrorMessage(String message) {
-		DisplayUtils.showErrorMessage(message);
+		clear();
+		add(new HTMLPanel(DisplayUtils.getMarkdownWidgetWarningHtml(message)));
 	}
 
 	@Override
@@ -220,13 +221,6 @@ public class JoinTeamWidgetViewImpl extends FlowPanel implements JoinTeamWidgetV
 	}
 	
 	@Override
-	public void showError(String error) {
-		clear();
-		add(new HTMLPanel(DisplayUtils.getMarkdownWidgetWarningHtml(error)));
-	}
-	
-
-	@Override
 	public void showAccessRequirement(
 			String arText,
 			final Callback touAcceptanceCallback) {
@@ -255,5 +249,6 @@ public class JoinTeamWidgetViewImpl extends FlowPanel implements JoinTeamWidgetV
         dialog.setHideOnButtonClick(true);		
 		dialog.show();		
 	}
+	
 	
 }

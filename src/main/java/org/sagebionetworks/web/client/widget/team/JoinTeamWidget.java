@@ -44,7 +44,7 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 	private JSONObjectAdapter jsonObjectAdapter;
 	private Callback teamUpdatedCallback;
 	private String message;
-	private boolean isAcceptingInvite;
+	private boolean isAcceptingInvite, canPublicJoin;
 	
 	@Inject
 	public JoinTeamWidget(JoinTeamWidgetView view, 
@@ -63,12 +63,13 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 		this.jsonObjectAdapter = jsonObjectAdapter;
 	}
 
-	public void configure(String teamId, boolean showUserProfileForm, TeamMembershipStatus teamMembershipStatus, Callback teamUpdatedCallback) {
+	public void configure(String teamId, boolean canPublicJoin, boolean showUserProfileForm, TeamMembershipStatus teamMembershipStatus, Callback teamUpdatedCallback) {
 		//set team id
 		this.teamId = teamId;
+		this.canPublicJoin = canPublicJoin;
 		this.showUserProfileForm = showUserProfileForm;
 		this.teamUpdatedCallback = teamUpdatedCallback;
-		view.configure(authenticationController.isLoggedIn(), teamMembershipStatus);
+		view.configure(authenticationController.isLoggedIn(), canPublicJoin, teamMembershipStatus);
 	};
 //	
 //	@Override
@@ -111,7 +112,7 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 						TeamMembershipStatus teamMembershipStatus = null;
 						if (result.getTeamMembershipStatusJson() != null)
 							teamMembershipStatus = nodeModelCreator.createJSONEntity(result.getTeamMembershipStatusJson(), TeamMembershipStatus.class);
-						configure(team.getId(), showUserProfileForm, teamMembershipStatus, null);
+						configure(team.getId(), team.getCanPublicJoin(), showUserProfileForm, teamMembershipStatus, null);
 					} catch (JSONObjectAdapterException e) {
 						onFailure(e);
 					}
@@ -124,7 +125,7 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 				}
 			});
 		} else {
-			configure(teamId, showUserProfileForm, null, null);
+			configure(teamId, canPublicJoin, showUserProfileForm, null, null);
 		}
 	}
 	
@@ -200,7 +201,7 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				view.showError(DisplayConstants.JOIN_TEAM_ERROR + caught.getMessage());
+				view.showErrorMessage(DisplayConstants.JOIN_TEAM_ERROR + caught.getMessage());
 			}
 		});
 	}
@@ -209,7 +210,7 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 		final CallbackP<Throwable> onFailure = new CallbackP<Throwable>() {
 			@Override
 			public void invoke(Throwable t) {
-				view.showError(DisplayConstants.JOIN_TEAM_ERROR + t.getMessage());
+				view.showErrorMessage(DisplayConstants.JOIN_TEAM_ERROR + t.getMessage());
 			}
 		};
 		
