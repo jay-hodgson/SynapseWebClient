@@ -127,11 +127,9 @@ public class WidgetRegistrarImpl implements WidgetRegistrar {
 			presenter = ginInjector.getShinySiteRenderer();
 		} else if (contentTypeKey.equals(WidgetConstants.USERBADGE_CONTENT_TYPE)) {
 			presenter = ginInjector.getUserBadgeWidget();
-		} else if (contentTypeKey.equals(WidgetConstants.OLD_JOIN_EVALUATION_CONTENT_TYPE)) {
-			presenter = ginInjector.getOldJoinWidget();
 		} else if (contentTypeKey.equals(WidgetConstants.JOIN_TEAM_CONTENT_TYPE)) {
 			presenter = ginInjector.getJoinTeamWidget();
-		} else if (contentTypeKey.equals(WidgetConstants.SUBMIT_TO_EVALUATION_CONTENT_TYPE)) {
+		} else if (contentTypeKey.equals(WidgetConstants.SUBMIT_TO_EVALUATION_CONTENT_TYPE) || contentTypeKey.equals(WidgetConstants.OLD_JOIN_EVALUATION_CONTENT_TYPE)) {
 			presenter = ginInjector.getEvaluationSubmissionWidget();
 		} else if (contentTypeKey.equals(WidgetConstants.BUTTON_LINK_CONTENT_TYPE)) {
 			presenter = ginInjector.getButtonLinkWidget();

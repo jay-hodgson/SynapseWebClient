@@ -52,7 +52,6 @@ import org.sagebionetworks.web.client.widget.entity.renderer.BookmarkWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.ButtonLinkWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.EntityListWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.ImageWidget;
-import org.sagebionetworks.web.client.widget.entity.renderer.OldJoinWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.OldImageWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.ReferenceWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.ShinySiteWidget;
@@ -163,7 +162,6 @@ public interface PortalGinInjector extends Ginjector {
 	public WikiFilesPreviewWidget getWikiFilesPreviewRenderer();
 	public EntityListWidget getEntityListRenderer();
 	public ShinySiteWidget getShinySiteRenderer();
-	public OldJoinWidget getOldJoinWidget();
 	public JoinTeamWidget getJoinTeamWidget();
 	public SubmitToEvaluationWidget getEvaluationSubmissionWidget();
 	
