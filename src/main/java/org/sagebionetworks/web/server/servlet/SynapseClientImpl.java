@@ -934,7 +934,7 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 		try {
 			RestrictableObjectDescriptor subjectId = new RestrictableObjectDescriptor();
 			subjectId.setId(teamId);
-//			subjectId.setType(RestrictableObjectType.TEAM);
+			subjectId.setType(RestrictableObjectType.TEAM);
 			
 			VariableContentPaginatedResults<AccessRequirement> accessRequirements = 
 				synapseClient.getUnmetAccessRequirements(subjectId);

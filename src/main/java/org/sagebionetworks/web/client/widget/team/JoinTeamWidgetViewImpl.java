@@ -56,22 +56,28 @@ public class JoinTeamWidgetViewImpl extends FlowPanel implements JoinTeamWidgetV
 	public void configure(boolean isLoggedIn, boolean canPublicJoin, TeamMembershipStatus teamMembershipStatus) {
 		clear();
 		initView();
+		
 		if (isLoggedIn) {
-			if (!teamMembershipStatus.getIsMember()) {
-				//add request UI, different based on membership state
-				if (canPublicJoin || teamMembershipStatus.getHasOpenInvitation()) {
-					//team administrator has either directly or indirectly invited you to join
-					add(acceptInviteButton);
-				} else if (teamMembershipStatus.getHasOpenRequest()) {
-					//already requested membership
-					add(requestedMessage);
-				} else {
-					//no affiliation, yet...
-					//full expandable UI.  ask for message
-					add(requestButton);
-					add(requestUIPanel);
-					requestUIPanel.setVisible(false);
-				}
+			//(note:  in all cases, clicking UI will check for unmet ToU)
+			if (teamMembershipStatus.getIsMember()) {
+				// don't show anything?
+			} else if (teamMembershipStatus.getCanJoin()) { // not in team but can join with a single request
+				// show join button; clicking Join joins the team
+				add(acceptInviteButton);
+			} else if (teamMembershipStatus.getHasOpenRequest()) {
+				// display a message saying "your membership request is pending review by team administration"
+				add(requestedMessage);
+			} else if (teamMembershipStatus.getIsMembershipApprovalRequired()) {
+				// show request UI 
+				add(requestButton);
+				add(requestUIPanel);
+				requestUIPanel.setVisible(false);
+			} else if (teamMembershipStatus.getHasUnmetAccessRequirement()) {
+			    // show Join; clicking shows ToU
+				add(acceptInviteButton);
+			} else {
+			    // illegal state
+				showErrorMessage("Unable to determine state");
 			}
 		}
 		else {
@@ -235,9 +241,9 @@ public class JoinTeamWidgetViewImpl extends FlowPanel implements JoinTeamWidgetV
         panel.addStyleName("margin-top-left-10");
         panel.setSize("605px", "450px");
         dialog.add(panel);
- 		dialog.setHeading("Terms of Use");
+ 		dialog.setHeading("Agreement");
 		// agree to TOU, cancel
-        dialog.okText = DisplayConstants.BUTTON_TEXT_ACCEPT_TERMS_OF_USE;
+        dialog.okText = DisplayConstants.ACCEPT;
         dialog.setButtons(Dialog.OKCANCEL);
         com.extjs.gxt.ui.client.widget.button.Button touButton = dialog.getButtonById(Dialog.OK);
         touButton.addSelectionListener(new SelectionListener<ButtonEvent>(){

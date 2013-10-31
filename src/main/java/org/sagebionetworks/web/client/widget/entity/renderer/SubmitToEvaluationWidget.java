@@ -13,6 +13,7 @@ import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.place.LoginPlace;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.transform.NodeModelCreator;
+import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.widget.WidgetRendererPresenter;
 import org.sagebionetworks.web.client.widget.entity.EvaluationSubmitter;
 import org.sagebionetworks.web.client.widget.entity.registration.WidgetConstants;
@@ -56,7 +57,7 @@ public class SubmitToEvaluationWidget implements SubmitToEvaluationWidgetView.Pr
 	}
 	
 	@Override
-	public void configure(final WikiPageKey wikiKey, final Map<String, String> widgetDescriptor) {
+	public void configure(final WikiPageKey wikiKey, final Map<String, String> widgetDescriptor, Callback widgetRefreshRequired) {
 		this.wikiKey = wikiKey;
 		this.descriptor = widgetDescriptor;
 		

@@ -6,7 +6,6 @@ import java.util.Map;
 import org.sagebionetworks.repo.model.AccessRequirement;
 import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.repo.model.TeamMembershipStatus;
-import org.sagebionetworks.repo.model.TermsOfUseAccessRequirement;
 import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.repo.model.UserSessionData;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
@@ -45,6 +44,7 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 	private Callback teamUpdatedCallback;
 	private String message;
 	private boolean isAcceptingInvite, canPublicJoin;
+	private Callback widgetRefreshRequired;
 	
 	@Inject
 	public JoinTeamWidget(JoinTeamWidgetView view, 
@@ -90,7 +90,8 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 //	}
 	
 	@Override
-	public void configure(WikiPageKey wikiKey, Map<String, String> descriptor) {
+	public void configure(WikiPageKey wikiKey, Map<String, String> descriptor, Callback widgetRefreshRequired) {
+		this.widgetRefreshRequired = widgetRefreshRequired;
 		this.teamId = null;
 		if (descriptor.containsKey(WidgetConstants.JOIN_WIDGET_TEAM_ID_KEY)) 
 			this.teamId = descriptor.get(WidgetConstants.JOIN_WIDGET_TEAM_ID_KEY);
@@ -175,10 +176,10 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 			public void onSuccess(String result) {
 				//are there unmet access restrictions?
 				try{
-					PaginatedResults<TermsOfUseAccessRequirement> ar = nodeModelCreator.createPaginatedResults(result, TermsOfUseAccessRequirement.class);
+					PaginatedResults<AccessRequirement> ar = nodeModelCreator.createPaginatedResults(result, AccessRequirement.class);
 					if (ar.getTotalNumberOfResults() > 0) {
 						//there are unmet access requirements.  user must accept all before joining the challenge
-						List<TermsOfUseAccessRequirement> unmetRequirements = ar.getResults();
+						List<AccessRequirement> unmetRequirements = ar.getResults();
 						final AccessRequirement firstUnmetAccessRequirement = unmetRequirements.get(0);
 						String text = GovernanceServiceHelper.getAccessRequirementText(firstUnmetAccessRequirement);
 						Callback termsOfUseCallback = new Callback() {
@@ -240,6 +241,8 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 				refresh();
 				if (teamUpdatedCallback != null)
 					teamUpdatedCallback.invoke();
+				if (widgetRefreshRequired != null)
+					widgetRefreshRequired.invoke();
 				
 			}
 			@Override
