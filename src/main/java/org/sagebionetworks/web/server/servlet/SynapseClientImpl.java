@@ -1325,6 +1325,7 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 		try {
 			Team t = new Team();
 			t.setName(teamName);
+			t.setCanPublicJoin(false);
 			t = synapseClient.createTeam(t);
 			return t.getId();
 		} catch (SynapseException e) {

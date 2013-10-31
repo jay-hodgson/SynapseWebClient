@@ -67,7 +67,7 @@ public class JoinTeamWidgetViewImpl extends FlowPanel implements JoinTeamWidgetV
 			} else if (teamMembershipStatus.getHasOpenRequest()) {
 				// display a message saying "your membership request is pending review by team administration"
 				add(requestedMessage);
-			} else if (teamMembershipStatus.getIsMembershipApprovalRequired()) {
+			} else if (teamMembershipStatus.getMembershipApprovalRequired()) {
 				// show request UI 
 				add(requestButton);
 				add(requestUIPanel);
