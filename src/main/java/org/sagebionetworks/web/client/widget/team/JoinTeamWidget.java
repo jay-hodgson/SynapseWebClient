@@ -11,7 +11,6 @@ import org.sagebionetworks.repo.model.UserSessionData;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.web.client.DisplayConstants;
-import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.place.LoginPlace;
@@ -120,9 +119,7 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 				}
 				@Override
 				public void onFailure(Throwable caught) {
-					if(!DisplayUtils.handleServiceException(caught, globalApplicationState.getPlaceChanger(), authenticationController.isLoggedIn(), view)) {					
-						view.showErrorMessage(caught.getMessage());
-					} 
+					view.showErrorMessage(caught.getMessage());
 				}
 			});
 		} else {
@@ -247,9 +244,7 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				if(!DisplayUtils.handleServiceException(caught, globalApplicationState.getPlaceChanger(), authenticationController.isLoggedIn(), view)) {					
-					view.showErrorMessage(caught.getMessage());
-				} 
+				view.showErrorMessage(caught.getMessage());
 			}
 		});
 	}
