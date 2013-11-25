@@ -28,6 +28,7 @@ import org.sagebionetworks.web.shared.exceptions.UnknownErrorException;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
@@ -44,7 +45,7 @@ public class WikiSubpagesWidget implements WikiSubpagesView.Presenter, WidgetRen
 	private String ownerObjectName;
 	private Synapse ownerObjectLink;
 	private HTMLPanel markdownContainer;
-	private ResizeLayoutPanel parentContainer;
+	private FlowPanel parentContainer;
 	
 	@Inject
 	public WikiSubpagesWidget(WikiSubpagesView view, SynapseClientAsync synapseClient, NodeModelCreator nodeModelCreator, AdapterFactory adapterFactory) {
@@ -60,7 +61,7 @@ public class WikiSubpagesWidget implements WikiSubpagesView.Presenter, WidgetRen
 		configure(wikiKey, widgetDescriptor, widgetRefreshRequired, null, null);
 	}
 
-	public void configure(final WikiPageKey wikiKey, Map<String, String> widgetDescriptor, Callback widgetRefreshRequired, ResizeLayoutPanel parentContainer, HTMLPanel markdownContainer) {
+	public void configure(final WikiPageKey wikiKey, Map<String, String> widgetDescriptor, Callback widgetRefreshRequired, FlowPanel parentContainer, HTMLPanel markdownContainer) {
 		this.parentContainer = parentContainer;
 		this.markdownContainer = markdownContainer;
 		this.wikiKey = wikiKey;
