@@ -1,12 +1,10 @@
 package org.sagebionetworks.web.client.widget.entity;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.sagebionetworks.repo.model.v2.wiki.V2WikiPage;
 import org.sagebionetworks.repo.model.wiki.WikiPage;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.web.client.ClientProperties;
@@ -31,14 +29,23 @@ import org.sagebionetworks.web.client.widget.entity.renderer.WikiSubpagesWidget;
 import org.sagebionetworks.web.shared.WebConstants;
 import org.sagebionetworks.web.shared.WikiPageKey;
 
-
+import com.extjs.gxt.ui.client.event.BoxComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.dom.client.StyleInjector;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 /**
@@ -139,14 +146,24 @@ public class MarkdownWidget extends LayoutContainer implements SynapseView {
 					if (result != null) {
 						content += result;
 					}
+				    
 					ResizeLayoutPanel wikiSubpagesPanel = new ResizeLayoutPanel();
-					add(wikiSubpagesPanel);
-
-					HTMLPanel panel = new HTMLPanel(content);
-					add(panel);
-					layout();
+					wikiSubpagesPanel.addStyleName("well well-small margin-10");
+					final HTMLPanel panel = new HTMLPanel(content);
 					synapseJSNIUtils.highlightCodeBlocks();
-					DisplayUtils.loadTableSorters(panel, synapseJSNIUtils);
+					final ResizeLayoutPanel horizontalSplitPanel = new ResizeLayoutPanel();
+					SplitLayoutPanel horizontalSplit = new SplitLayoutPanel();
+					horizontalSplitPanel.add(horizontalSplit);
+					StyleInjector.inject(".gwt-SplitLayoutPanel .gwt-SplitLayoutPanel-HDragger "
+				                           + "{ width: 5px !important; background: #F5F5F5; cursor: col-resize}");
+					horizontalSplit.addStyleName("col-md-12");
+					//set the east and center widget
+					horizontalSplit.addEast(wikiSubpagesPanel, 0);
+					horizontalSplit.add(panel);
+					
+				    add(horizontalSplitPanel);
+				    
+				    DisplayUtils.loadTableSorters(panel, synapseJSNIUtils);
 					MarkdownWidget.loadMath(panel, synapseJSNIUtils, isPreview, resourceLoader);
 					Callback widgetRefreshRequired = new Callback() {
 						@Override
@@ -156,14 +173,31 @@ public class MarkdownWidget extends LayoutContainer implements SynapseView {
 					};
 					//asynchronously load the widgets
 					Set<String> contentTypes = loadWidgets(panel, wikiKey, isWiki, widgetRegistrar, synapseClient, iconsImageBundle, isPreview, widgetRefreshRequired);
-
+					
 					//also add the wiki subpages widget, unless explicitly instructed not to in the markdown
 					if (!contentTypes.contains(WidgetConstants.NO_AUTO_WIKI_SUBPAGES)) {
 						WikiSubpagesWidget widget = ginInjector.getWikiSubpagesRenderer();
 						//subpages widget is special in that it applies styles to the markdown html panel (if there are subpages)
-						widget.configure(wikiKey, new HashMap<String, String>(), widgetRefreshRequired, wikiSubpagesPanel, panel);
+						widget.configure(wikiKey, new HashMap<String, String>(), widgetRefreshRequired, wikiSubpagesPanel, horizontalSplitPanel);
 						wikiSubpagesPanel.add(widget.asWidget());
 					}
+
+					//none of this works, I think because they rely on bottom up (from each of the injected widgets) resize events, which are never fired
+					addHandler(new ResizeHandler() {
+						@Override
+						public void onResize(ResizeEvent event) {
+							int clientHeight = getHeight();
+							horizontalSplitPanel.setHeight(clientHeight+"px");
+						}
+					}, ResizeEvent.getType());
+					addListener(Events.Resize, new Listener<BoxComponentEvent>() {
+						public void handleEvent(BoxComponentEvent be) {
+							int clientHeight = getHeight();
+							horizontalSplitPanel.setHeight(clientHeight+"px");
+						};
+					});
+					
+					layout(true);
 				} catch (JSONObjectAdapterException e) {
 					onFailure(e);
 				}
@@ -177,6 +211,11 @@ public class MarkdownWidget extends LayoutContainer implements SynapseView {
 		});
 	}
 	
+	class ResizableWidget extends ResizeComposite {
+		  public ResizableWidget(Widget widget) {
+		    initWidget(widget);
+		  }
+		}
 	
 	/**
 	 * Shared method for loading the widgets into the html returned by the service (used to render the entity page, and to generate a preview of the description)

@@ -15,8 +15,8 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -31,17 +31,18 @@ public class WikiSubpagesViewImpl extends FlowPanel implements WikiSubpagesView 
 	}
 	
 	@Override
-	public void configure(TocItem root, final ResizeLayoutPanel parentContainer, HTMLPanel markdownContainer) {
+	public void configure(TocItem root, final ResizeLayoutPanel parentContainer, ResizeLayoutPanel markdownContainer) {
 		clear();
 		//this widget shows nothing if it doesn't have any pages!
 		TocItem mainPage = (TocItem) root.getChild(0);
 		if (mainPage.getChildCount() == 0)
 			return;
 		addStyleName("margin-10");
-		if (parentContainer != null)
-			parentContainer.addStyleName("col-xs-12 col-md-3 col-md-push-9 well well-small display-table");	
-		if (markdownContainer != null)
-			markdownContainer.addStyleName("col-md-9 col-md-pull-3");	
+		
+		if (markdownContainer != null && parentContainer != null) {
+			SplitLayoutPanel splitPanel  = ((SplitLayoutPanel)markdownContainer.getWidget());
+			splitPanel.setWidgetSize(parentContainer, 200);
+		}
 		
 		//only show the tree if the root has children
 		if (mainPage.getChildCount() > 0) {

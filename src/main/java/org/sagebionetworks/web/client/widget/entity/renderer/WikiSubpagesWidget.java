@@ -12,7 +12,6 @@ import org.sagebionetworks.repo.model.ObjectType;
 import org.sagebionetworks.repo.model.Reference;
 import org.sagebionetworks.repo.model.request.ReferenceList;
 import org.sagebionetworks.repo.model.v2.wiki.V2WikiHeader;
-import org.sagebionetworks.repo.model.wiki.WikiHeader;
 import org.sagebionetworks.schema.adapter.AdapterFactory;
 import org.sagebionetworks.schema.adapter.JSONEntity;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
@@ -29,9 +28,8 @@ import org.sagebionetworks.web.shared.exceptions.UnknownErrorException;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -44,7 +42,7 @@ public class WikiSubpagesWidget implements WikiSubpagesView.Presenter, WidgetRen
 	private WikiPageKey wikiKey; 
 	private String ownerObjectName;
 	private Synapse ownerObjectLink;
-	private HTMLPanel markdownContainer;
+	private ResizeLayoutPanel markdownContainer;
 	private ResizeLayoutPanel parentContainer;
 	
 	@Inject
@@ -61,7 +59,7 @@ public class WikiSubpagesWidget implements WikiSubpagesView.Presenter, WidgetRen
 		configure(wikiKey, widgetDescriptor, widgetRefreshRequired, null, null);
 	}
 
-	public void configure(final WikiPageKey wikiKey, Map<String, String> widgetDescriptor, Callback widgetRefreshRequired, ResizeLayoutPanel parentContainer, HTMLPanel markdownContainer) {
+	public void configure(final WikiPageKey wikiKey, Map<String, String> widgetDescriptor, Callback widgetRefreshRequired, ResizeLayoutPanel parentContainer, ResizeLayoutPanel markdownContainer) {
 		this.parentContainer = parentContainer;
 		this.markdownContainer = markdownContainer;
 		this.wikiKey = wikiKey;
