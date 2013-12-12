@@ -33,6 +33,7 @@ import com.extjs.gxt.ui.client.event.BoxComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.ScrollContainer;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -150,6 +151,10 @@ public class MarkdownWidget extends LayoutContainer implements SynapseView {
 					ResizeLayoutPanel wikiSubpagesPanel = new ResizeLayoutPanel();
 					wikiSubpagesPanel.addStyleName("well well-small margin-10");
 					final HTMLPanel panel = new HTMLPanel(content);
+					
+					final LayoutContainer container = new LayoutContainer();
+					container.add(panel);
+					
 					synapseJSNIUtils.highlightCodeBlocks();
 					final ResizeLayoutPanel horizontalSplitPanel = new ResizeLayoutPanel();
 					SplitLayoutPanel horizontalSplit = new SplitLayoutPanel();
@@ -159,7 +164,7 @@ public class MarkdownWidget extends LayoutContainer implements SynapseView {
 					horizontalSplit.addStyleName("col-md-12");
 					//set the east and center widget
 					horizontalSplit.addEast(wikiSubpagesPanel, 0);
-					horizontalSplit.add(panel);
+					horizontalSplit.add(container);
 					
 				    add(horizontalSplitPanel);
 				    
@@ -182,22 +187,9 @@ public class MarkdownWidget extends LayoutContainer implements SynapseView {
 						wikiSubpagesPanel.add(widget.asWidget());
 					}
 
-					//none of this works, I think because they rely on bottom up (from each of the injected widgets) resize events, which are never fired
-					addHandler(new ResizeHandler() {
-						@Override
-						public void onResize(ResizeEvent event) {
-							int clientHeight = getHeight();
-							horizontalSplitPanel.setHeight(clientHeight+"px");
-						}
-					}, ResizeEvent.getType());
-					addListener(Events.Resize, new Listener<BoxComponentEvent>() {
-						public void handleEvent(BoxComponentEvent be) {
-							int clientHeight = getHeight();
-							horizontalSplitPanel.setHeight(clientHeight+"px");
-						};
-					});
-					
 					layout(true);
+					int htmlPanelContainerHeight = container.getHeight();
+					horizontalSplitPanel.setHeight(htmlPanelContainerHeight+"px");
 				} catch (JSONObjectAdapterException e) {
 					onFailure(e);
 				}
