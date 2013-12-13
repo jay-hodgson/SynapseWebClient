@@ -56,7 +56,13 @@ public class MessagesViewImpl extends Composite implements MessagesView {
 	@UiField
 	SimplePanel foldersContainer;
 	
-	private Button deleteMessage;
+	//available commands
+	private Button composeNewMessageButton, deleteButton, markAsReadButton, markAsUnreadButton;
+	//single message commands
+	private Button replyToButton, forwardButton;
+	//message list commands
+	private Button refreshButton;
+	
 	private Presenter presenter;
 	private SageImageBundle sageImageBundle;
 	private Header headerWidget;
