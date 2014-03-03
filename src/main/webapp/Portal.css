@@ -1082,6 +1082,10 @@ ol.lowerroman {
 	font-size: 0.8em;
 }
 
+.smallestText {
+	font-size: 0.4em;
+}
+
 .biggerText {
 	font-size: 1.2em;
 }
