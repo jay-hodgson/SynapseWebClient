@@ -36,6 +36,14 @@ public class UnorderedListPanel extends ComplexPanel {
 		li.setClassName(styleName);
 	}
 	
+	public void setStyle(Widget w, String styleName) {
+		if (w != null) {
+			Element li = DOM.getParent(w.getElement());
+			if (li != null)
+				li.setClassName(styleName);
+		}
+	}
+	
 	private LIElement addLi(Widget w) {
 		LIElement li = Document.get().createLIElement();		
 		ul.appendChild(li);

@@ -6,7 +6,6 @@ import org.sagebionetworks.repo.model.EntityHeader;
 import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.IconsImageBundle;
-import org.sagebionetworks.web.client.PortalGinInjector;
 import org.sagebionetworks.web.client.SageImageBundle;
 import org.sagebionetworks.web.client.events.EntitySelectedEvent;
 import org.sagebionetworks.web.client.events.EntitySelectedHandler;
@@ -15,14 +14,14 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.TabPanelEvent;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class MyEntitiesBrowserViewImpl extends LayoutContainer implements MyEntitiesBrowserView {
+public class MyEntitiesBrowserViewImpl extends FlowPanel implements MyEntitiesBrowserView {
 
 	private static final int HEIGHT_PX = 250;
 	private static final int WIDTH_PX = 459;
@@ -34,24 +33,23 @@ public class MyEntitiesBrowserViewImpl extends LayoutContainer implements MyEnti
 	private EntityTreeBrowser favoritesTreeBrowser;
 	private EntitySelectedHandler mySelectedHandler;
 	private EntitySelectedHandler favoritesSelectedHandler;
-	private PortalGinInjector ginInjector;
 	
-	private TabPanel panel;
-			
 	@Inject
 	public MyEntitiesBrowserViewImpl(SageImageBundle sageImageBundle,
-			IconsImageBundle iconsImageBundle, PortalGinInjector ginInjector) {
+			IconsImageBundle iconsImageBundle, 
+			EntityTreeBrowser myTreeBrowser, 
+			EntityTreeBrowser favoritesTreeBrowser) {
 		this.sageImageBundle = sageImageBundle;
 		this.iconsImageBundle = iconsImageBundle;
-		this.myTreeBrowser = ginInjector.getEntityTreeBrowser();		
-		this.favoritesTreeBrowser = ginInjector.getEntityTreeBrowser();
-		this.ginInjector = ginInjector;
+		this.myTreeBrowser = myTreeBrowser;		
+		this.favoritesTreeBrowser = favoritesTreeBrowser;
+		
+		init();
 	}
 	
-	@Override
-	protected void onRender(com.google.gwt.user.client.Element parent, int index) {
-		super.onRender(parent, index);		
-		panel = new TabPanel();
+	protected void init() {
+		clear();
+		TabPanel panel = new TabPanel();
 		panel.setPlain(true);
 		panel.setHeight(HEIGHT_PX);
 		panel.setAutoWidth(true);
@@ -124,10 +122,6 @@ public class MyEntitiesBrowserViewImpl extends LayoutContainer implements MyEnti
 	@Override
 	public void showInfo(String title, String message) {
 		DisplayUtils.showInfo(title, message);
-	}
-
-	@Override
-	public void clear() {
 	}
 
 	@Override

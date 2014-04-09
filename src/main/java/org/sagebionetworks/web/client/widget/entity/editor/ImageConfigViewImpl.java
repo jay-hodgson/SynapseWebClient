@@ -22,7 +22,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.TabPanelEvent;
-import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
@@ -37,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -114,18 +112,15 @@ public class ImageConfigViewImpl extends LayoutContainer implements ImageConfigV
 	}
 	
 	private FormPanel getSynapseEntityPanel() {
-		final FormPanel panel = new FormPanel();
-		panel.setHeaderVisible(false);
-		panel.setFrame(false);
-		panel.setBorders(false);
-		panel.setShadow(false);
-		panel.setLabelAlign(LabelAlign.RIGHT);
-		panel.setBodyBorder(false);
-		panel.setLabelWidth(88);
-		FormData basicFormData = new FormData();
-		basicFormData.setWidth(330);
-		Margins margins = new Margins(10, 10, 0, 0);
-		basicFormData.setMargins(margins);
+		FormPanel form = new FormPanel();
+		form.setHeaderVisible(false);
+		form.setFrame(false);
+		form.setBorders(false);
+		form.setShadow(false);
+		form.setLabelAlign(LabelAlign.RIGHT);
+		form.setBodyStyleName("form-background");
+		form.setLabelWidth(88);
+		form.setFieldWidth(330);
 		
 		entityField = new TextField<String>(); 
 		entityField.setFieldLabel(DisplayConstants.IMAGE_FILE_ENTITY);
@@ -133,7 +128,7 @@ public class ImageConfigViewImpl extends LayoutContainer implements ImageConfigV
 		entityField.setRegex(WebConstants.VALID_ENTITY_ID_REGEX);
 		entityField.getMessages().setRegexText(DisplayConstants.INVALID_SYNAPSE_ID_MESSAGE);
 		
-		panel.add(entityField, basicFormData);
+		form.add(entityField);
 		Button findEntitiesButton = new Button(DisplayConstants.FIND_IMAGE_ENTITY, AbstractImagePrototype.create(iconsImageBundle.magnify16()));
 		findEntitiesButton.addSelectionListener(new SelectionListener<ButtonEvent>() {			
 			@Override
@@ -155,8 +150,8 @@ public class ImageConfigViewImpl extends LayoutContainer implements ImageConfigV
 		});
 		AdapterField buttonField = new AdapterField(findEntitiesButton);
 		buttonField.setLabelSeparator("");
-		panel.add(buttonField, basicFormData);
-		return panel;
+		form.add(buttonField);
+		return form;
 	}
 	
 	@Override

@@ -9,7 +9,6 @@ import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.IconsImageBundle;
 import org.sagebionetworks.web.client.SageImageBundle;
-import org.sagebionetworks.web.client.events.EntitySelectedHandler;
 import org.sagebionetworks.web.client.widget.entity.EntitySearchBox;
 import org.sagebionetworks.web.client.widget.entity.browse.MyEntitiesBrowser.SelectedHandler;
 
@@ -36,12 +35,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class EntityFinderViewImpl extends LayoutContainer implements EntityFinderView {
+public class EntityFinderViewImpl extends FlowPanel implements EntityFinderView {
 	
 	private static final int HEIGHT_PX = 500;
 	private static final int HEIGHT_BOTTOM_RIGHT_PX = 48;
@@ -88,11 +88,6 @@ public class EntityFinderViewImpl extends LayoutContainer implements EntityFinde
 		selectedRef = new Reference();
 	}
 	
-	@Override
-	protected void onRender(com.google.gwt.user.client.Element parent, int index) {
-		super.onRender(parent, index);		
-	}
-		
 	@Override
 	public Widget asWidget() {
 		if(container == null) {
@@ -163,10 +158,6 @@ public class EntityFinderViewImpl extends LayoutContainer implements EntityFinde
 	@Override
 	public void showInfo(String title, String message) {
 		DisplayUtils.showInfo(title, message);
-	}
-
-	@Override
-	public void clear() {
 	}
 
 	/*

@@ -18,32 +18,23 @@ import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.data.ModelKeyProvider;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class EntityTreeBrowserViewImpl extends LayoutContainer implements EntityTreeBrowserView {
+public class EntityTreeBrowserViewImpl extends FlowPanel implements EntityTreeBrowserView {
 
 	private static final String PLACEHOLDER_ID = "-1";
 	private static final String PLACEHOLDER_TYPE = "-1";
@@ -53,20 +44,18 @@ public class EntityTreeBrowserViewImpl extends LayoutContainer implements Entity
 	private IconsImageBundle iconsImageBundle;
 		
 	private TreeLoader<EntityTreeModel> loader;  
-	private TreePanel<EntityTreeModel> tree;  
+	  
 	private ContentPanel cp;
 	private TreeStore<EntityTreeModel> store;
 	private HashMap<String, ImageResource> typeToIcon = new HashMap<String, ImageResource>();
 	private boolean makeLinks = true;
 	private Integer height = null; 
 	
-	@Override
-	protected void onRender(com.google.gwt.user.client.Element parent, int index) {
-		super.onRender(parent, index);		
-		
+	protected void init() {
+		clear();
 		if(store == null) createStore();
 		
-	    tree = new TreePanel<EntityTreeModel>(store);  
+		TreePanel<EntityTreeModel> tree = new TreePanel<EntityTreeModel>(store);  
 	    tree.setStateful(true);  
 	    tree.setDisplayProperty(EntityTreeModel.KEY_LINK); 
 	    tree.setBorders(false);
@@ -108,7 +97,7 @@ public class EntityTreeBrowserViewImpl extends LayoutContainer implements Entity
 	    determineHeight();	    
 	    cp.setAutoWidth(true);
 	    cp.setBorders(false);
-	    add(cp);  		
+	    add(cp);
 	};
 		
 	private void determineHeight() {
@@ -117,7 +106,7 @@ public class EntityTreeBrowserViewImpl extends LayoutContainer implements Entity
 				cp.setAutoHeight(true);
 				cp.setScrollMode(Scroll.NONE);
 			} else {
-				if(isRendered()) {
+				if(cp.isRendered()) {
 					cp.setAutoHeight(false);
 					cp.setHeight(height);
 					cp.setScrollMode(Scroll.AUTO);
@@ -131,7 +120,7 @@ public class EntityTreeBrowserViewImpl extends LayoutContainer implements Entity
 		this.sageImageBundle = sageImageBundle;
 		this.iconsImageBundle = iconsImageBundle;
 
-		this.setLayout(new FitLayout());
+		init();
 	}
 
 	@Override
@@ -156,10 +145,6 @@ public class EntityTreeBrowserViewImpl extends LayoutContainer implements Entity
 	@Override
 	public void showInfo(String title, String message) {
 		DisplayUtils.showInfo(title, message);
-	}
-
-	@Override
-	public void clear() {
 	}
 
 	@Override
