@@ -101,7 +101,7 @@ public class WikiHistoryWidget implements WikiHistoryWidgetView.Presenter,
 
 						@Override
 						public void onFailure(Throwable caught) {
-							view.showErrorMessage(DisplayConstants.ERROR_LOADING_WIKI_HISTORY_WIDGET_FAILED+caught.getMessage());
+							view.showErrorMessage(DisplayConstants.ERROR_LOADING_WIKI_HISTORY_WIDGET_FAILED+" \n"+caught.getMessage(), caught);
 						}
 						@Override
 						public void onSuccess(EntityWrapper result) {

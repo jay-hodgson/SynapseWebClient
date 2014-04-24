@@ -9,7 +9,9 @@ import java.util.List;
 import org.sagebionetworks.repo.model.v2.wiki.V2WikiHistorySnapshot;
 import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.DisplayUtils;
+import org.sagebionetworks.web.client.JiraClientAsync;
 import org.sagebionetworks.web.client.PortalGinInjector;
+import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.widget.entity.WikiHistoryWidget.ActionHandler;
 import org.sagebionetworks.web.client.widget.user.UserBadge;
 import org.sagebionetworks.web.shared.WebConstants;
@@ -68,9 +70,14 @@ public class WikiHistoryWidgetViewImpl extends LayoutContainer implements WikiHi
 	private int offset;
 	private int resultSize;
 	private boolean hasReachedEndOfHistory;
-
+	
+	AuthenticationController authenticationController;
+	JiraURLHelper jiraURLHelper;
+	
 	@Inject
-	public WikiHistoryWidgetViewImpl() {
+	public WikiHistoryWidgetViewImpl(AuthenticationController authenticationController, JiraURLHelper jiraURLHelper) {
+		this.authenticationController = authenticationController;
+		this.jiraURLHelper = jiraURLHelper;
 	}
 	
 	private static class HistoryEntry {
@@ -328,6 +335,11 @@ public class WikiHistoryWidgetViewImpl extends LayoutContainer implements WikiHi
 		inlineErrorMessagePanel = new HTMLPanel(builder.toSafeHtml());
 		add(inlineErrorMessagePanel);
 		layout(true);
+	}
+	
+	@Override
+	public void showErrorMessage(String friendlyErrorMessage, Throwable t) {
+		DisplayUtils.showErrorMessage(t, jiraURLHelper, authenticationController.isLoggedIn(), friendlyErrorMessage);
 	}
 
 	@Override

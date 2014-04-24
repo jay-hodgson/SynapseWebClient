@@ -716,7 +716,10 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 	public EntityWrapper getUserGroupHeadersById(List<String> ids) throws RestServiceException {
 		try {
 			org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
-			UserGroupHeaderResponsePage response = synapseClient.getUserGroupHeadersByIds(ids);
+			List<String> invalidIds = new ArrayList<String>();
+			invalidIds.add("invalidId1");
+			invalidIds.add("invalidId2");
+			UserGroupHeaderResponsePage response = synapseClient.getUserGroupHeadersByIds(invalidIds);
 			JSONObjectAdapter responseJSON = response
 					.writeToJSONObject(adapterFactory.createNew());
 			return new EntityWrapper(responseJSON.toJSONString(), responseJSON.getClass().getName());
