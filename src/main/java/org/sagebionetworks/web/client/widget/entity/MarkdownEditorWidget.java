@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -55,7 +56,7 @@ import com.google.inject.Inject;
  * @author Jay
  *
  */
-public class MarkdownEditorWidget extends LayoutContainer {
+public class MarkdownEditorWidget extends FlowPanel {
 	
 	private SynapseClientAsync synapseClient;
 	private SynapseJSNIUtils synapseJSNIUtils;
@@ -72,6 +73,9 @@ public class MarkdownEditorWidget extends LayoutContainer {
 	private WidgetSelectionState widgetSelectionState;
 	private ResourceLoader resourceLoader;
 	private GWTWrapper gwt;
+	
+	public static final int MIN_LINE_COUNT = 12;
+	public static final int MAX_LINE_COUNT = 50;
 	
 	public interface CloseHandler{
 		public void saveClicked();
@@ -137,6 +141,7 @@ public class MarkdownEditorWidget extends LayoutContainer {
 			}
 		}); 
 		mdCommands.add(editWidgetButton);
+		calculateVisibleRows();
 		
 		Button insertButton = new Button("Insert", AbstractImagePrototype.create(iconsImageBundle.glyphCirclePlus16()));
 		
@@ -159,10 +164,12 @@ public class MarkdownEditorWidget extends LayoutContainer {
 		});
 		
 		markdownTextArea.addKeyUpHandler(new KeyUpHandler() {
-			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				updateEditWidget();
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					addAdditionalRow();
+				}
 			}
 		});
 		
@@ -358,6 +365,37 @@ public class MarkdownEditorWidget extends LayoutContainer {
 
 		mdCommands.add(link);
 		
+	}
+	
+	public void addAdditionalRow() {
+		if (markdownTextArea != null && markdownTextArea.getElement() != null) {
+			int linecount = MIN_LINE_COUNT;
+			try {
+				String oldRowCount = markdownTextArea.getElement().getAttribute("rows");
+				if (oldRowCount != null && oldRowCount.length() > 0) {
+					linecount = Integer.parseInt(oldRowCount);
+					if (linecount < MAX_LINE_COUNT)
+						linecount++;
+				}
+			} catch (NumberFormatException e) {
+			} 
+			markdownTextArea.getElement().setAttribute("rows", Integer.toString(linecount));
+		}
+	}
+	
+	public void calculateVisibleRows() {
+		if (markdownTextArea != null && markdownTextArea.getElement() != null) {
+			int linecount = DisplayUtils.countLines(markdownTextArea.getValue());
+			//min of MIN_LINE_COUNT lines
+			if (linecount < MIN_LINE_COUNT) {
+				linecount = MIN_LINE_COUNT;
+			} else if (linecount > MAX_LINE_COUNT) {
+				linecount = MAX_LINE_COUNT - 1;
+			}
+			linecount++; //extra line
+
+			markdownTextArea.getElement().setAttribute("rows", Integer.toString(linecount));
+		}
 	}
 	
 	public void handleEditWidgetCommand() {

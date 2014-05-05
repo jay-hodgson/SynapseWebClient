@@ -55,7 +55,6 @@ import org.sagebionetworks.repo.model.UserSessionData;
 import org.sagebionetworks.repo.model.Versionable;
 import org.sagebionetworks.repo.model.file.FileHandle;
 import org.sagebionetworks.repo.model.file.PreviewFileHandle;
-import org.sagebionetworks.repo.model.file.S3FileHandle;
 import org.sagebionetworks.repo.model.table.TableEntity;
 import org.sagebionetworks.schema.FORMAT;
 import org.sagebionetworks.schema.ObjectSchema;
@@ -141,6 +140,8 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -157,7 +158,6 @@ import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -167,6 +167,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class DisplayUtils {
 	private static Logger displayUtilsLogger = Logger.getLogger(DisplayUtils.class.getName());
 	public static PublicPrincipalIds publicPrincipalIds = null;
+	public static final RegExp NEWLINE_REGEXP = RegExp.compile("\r\n|\r|\n", "g");
 	
 	public static final String[] ENTITY_TYPE_DISPLAY_ORDER = new String[] {
 			Folder.class.getName(), Study.class.getName(), Data.class.getName(),
@@ -2302,6 +2303,16 @@ public class DisplayUtils {
 		if (version != null)
 			str += "/rowversion/" + version;
 		return str;
+	}
+	
+	public static int countLines(String s){
+		NEWLINE_REGEXP.setLastIndex(0);
+		int lineCount = 0;
+		if (s != null) {
+			for (MatchResult result = NEWLINE_REGEXP.exec(s); result != null; result = NEWLINE_REGEXP.exec(s))
+				lineCount++;
+		}
+		return lineCount;
 	}
 
 }
