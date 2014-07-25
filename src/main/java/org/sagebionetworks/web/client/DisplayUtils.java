@@ -2133,63 +2133,30 @@ public class DisplayUtils {
 		container.add(paren);
 	}
 
-	public static void showSharingDialog(final AccessControlListEditor accessControlListEditor, boolean canChangePermission, final Callback callback) {
-		final Dialog window = new Dialog();
-		// configure layout
-		int windowHeight = canChangePermission ? 552 : 282;
-		window.setSize(560, windowHeight);
-		window.setPlain(true);
-		window.setModal(true);
-		window.setHeading(DisplayConstants.TITLE_SHARING_PANEL);
-		window.setLayout(new FitLayout());
-		window.add(accessControlListEditor.asWidget(), new FitData(4));			    
-	    
-		// configure buttons
-		if (canChangePermission) {
-			window.okText = "Save";
-			window.cancelText = "Cancel";
-			window.setButtons(Dialog.OKCANCEL);
-		} else {
-			window.cancelText = "Close";
-			window.setButtons(Dialog.CANCEL);
-		}
-		window.setButtonAlign(HorizontalAlignment.RIGHT);
-	    window.setHideOnButtonClick(false);
-		window.setResizable(true);
-		
-		if (canChangePermission) {
-			// "Apply" button
-			// TODO: Disable the "Apply" button if ACLEditor has no unsaved changes
-			Button applyButton = window.getButtonById(Dialog.OK);
-			applyButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-				@Override
-				public void componentSelected(ButtonEvent ce) {
-					// confirm close action if there are unsaved changes
-					if (accessControlListEditor.hasUnsavedChanges()) {
-						accessControlListEditor.pushChangesToSynapse(false, new AsyncCallback<EntityWrapper>() {
-							@Override
-							public void onSuccess(EntityWrapper result) {
-								callback.invoke();
-							}
-							@Override
-							public void onFailure(Throwable caught) {
-								//failure notification is handled by the acl editor view.
-							}
-						});
-					}
-					window.hide();
-				}
-		    });
-		}
-		
-		// "Close" button				
-		Button closeButton = window.getButtonById(Dialog.CANCEL);
-	    closeButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	public static void showSharingDialog(final org.sagebionetworks.web.client.widget.modal.Dialog window, final AccessControlListEditor accessControlListEditor, boolean canChangePermission, final Callback callback) {
+		window.configure(DisplayConstants.TITLE_SHARING_PANEL, accessControlListEditor.asWidget(), "Save", "Cancel", new org.sagebionetworks.web.client.widget.modal.Dialog.Callback() {
+			
 			@Override
-			public void componentSelected(ButtonEvent ce) {
-				window.hide();
+			public void onPrimary() {
+				// confirm close action if there are unsaved changes
+				if (accessControlListEditor.hasUnsavedChanges()) {
+					accessControlListEditor.pushChangesToSynapse(false, new AsyncCallback<EntityWrapper>() {
+						@Override
+						public void onSuccess(EntityWrapper result) {
+							callback.invoke();
+						}
+						@Override
+						public void onFailure(Throwable caught) {
+							//failure notification is handled by the acl editor view.
+						}
+					});
+				}
 			}
-	    });
+			
+			@Override
+			public void onDefault() {
+			}
+		});
 		
 		window.show();
 	}
