@@ -57,7 +57,9 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class ProfileViewImpl extends Composite implements ProfileView {
-
+	public static enum ProjectType { ALL, ADMINISTRATOR, FAVORITES, SHARED }
+	private static final String SHOW_PROJECT_TYPE_LIST_STYLE="col-md-9";
+	
 	public interface ProfileViewImplUiBinder extends UiBinder<Widget, ProfileViewImpl> {}
 	
 	@UiField
@@ -150,6 +152,27 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	@UiField
 	DivElement challengesHighlightBox;
 	
+	//Project Types
+	@UiField
+	DivElement projectTypesUI;
+	@UiField
+	Anchor projectTypeAll;
+	@UiField
+	Anchor projectTypeAdministrator;
+//	@UiField
+//	Anchor projectTypeShared;
+	@UiField
+	Anchor projectTypeFavorites;
+	@UiField
+	LIElement projectTypeAllListItem;
+	@UiField
+	LIElement projectTypeAdministratorListItem;
+//	@UiField
+//	LIElement projectTypeSharedListItem;
+	@UiField
+	LIElement projectTypeFavoritesListItem;
+	
+	
 	private Presenter presenter;
 	private Header headerWidget;
 	private SageImageBundle sageImageBundle;
@@ -232,8 +255,21 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 				presenter.createTeam(createTeamTextBox.getValue());
 			}
 		});
-		projectsTabContent.addStyleName("margin-10");
+		projectsTabContent.addStyleName("col-xs-12 margin-bottom-20");
 		challengesTabContent.addStyleName("margin-10");
+		
+		projectTypeAll.addClickHandler(getProjectTypeClickHandler(ProjectType.ALL));
+		projectTypeAdministrator.addClickHandler(getProjectTypeClickHandler(ProjectType.ADMINISTRATOR));
+		projectTypeFavorites.addClickHandler(getProjectTypeClickHandler(ProjectType.FAVORITES));
+	}
+	
+	private ClickHandler getProjectTypeClickHandler(final ProjectType type) {
+		return new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				presenter.projectTypeClicked(type);
+			}
+		};
 	}
 	
 	@Override
@@ -326,7 +362,34 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	}
 	
 	@Override
+	public void setProjectType(ProjectType type) {
+		//set the active item
+		projectTypeAllListItem.removeClassName(WebConstants.ACTIVE);
+		projectTypeAdministratorListItem.removeClassName(WebConstants.ACTIVE);
+		projectTypeFavoritesListItem.removeClassName(WebConstants.ACTIVE);
+		if (type == ProjectType.ALL) {
+			projectTypeAllListItem.addClassName(WebConstants.ACTIVE);
+		} else if (type == ProjectType.ADMINISTRATOR) {
+			projectTypeAdministratorListItem.addClassName(WebConstants.ACTIVE);
+		} else if (type == ProjectType.FAVORITES) {
+			projectTypeFavoritesListItem.addClassName(WebConstants.ACTIVE);
+		}
+	}
+	
+	@Override
+	public void setProjectTypesVisible(boolean visible) {
+		if (visible) {
+			DisplayUtils.show(projectTypesUI);
+			projectsTabContent.addStyleName(SHOW_PROJECT_TYPE_LIST_STYLE);
+		} else {
+			DisplayUtils.hide(projectTypesUI);
+			projectsTabContent.removeStyleName(SHOW_PROJECT_TYPE_LIST_STYLE);
+		}
+	}
+	
+	@Override
 	public void setProjects(List<EntityHeader> projectHeaders) {
+		//and the entity list
 		addEntityBadges(projectHeaders, projectsTabContent);
 	}
 
@@ -347,7 +410,7 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 			EntityBadge badge = ginInjector.getEntityBadgeWidget();
 			badge.configure(entityHeader);
 			Widget widget = badge.asWidget();
-			widget.addStyleName("margin-top-5");
+			widget.addStyleName("margin-left-10 margin-top-5");
 			targetPanel.add(widget);
 		}
 		if (projectHeaders.isEmpty())
@@ -582,9 +645,7 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		editPictureButtonPanel.clear();
 		certificatePanel.setVisible(false);
 		DisplayUtils.hide(navtabContainer);
-		projectsTabContent.clear();
-		//init with loading widget
-		projectsTabContent.add(new HTMLPanel(DisplayUtils.getLoadingHtml(sageImageBundle)));
+		clearProjects();
 		
 		DisplayUtils.hide(showProfileLink);
 		challengesTabContent.clear();
@@ -592,6 +653,14 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		hideTabContainers();
 		DisplayUtils.hide(createProjectUI);
 		DisplayUtils.hide(createTeamUI);
+		setProjectTypesVisible(false);
+	}
+	
+	@Override
+	public void clearProjects() {
+		projectsTabContent.clear();
+		//init with loading widget
+		projectsTabContent.add(new HTMLPanel(DisplayUtils.getLoadingHtml(sageImageBundle)));
 	}
 	
 	private void hideTabContainers() {

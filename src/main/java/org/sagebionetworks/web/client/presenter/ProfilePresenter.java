@@ -34,6 +34,7 @@ import org.sagebionetworks.web.client.presenter.ProfileFormWidget.ProfileUpdated
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.utils.CallbackP;
 import org.sagebionetworks.web.client.view.ProfileView;
+import org.sagebionetworks.web.client.view.ProfileViewImpl.ProjectType;
 import org.sagebionetworks.web.client.widget.entity.browse.EntityBrowserUtils;
 import org.sagebionetworks.web.client.widget.team.TeamListWidget;
 import org.sagebionetworks.web.shared.LinkedInInfo;
@@ -229,8 +230,7 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 				try {
 					PassingRecord passingRecord = new PassingRecord(adapterFactory.createNew(passingRecordJson));
 					view.updateView(profile, isEditing, isOwner, passingRecord, profileForm.asWidget());
-					getUserProjects(profile.getOwnerId());
-					getTeamsAndChallenges(profile.getOwnerId());
+					proceed();
 				} catch (JSONObjectAdapterException e) {
 					onFailure(e);
 				}
@@ -242,6 +242,11 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 				else
 					view.showErrorMessage(caught.getMessage());
 				
+				proceed();
+			}
+			
+			private void proceed() {
+				view.setProjectTypesVisible(isOwner);
 				getUserProjects(profile.getOwnerId());
 				getTeamsAndChallenges(profile.getOwnerId());
 			}
@@ -513,6 +518,14 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 				updateProfileView(token, false);
 			}
 		}
+	}
+	
+	@Override
+	public void projectTypeClicked(ProjectType type) {
+		view.clearProjects();
+		view.setProjectType(type);
+		//get the new set of projects to display...
+		//update the view
 	}
 }
 

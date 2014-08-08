@@ -59,7 +59,17 @@
 								</div>
 							</div>
 							<div class="highlight-box" highlight-box-title="Projects">
-								<g:FlowPanel ui:field="projectsTabContent" />
+							    <div class="row">
+								    <div ui:field="projectTypesUI" class="col-xs-12 col-md-3">
+								        <ul class="well nav margin-top-0 bs-sidenav">
+								            <li ui:field="projectTypeAllListItem"><g:Anchor ui:field="projectTypeAll" text="All"/></li>
+								            <li ui:field="projectTypeAdministratorListItem"><g:Anchor ui:field="projectTypeAdministrator" text="My Projects" /></li>
+								            <!-- <li ui:field="projectTypeSharedListItem"><g:Anchor ui:field="projectTypeShared" text="Shared with me" /></li> -->
+								            <li ui:field="projectTypeFavoritesListItem"><g:Anchor ui:field="projectTypeFavorites" text="Favorites"/></li>
+								        </ul>
+								    </div>
+									<g:FlowPanel ui:field="projectsTabContent" />
+								</div>
 							</div>
 							
 						</div>

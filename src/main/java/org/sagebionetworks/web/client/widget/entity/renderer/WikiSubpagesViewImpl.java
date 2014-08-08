@@ -6,6 +6,7 @@ import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.utils.UnorderedListPanel;
+import org.sagebionetworks.web.shared.WebConstants;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -145,7 +146,7 @@ public class WikiSubpagesViewImpl extends FlowPanel implements WikiSubpagesView 
 	private void addTreeItemsRecursive(UnorderedListPanel ul, List<ModelData> children) {
 		for (ModelData modelData : children) {
 			TocItem treeItem = (TocItem)modelData;
-			String styleName = treeItem.isCurrentPage() ? "active" : "";
+			String styleName = treeItem.isCurrentPage() ? WebConstants.ACTIVE : "";
 			ul.add(getListItem(treeItem), styleName);
 			if (treeItem.getChildCount() > 0){
 				UnorderedListPanel subList = new UnorderedListPanel();

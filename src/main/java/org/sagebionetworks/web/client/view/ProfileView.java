@@ -8,6 +8,7 @@ import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.repo.model.quiz.PassingRecord;
 import org.sagebionetworks.web.client.SynapsePresenter;
 import org.sagebionetworks.web.client.SynapseView;
+import org.sagebionetworks.web.client.view.ProfileViewImpl.ProjectType;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -28,27 +29,24 @@ public interface ProfileView extends IsWidget, SynapseView {
 	
 	void updateView(UserProfile profile, boolean editable, boolean isOwner, PassingRecord passingRecord, Widget profileFormView);
 	void refreshHeader();
+	void setProjectType(ProjectType type);
+	void setProjectTypesVisible(boolean visible);
 	void setProjects(List<EntityHeader> myProjects);
 	void setProjectsError(String string);
 	void setChallenges(List<EntityHeader> headers);
 	void setChallengesError(String error);
 	void setTeams(List<Team> teams);
 	void setTeamsError(String error);
+	void clearProjects();
 	
 	public interface Presenter extends SynapsePresenter {
-
 		void updateProfileWithLinkedIn(String requestToken, String verifier);
-		
 		void redirectToLinkedIn();
-		
 		void showEditProfile();
-		
 		void showViewMyProfile();
-		
 		void createProject(String name);
-		
 		void createTeam(final String teamName);
-		
 		void goTo(Place place);
+		void projectTypeClicked(ProjectType type);
 	}
 }
