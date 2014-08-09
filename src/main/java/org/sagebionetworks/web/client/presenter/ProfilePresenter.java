@@ -71,7 +71,9 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 	private SynapseJSNIUtils synapseJSNIUtils;
 	private CookieProvider cookies;
 	private RequestBuilderWrapper requestBuilder;
-	
+	private String targetUserId;
+	private boolean isOwner;
+	private List<EntityHeader> cachedAllProjects, cachedMyProjects, cachedMyFavorites, cachedSharedProjects;
 	@Inject
 	public ProfilePresenter(ProfileView view,
 			AuthenticationController authenticationController,
@@ -198,9 +200,9 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 	
 	private void updateProfileView(String userId, final boolean isEditing) {
 		view.clear();
-		final boolean isOwner = authenticationController.isLoggedIn() && authenticationController.getCurrentUserPrincipalId().equals(userId);
+		isOwner = authenticationController.isLoggedIn() && authenticationController.getCurrentUserPrincipalId().equals(userId);
 		globalApplicationState.setIsEditing(isEditing);
-		final String targetUserId = userId == null ? authenticationController.getCurrentUserPrincipalId() : userId;
+		targetUserId = userId == null ? authenticationController.getCurrentUserPrincipalId() : userId;
 		synapseClient.getUserProfile(targetUserId, new AsyncCallback<String>() {
 				@Override
 				public void onSuccess(String userProfileJson) {
@@ -247,7 +249,7 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 			
 			private void proceed() {
 				view.setProjectTypesVisible(isOwner);
-				getUserProjects(profile.getOwnerId());
+				refreshAllProjects(profile.getOwnerId(), isOwner);
 				getTeamsAndChallenges(profile.getOwnerId());
 			}
 		});
@@ -370,17 +372,82 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 		});
 	}
 	
-	public void getUserProjects(String userId) {
-		EntityBrowserUtils.loadUserUpdateable(userId, searchService, adapterFactory, globalApplicationState, new AsyncCallback<List<EntityHeader>>() {
-			@Override
-			public void onSuccess(List<EntityHeader> result) {
-				view.setProjects(result);
+	public void buildAllProjectsCache() {
+		cachedAllProjects = new ArrayList<EntityHeader>();
+		Set<String> uniqueProjects = new HashSet<String>();
+		//first, add all my projects
+		addUniqueHeaders(uniqueProjects, cachedMyProjects, cachedAllProjects);
+		//favorites
+		addUniqueHeaders(uniqueProjects, cachedMyFavorites, cachedAllProjects);
+		//shared
+		addUniqueHeaders(uniqueProjects, cachedSharedProjects, cachedAllProjects);
+	}
+	
+	private void addUniqueHeaders(Set<String> uniqueProjects, List<EntityHeader> headers, List<EntityHeader> targetList) {
+		for (EntityHeader entityHeader : headers) {
+			if (!uniqueProjects.contains(entityHeader.getId())) {
+				uniqueProjects.add(entityHeader.getId());
+				targetList.add(entityHeader);
 			}
+		}
+
+	}
+	
+	public void refreshAllProjects(final String userId, boolean isOwner) {
+		//query for my projects, then favorites, then (finally) those shared with me
+		view.setProjectType(ProjectType.ALL);
+		
+		final AsyncCallback<List<EntityHeader>> callback3 = new AsyncCallback<List<EntityHeader>>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				view.setProjectsError("Could not load Projects");
+				view.setProjectsError(caught.getMessage());
 			}
-		});
+			@Override
+			public void onSuccess(List<EntityHeader> result) {
+				cachedSharedProjects = result;
+				buildAllProjectsCache();
+				view.setProjects(cachedAllProjects);
+			}
+		};
+
+		final AsyncCallback<List<EntityHeader>> callback2 = new AsyncCallback<List<EntityHeader>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				view.setProjectsError(caught.getMessage());
+			}
+			@Override
+			public void onSuccess(List<EntityHeader> result) {
+				cachedMyFavorites = result;
+				getSharedProjects(userId, callback3);
+			}
+		};
+		
+		AsyncCallback<List<EntityHeader>> callback1 = new AsyncCallback<List<EntityHeader>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				view.setProjectsError(caught.getMessage());
+			}
+			@Override
+			public void onSuccess(List<EntityHeader> result) {
+				cachedMyProjects = result;
+				getMyFavorites(userId, callback2);
+			}
+		};
+		getMyProjects(userId, callback1);
+	}
+	
+	public void getMyProjects(String userId, AsyncCallback<List<EntityHeader>> callback) {
+		EntityBrowserUtils.loadUserUpdateable(userId, searchService, adapterFactory, globalApplicationState, callback);
+	}
+	
+	public void getMyFavorites(String userId, AsyncCallback<List<EntityHeader>> callback) {
+		//TODO: ask for a particular user's favorites, once service is available
+		EntityBrowserUtils.loadFavorites(synapseClient, adapterFactory, globalApplicationState, callback);
+	}
+	
+	public void getSharedProjects(String userId, AsyncCallback<List<EntityHeader>> callback) {
+//		EntityBrowserUtils.loadSharedWithUser(userId, searchService, adapterFactory, globalApplicationState, callback);
+		callback.onSuccess(new ArrayList<EntityHeader>());
 	}
 	
 	@Override
@@ -522,10 +589,19 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 	
 	@Override
 	public void projectTypeClicked(ProjectType type) {
-		view.clearProjects();
+		//return the set of projects to display...
+		//and update the view
 		view.setProjectType(type);
-		//get the new set of projects to display...
-		//update the view
+		
+		if (type == ProjectType.ALL) {
+			view.setProjects(cachedAllProjects);
+		} else if (type == ProjectType.ADMINISTRATOR) {
+			view.setProjects(cachedMyProjects);
+		} else if (type == ProjectType.FAVORITES) {
+			view.setProjects(cachedMyFavorites);
+		} else if (type == ProjectType.SHARED) {
+			view.setProjects(cachedSharedProjects);
+		}
 	}
 }
 

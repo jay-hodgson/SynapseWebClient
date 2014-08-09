@@ -390,6 +390,7 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	@Override
 	public void setProjects(List<EntityHeader> projectHeaders) {
 		//and the entity list
+		clearProjects();
 		addEntityBadges(projectHeaders, projectsTabContent);
 	}
 
