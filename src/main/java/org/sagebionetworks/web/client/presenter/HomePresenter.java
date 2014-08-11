@@ -263,7 +263,7 @@ public class HomePresenter extends AbstractActivity implements HomeView.Presente
 			}
 		});
 		
-		EntityBrowserUtils.loadFavorites(synapseClient, adapterFactory, globalApplicationState, new AsyncCallback<List<EntityHeader>>() {
+		EntityBrowserUtils.loadFavorites(synapseClient, adapterFactory, globalApplicationState, authenticationController, new AsyncCallback<List<EntityHeader>>() {
 			@Override
 			public void onSuccess(List<EntityHeader> result) {
 				view.setFavorites(result);

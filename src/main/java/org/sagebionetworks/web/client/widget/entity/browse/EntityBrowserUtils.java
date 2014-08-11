@@ -62,12 +62,22 @@ public class EntityBrowserUtils {
 		}
 	}
 
-	
 	public static void loadFavorites(SynapseClientAsync synapseClient,
 			final AdapterFactory adapterFactory,
 			final GlobalApplicationState globalApplicationState,
+			final AuthenticationController authenticationController,
 			final AsyncCallback<List<EntityHeader>> callback) {
-		synapseClient.getFavoritesList(Integer.MAX_VALUE, 0, new AsyncCallback<ArrayList<String>>() {
+		if(authenticationController.isLoggedIn()) {
+			loadFavorites(authenticationController.getCurrentUserPrincipalId(), synapseClient, adapterFactory, globalApplicationState, callback);
+		}
+	}
+	
+	public static void loadFavorites(String userId,
+			SynapseClientAsync synapseClient,
+			final AdapterFactory adapterFactory,
+			final GlobalApplicationState globalApplicationState,
+			final AsyncCallback<List<EntityHeader>> callback) {
+		synapseClient.getFavoritesList(userId, Integer.MAX_VALUE, 0, new AsyncCallback<ArrayList<String>>() {
 			@Override
 			public void onSuccess(ArrayList<String> results) {
 				List<EntityHeader> favorites = new ArrayList<EntityHeader>();

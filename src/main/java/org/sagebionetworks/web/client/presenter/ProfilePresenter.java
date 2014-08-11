@@ -441,8 +441,7 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 	}
 	
 	public void getMyFavorites(String userId, AsyncCallback<List<EntityHeader>> callback) {
-		//TODO: ask for a particular user's favorites, once service is available
-		EntityBrowserUtils.loadFavorites(synapseClient, adapterFactory, globalApplicationState, callback);
+		EntityBrowserUtils.loadFavorites(userId, synapseClient, adapterFactory, globalApplicationState, callback);
 	}
 	
 	public void getSharedProjects(String userId, AsyncCallback<List<EntityHeader>> callback) {
