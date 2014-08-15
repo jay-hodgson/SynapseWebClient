@@ -40,7 +40,7 @@ public class LoginWidgetViewImpl extends Composite implements
 	public interface LoginWidgetViewImplUiBinder extends UiBinder<Widget, LoginWidgetViewImpl> {}
 	
 	@UiField
-	FormPanel synapseLoginFieldsContainer;
+	FlowPanel synapseLoginFieldsContainer;
 	
 	@UiField
 	SimplePanel googleSSOContainer;
@@ -82,6 +82,13 @@ public class LoginWidgetViewImpl extends Composite implements
 			}
 		});
 		
+		final FormPanel formPanel = new FormPanel();
+		synapseLoginFieldsContainer.add(formPanel);
+		formPanel.setMethod(FormPanel.METHOD_POST);
+		formPanel.setAction("javascript:void(0)");
+		FlowPanel loginFieldsPanel = new FlowPanel();
+		formPanel.setWidget(loginFieldsPanel);
+		
 		username = TextBox.wrap(DOM.getElementById("synapse_username"));
 	    username.getElement().setAttribute("placeholder", DisplayConstants.EMAIL_ADDRESS);
 	    username.addStyleName("form-control");
@@ -94,19 +101,17 @@ public class LoginWidgetViewImpl extends Composite implements
 		    @Override
 		    public void onKeyDown(KeyDownEvent event) {
 		        if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-		        	synapseLoginFieldsContainer.submit();
+		        	formPanel.submit();
 		        }
 		    }
 		});
-	
-		FlowPanel loginFieldsPanel = new FlowPanel();
+		
 		loginFieldsPanel.add(username);
 		loginFieldsPanel.add(password);
 		loginFieldsPanel.add(signInBtn);
 		loginFieldsPanel.add(forgotPasswordLink);
-		synapseLoginFieldsContainer.setWidget(loginFieldsPanel);
-		synapseLoginFieldsContainer.setMethod(FormPanel.METHOD_POST);
-		synapseLoginFieldsContainer.addSubmitHandler(new FormPanel.SubmitHandler() {
+		
+		formPanel.addSubmitHandler(new FormPanel.SubmitHandler() {
 			@Override
 			public void onSubmit(SubmitEvent event) {
 				loginUser();

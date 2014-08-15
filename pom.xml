@@ -202,6 +202,8 @@
 			        <encoding>${project.build.sourceEncoding}</encoding>
 			        <logLevel>INFO</logLevel>
 			        <extraJvmArgs>-Xmx1024m -Xms896m -XX:PermSize=64m -XX:MaxPermSize=128m</extraJvmArgs>
+			        <!-- uncomment to set the gwt script output style to detailed instead of OBF(fuscated) -->
+			        <!--  <style>DETAILED</style>  -->
 					<!--           <fragmentCount>12</fragmentCount> -->					
 				</configuration>
 			</plugin>
