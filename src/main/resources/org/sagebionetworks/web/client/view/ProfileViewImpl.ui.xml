@@ -23,7 +23,6 @@
 					    <ul class="nav nav-tabs entity-tabs margin-top-15">				        
 						    <li class="entity-tab active margin-left-15" ui:field="projectsListItem"><g:Anchor styleName="text-align-center link no-background" text="Projects" ui:field="projectsLink"/></li>
 						    <li class="entity-tab" ui:field="favoritesListItem"><g:Anchor styleName="text-align-center link no-background" text="Favorites" ui:field="favoritesLink"/></li>
-						    <li class="entity-tab" ui:field="challengesListItem"><g:Anchor styleName="text-align-center link no-background" text="Challenges" ui:field="challengesLink"/></li>
 						    <li class="entity-tab" ui:field="teamsListItem"><g:Anchor styleName="text-align-center link no-background" text="Teams" ui:field="teamsLink"/></li>
 						    <li class="entity-tab" ui:field="settingsListItem" style="width: 157px"><g:Anchor styleName="text-align-center link no-background" text="Settings" ui:field="settingsLink"/></li>
 					    </ul>
@@ -54,11 +53,6 @@
 						<div class="tab-background padding-top-bottom-15-left-right-25" ui:field="favoritesTabContainer">
 					    	<div class="highlight-box" ui:field="favoritesHighlightBox" highlight-box-title="Favorites">
 					    		<g:FlowPanel ui:field="favoritesTabContent" styleName="margin-10" />
-					    	</div>
-					    </div>
-					    <div class="tab-background padding-top-bottom-15-left-right-25" ui:field="challengesTabContainer">
-					    	<div class="highlight-box" ui:field="challengesHighlightBox" highlight-box-title="Challenges">
-					    		<g:FlowPanel ui:field="challengesTabContent" styleName="margin-10" />
 					    	</div>
 					    </div>
 					    <div class="tab-background padding-top-bottom-15-left-right-25" ui:field="teamsTabContainer">

@@ -1,6 +1,9 @@
 package org.sagebionetworks.web.client.view;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.gwtbootstrap3.client.ui.Tooltip;
 import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
@@ -24,6 +27,7 @@ import org.sagebionetworks.web.client.utils.CallbackP;
 import org.sagebionetworks.web.client.widget.FitImage;
 import org.sagebionetworks.web.client.widget.breadcrumb.Breadcrumb;
 import org.sagebionetworks.web.client.widget.entity.EntityBadge;
+import org.sagebionetworks.web.client.widget.entity.ProjectBadge;
 import org.sagebionetworks.web.client.widget.entity.browse.EntityTreeBrowserViewImpl;
 import org.sagebionetworks.web.client.widget.entity.download.CertificateWidget;
 import org.sagebionetworks.web.client.widget.footer.Footer;
@@ -86,10 +90,6 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	@UiField
 	LIElement settingsListItem;
 	@UiField
-	Anchor challengesLink;
-	@UiField
-	LIElement challengesListItem;
-	@UiField
 	Anchor favoritesLink;
 	@UiField
 	LIElement favoritesListItem;
@@ -102,8 +102,6 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	DivElement projectsTabContainer;
 	@UiField
 	DivElement favoritesTabContainer;
-	@UiField
-	DivElement challengesTabContainer;
 	@UiField
 	DivElement teamsTabContainer;
 	@UiField
@@ -135,10 +133,6 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	@UiField
 	Button teamSearchButton;
 	
-	//Challenges
-	@UiField
-	FlowPanel challengesTabContent;
-	
 	//Favorites
 	@UiField
 	FlowPanel favoritesTabContent;
@@ -152,13 +146,11 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	@UiField 
 	DivElement projectsHighlightBox;
 	@UiField 
-	DivElement challengesHighlightBox;
-	@UiField 
 	DivElement favoritesHighlightBox;
 	@UiField 
 	DivElement teamsHighlightBox;
 
-
+	private Map<String, ProjectBadge> id2projectBadge;
 	
 	private Presenter presenter;
 	private Header headerWidget;
@@ -321,7 +313,6 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	
 	private void setHighlightBoxUser(String displayName) {
 		DisplayUtils.setHighlightBoxUser(projectsHighlightBox, displayName, "Projects");
-		DisplayUtils.setHighlightBoxUser(challengesHighlightBox, displayName, "Challenges");
 		DisplayUtils.setHighlightBoxUser(teamsHighlightBox, displayName, "Teams");
 		DisplayUtils.setHighlightBoxUser(favoritesHighlightBox, displayName, "Favorites");
 	}
@@ -384,18 +375,13 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	}
 	
 	private void addProjectBadges(List<ProjectHeader> projectHeaders, FlowPanel targetPanel) {
-		//TODO: replace with ProjectBadges that will show more information (once additional information is available in the ProjectHeader)
 		for (ProjectHeader projectHeader : projectHeaders) {
-			EntityHeader entityHeaderWrapper = new EntityHeader();
-			entityHeaderWrapper.setId(projectHeader.getId());
-			entityHeaderWrapper.setName(projectHeader.getName());
-			entityHeaderWrapper.setType("project");
-			
-			EntityBadge badge = ginInjector.getEntityBadgeWidget();
-			badge.configure(entityHeaderWrapper);
+			ProjectBadge badge = ginInjector.getProjectBadgeWidget();
+			badge.configure(projectHeader);
 			Widget widget = badge.asWidget();
 			widget.addStyleName("margin-top-5");
 			targetPanel.add(widget);
+			id2projectBadge.put(projectHeader.getId(), badge);
 		}
 		if (projectHeaders.isEmpty())
 			targetPanel.add(new HTML(SafeHtmlUtils.fromSafeConstant("<div class=\"smallGreyText padding-15\">" + EntityTreeBrowserViewImpl.EMPTY_DISPLAY + "</div>").asString()));
@@ -415,10 +401,12 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	}
 	
 	@Override
-	public void setChallenges(List<EntityHeader> projectHeaders) {
-		if (projectHeaders.size() > 0) {
-			DisplayUtils.show(challengesListItem);
-			addEntityBadges(projectHeaders, challengesTabContent);
+	public void setChallenges(Set<String> entityIds) {
+		for (String entityId : entityIds) {
+			ProjectBadge badge = id2projectBadge.get(entityId);
+			if (badge != null) {
+				badge.setIsChallengeProject();
+			}
 		}
 	}
 	
@@ -549,11 +537,9 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		
 		settingsTabContent.clear();
 		
-		challengesTabContent.clear();
 		hideTabContainers();
 		DisplayUtils.hide(createProjectUI);
 		DisplayUtils.hide(createTeamUI);
-		DisplayUtils.hide(challengesListItem);
 		DisplayUtils.hide(favoritesListItem);
 		createTeamTextBox.setValue("");
 		createProjectTextBox.setValue("");
@@ -563,6 +549,7 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		
 		//reset tab link text (remove any notifications)
 		clearTeamNotificationCount();
+		id2projectBadge = new HashMap<String, ProjectBadge>();
 	}
 	
 	@Override
@@ -574,7 +561,6 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		//hide all tab containers
 		DisplayUtils.hide(projectsTabContainer);
 		DisplayUtils.hide(favoritesTabContainer);
-		DisplayUtils.hide(challengesTabContainer);
 		DisplayUtils.hide(teamsTabContainer);
 		DisplayUtils.hide(settingsTabContainer);
 	}
@@ -589,7 +575,7 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		// tell presenter what tab we're on only if the user clicked
 		if(targetTab == null) targetTab = Synapse.ProfileArea.PROJECTS; // select tab, set default if needed
 		hideTabContainers();
-		removeClass("active", projectsListItem, teamsListItem, settingsListItem, challengesListItem, favoritesListItem);
+		removeClass("active", projectsListItem, teamsListItem, settingsListItem, favoritesListItem);
 		
 		if (targetTab == Synapse.ProfileArea.PROJECTS) {
 			setTabSelected(projectsListItem, projectsTabContainer);
@@ -597,8 +583,6 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 			setTabSelected(teamsListItem, teamsTabContainer);
 		} else if(targetTab == Synapse.ProfileArea.SETTINGS) {
 			setTabSelected(settingsListItem, settingsTabContainer);
-		} else if (targetTab == Synapse.ProfileArea.CHALLENGES) {
-			setTabSelected(challengesListItem, challengesTabContainer);
 		} else if (targetTab == Synapse.ProfileArea.FAVORITES) {
 			setTabSelected(favoritesListItem, favoritesTabContainer);
 		} else {
@@ -630,7 +614,6 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		projectsLink.addClickHandler(getTabClickHandler(Synapse.ProfileArea.PROJECTS));
 		teamsLink.addClickHandler(getTabClickHandler(Synapse.ProfileArea.TEAMS));
 		settingsLink.addClickHandler(getTabClickHandler(Synapse.ProfileArea.SETTINGS));
-		challengesLink.addClickHandler(getTabClickHandler(Synapse.ProfileArea.CHALLENGES));
 		favoritesLink.addClickHandler(getTabClickHandler(Synapse.ProfileArea.FAVORITES));
 	}
 	

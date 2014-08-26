@@ -1,6 +1,5 @@
 package org.sagebionetworks.web.client.widget.user;
 
-import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.DisplayUtils;
@@ -13,6 +12,7 @@ import org.sagebionetworks.web.client.place.Profile;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -87,26 +87,27 @@ public class UserBadgeViewImpl extends LayoutContainer implements UserBadgeView 
 					userAnchor.fireEvent(event);
 				}
 			};
-			
-			if (profile.getPic() != null && profile.getPic().getPreviewId() != null && profile.getPic().getPreviewId().length() > 0) {
-				Image profilePicture = new Image();
-				profilePicture.setUrl(DisplayUtils.createUserProfileAttachmentUrl(synapseJSNIUtils.getBaseProfileAttachmentUrl(), profile.getOwnerId(), profile.getPic().getPreviewId(), null));
-				profilePicture.setWidth("16px");
-				profilePicture.setHeight("16px");
-				profilePicture.addStyleName("imageButton userProfileImage");
-				profilePicture.addClickHandler(clickHandler);
-				container.add(profilePicture);	
-			} else {
-				HTML profilePicture = new HTML(DisplayUtils.getFontelloIcon("user font-size-13 imageButton userProfileImage lightGreyText margin-0-imp-before"));
-				profilePicture.addClickHandler(clickHandler);
-				container.add(profilePicture);
-			}
-			
+			Widget profilePicture = getProfilePictureWidget(profile, synapseJSNIUtils.getBaseProfileAttachmentUrl());
+			((HasClickHandlers)profilePicture).addClickHandler(clickHandler);
+			container.add(profilePicture);
 			container.add(nameWidget);				 
 		} 		
 		
 	}
 
+	public static Widget getProfilePictureWidget(UserProfile profile, String baseProfileAttachmentUrl) {
+		if (profile.getPic() != null && profile.getPic().getPreviewId() != null && profile.getPic().getPreviewId().length() > 0) {
+			Image profilePicture = new Image();
+			profilePicture.setUrl(DisplayUtils.createUserProfileAttachmentUrl(baseProfileAttachmentUrl, profile.getOwnerId(), profile.getPic().getPreviewId(), null));
+			profilePicture.setWidth("16px");
+			profilePicture.setHeight("16px");
+			profilePicture.addStyleName("imageButton userProfileImage");
+			return profilePicture;	
+		} else {
+			HTML profilePicture = new HTML(DisplayUtils.getFontelloIcon("user font-size-13 imageButton userProfileImage lightGreyText margin-0-imp-before"));
+			return profilePicture;
+		}		
+	}
 	
 	
 	@Override

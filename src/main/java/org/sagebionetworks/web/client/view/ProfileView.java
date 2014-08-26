@@ -1,6 +1,7 @@
 package org.sagebionetworks.web.client.view;
 
 import java.util.List;
+import java.util.Set;
 
 import org.sagebionetworks.repo.model.EntityHeader;
 import org.sagebionetworks.repo.model.ProjectHeader;
@@ -33,7 +34,7 @@ public interface ProfileView extends IsWidget, SynapseView {
 	void setProjectsError(String string);
 	void setFavorites(List<EntityHeader> headers);
 	void setFavoritesError(String string);
-	void setChallenges(List<EntityHeader> headers);
+	void setChallenges(Set<String> entityIds);
 	void setChallengesError(String error);
 	void setTeams(List<Team> teams, boolean showNotifications);
 	void setTeamsError(String error);
