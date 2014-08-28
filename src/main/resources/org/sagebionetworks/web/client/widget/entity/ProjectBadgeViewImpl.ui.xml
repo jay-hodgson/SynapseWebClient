@@ -16,9 +16,6 @@
 			    		<g:FlowPanel ui:field="entityContainer" styleName="displayInline"/>
 					</b:Tooltip>
 				</td>
-				<td align="right" width="80px" style="vertical-align: middle;">					
-					<g:SimplePanel ui:field="decoratorWidgetContainer" />
-				</td>
 			</tr>
 		</table>
 	</g:HTMLPanel>    

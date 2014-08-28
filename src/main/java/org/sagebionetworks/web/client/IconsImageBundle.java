@@ -340,7 +340,10 @@ public interface IconsImageBundle extends ClientBundle {
 	
 	@Source("images/icons/trash-16.png")
 	ImageResource trash16();
-		
+	
+	@Source("images/icons/challenge-project-16.png")
+	ImageResource challengeProject16();
+	
 	// demo
 	
 	@Source("images/icons/details-16.png") 

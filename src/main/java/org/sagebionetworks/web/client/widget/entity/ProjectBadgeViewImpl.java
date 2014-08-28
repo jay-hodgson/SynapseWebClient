@@ -1,7 +1,6 @@
 package org.sagebionetworks.web.client.widget.entity;
 
 import org.gwtbootstrap3.client.ui.Tooltip;
-import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 import org.sagebionetworks.repo.model.ProjectHeader;
 import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.DisplayUtils;
@@ -10,6 +9,7 @@ import org.sagebionetworks.web.client.SageImageBundle;
 import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.widget.provenance.ProvViewUtil;
 import org.sagebionetworks.web.shared.KeyValueDisplay;
+import org.sagebionetworks.web.shared.WebConstants;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -42,14 +42,11 @@ public class ProjectBadgeViewImpl extends Composite implements ProjectBadgeView 
 	Tooltip tooltip;
 	@UiField
 	SimplePanel iconContainer;
-	@UiField
-	SimplePanel decoratorWidgetContainer;
-
+	
 	@UiField
 	FlowPanel entityContainer;
 	Image iconPicture;
-	ClickHandler nonDefaultClickHandler;
-	
+	ClickHandler clickAnchor;
 	boolean isPopoverInitialized;
 	boolean isPopover;
 	
@@ -102,22 +99,25 @@ public class ProjectBadgeViewImpl extends Composite implements ProjectBadgeView 
 				}
 			});
 			
-			ClickHandler clickHandler = new ClickHandler() {
+			clickAnchor = new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
 					anchor.fireEvent(event);
 				}
 			};
-			
-			ImageResource icon = presenter.getIconForType("project");
-			iconPicture = new Image(icon);
-			iconPicture.setWidth("16px");
-			iconPicture.setHeight("16px");
-			iconPicture.addStyleName("imageButton displayInline");
-			iconPicture.addClickHandler(clickHandler);
-			iconContainer.setWidget(iconPicture);
+			updateIcon("project");
 			entityContainer.add(anchor);
 		} 		
+	}
+	
+	private void updateIcon(String type) {
+		ImageResource icon = presenter.getIconForType(type);
+		iconPicture = new Image(icon);
+		iconPicture.setWidth("16px");
+		iconPicture.setHeight("16px");
+		iconPicture.addStyleName("imageButton displayInline");
+		iconPicture.addClickHandler(clickAnchor);
+		iconContainer.setWidget(iconPicture);
 	}
 	
 	public void showPopover(Anchor anchor, final String entityId, final String entityName) {
@@ -182,8 +182,7 @@ public class ProjectBadgeViewImpl extends Composite implements ProjectBadgeView 
 	
 	@Override
 	public void setIsChallengeProject() {
-		HTMLPanel html = new HTMLPanel(DisplayUtils.getIconHtml(sageImageBundle.challengeProject()));
-		decoratorWidgetContainer.setWidget(html);	
+		updateIcon(WebConstants.CHALLENGE_PROJECT_ICON_KEY);
 	}
 	
 	/*

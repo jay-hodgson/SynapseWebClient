@@ -101,9 +101,6 @@ public interface SageImageBundle extends ClientBundle {
 	@Source("images/certificate.png")
 	ImageResource certificate();
 	
-	@Source("images/challenge-project.png")
-	ImageResource challengeProject();
-
 	@Source("images/greyArrow.png")
 	ImageResource greyArrow();
 }

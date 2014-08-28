@@ -210,4 +210,6 @@ public class WebConstants {
 	public static final String HIGHLIGHT_BOX_TITLE = "highlight-box-title";
 	
 	public static final String JOIN_WIDGET_IS_CHALLENGE_KEY = "isChallenge";
+	
+	public static final String CHALLENGE_PROJECT_ICON_KEY = "challenge project";
 }
