@@ -20,8 +20,8 @@ import org.sagebionetworks.web.client.place.Challenges;
 import org.sagebionetworks.web.client.place.LoginPlace;
 import org.sagebionetworks.web.client.place.Profile;
 import org.sagebionetworks.web.client.place.ProjectsHome;
-import org.sagebionetworks.web.client.place.TeamSearch;
 import org.sagebionetworks.web.client.place.Synapse.ProfileArea;
+import org.sagebionetworks.web.client.place.TeamSearch;
 import org.sagebionetworks.web.client.place.users.RegisterAccount;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.widget.entity.FavoriteWidgetViewImpl;
@@ -35,21 +35,25 @@ import org.sagebionetworks.web.client.widget.team.TeamListWidget;
 
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -63,6 +67,10 @@ public class HomeViewImpl extends Composite implements HomeView {
 	
 	@UiField
 	SimplePanel header;
+	@UiField
+	SimplePanel iframeContainer;
+	@UiField
+	Label iframeResponse;
 	@UiField
 	SimplePanel footer;
 	@UiField
@@ -220,7 +228,35 @@ public class HomeViewImpl extends Composite implements HomeView {
 				globalApplicationState.getPlaceChanger().goTo(new Profile(authController.getCurrentUserPrincipalId(), ProfileArea.TEAMS));
 			}
 		});
+		final Frame iFrame = new Frame("https://s3.amazonaws.com/static.synapse.org/jhodgson/Form.html");
+		iframeContainer.add(iFrame);
+		_addIFrameListener(this);
+		iFrame.addLoadHandler(new LoadHandler() {
+			@Override
+			public void onLoad(LoadEvent event) {
+				Element iframe = iFrame.getElement();
+				_postMessage(iframe, "Hello frame!");
+			}
+		});
 	}
+	
+	public void setFrameResponse(String v) {
+		iframeResponse.setText(v);
+	}
+	
+	private native void _addIFrameListener(HomeViewImpl x) /*-{
+		$wnd.addEventListener('message', 
+			function (event) {
+				console.log("Message received: "+event);
+				if(event !== undefined && event.data !== undefined) {
+					x.@org.sagebionetworks.web.client.view.HomeViewImpl::setFrameResponse(Ljava/lang/String;)(event.data);
+				}
+			}, false);
+	}-*/;
+	
+	private static native void _postMessage(Element frame, String message) /*-{
+		frame.contentWindow.postMessage(message, '*');
+	}-*/;
 
 	@Override
 	public void onAttach() {
