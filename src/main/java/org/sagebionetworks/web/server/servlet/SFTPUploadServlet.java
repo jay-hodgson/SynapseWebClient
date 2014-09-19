@@ -32,9 +32,8 @@ import com.jcraft.jsch.SftpException;
  *
  */
 public class SFTPUploadServlet extends HttpServlet {
-
-	private static final long serialVersionUID = 1L;
 	private JSch jsch = new JSch();
+	private static final long serialVersionUID = 1L;
 	
 	protected static final ThreadLocal<HttpServletRequest> perThreadRequest = new ThreadLocal<HttpServletRequest>();
 	
@@ -106,8 +105,7 @@ public class SFTPUploadServlet extends HttpServlet {
 		
 		String username = request.getParameter(WebConstants.SFTP_USERNAME_PARAM_KEY);
 		String password = request.getParameter(WebConstants.SFTP_PASSWORD_PARAM_KEY);
-		int port = Integer.parseInt(request.getParameter(WebConstants.SFTP_PORT_PARAM_KEY));
-		
+		String host = request.getParameter(WebConstants.SFTP_HOST_PARAM_KEY);
 		while (iter.hasNext()) {
 			//should be one in this case
 			FileItemStream item = iter.next();
@@ -119,17 +117,17 @@ public class SFTPUploadServlet extends HttpServlet {
 			}
 			
 			Session session = null;
-	        try {
-	            session = jsch.getSession(username, password, port);
-	            session.setConfig("StrictHostKeyChecking", "no");
-	            session.setPassword(password);
-	            session.connect();
+			try {
+				session = jsch.getSession(username, host, 22);
+				session.setPassword(password);
+				session.setConfig("StrictHostKeyChecking", "no");
+				session.connect();
 
-	            Channel channel = session.openChannel("sftp");
-	            channel.connect();
-	            ChannelSftp sftpChannel = (ChannelSftp) channel;
-	            sftpChannel.put(stream, fileName);
-	            sftpChannel.exit();
+				Channel channel = session.openChannel("sftp");
+				channel.connect();
+				ChannelSftp sftpChannel = (ChannelSftp) channel;
+				sftpChannel.put(stream, fileName);
+				sftpChannel.exit();
 	        } catch (JSchException e) {
 	        	throw new ServletException(e);
 	        } catch (SftpException e) {
@@ -155,7 +153,8 @@ public class SFTPUploadServlet extends HttpServlet {
 			//Connect to synapse
 			createNewClient(token);
 			sftpUploadFile(request);
-			FileHandleServlet.fillResponseWithSuccess(response, "");
+			String externalDownloadUrl = "to do";
+			FileHandleServlet.fillResponseWithSuccess(response, externalDownloadUrl);
 		} catch (Exception e) {
 			FileHandleServlet.fillResponseWithFailure(response, e);
 			return;

@@ -159,9 +159,11 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 	@Override
 	public String getDefaultUploadActionUrl() {
 		boolean isFileEntity = entity == null || entity instanceof FileEntity;
+//		testing sftp on local machine
+//		String uploadUrl = getSftpUploadUrl("localhost", "local_sftp", "xxx");
 		String uploadUrl = isFileEntity ? 
-				//new way				
-				getBaseFileHandleUrl(): 
+				//new way
+				getBaseFileHandleUrl():
 				//old way
 				getOldUploadUrl();
 		return uploadUrl;
@@ -801,6 +803,14 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 	private String getBaseFileHandleUrl() {
 		return gwt.getModuleBaseURL() + WebConstants.FILE_HANDLE_UPLOAD_SERVLET;
 	}
+	
+	private String getSftpUploadUrl(String host, String username, String password) {
+		return gwt.getModuleBaseURL() + WebConstants.SFTP_FILE_UPLOAD_SERVLET + "?" +
+				WebConstants.SFTP_HOST_PARAM_KEY + "=" + host + "&" +
+				WebConstants.SFTP_USERNAME_PARAM_KEY + "=" + username + "&" +
+				WebConstants.SFTP_PASSWORD_PARAM_KEY + "=" + password;
+	}
+
 
 	private String getOldUploadUrl() {
 		 String entityIdString = entity != null ? WebConstants.ENTITY_PARAM_KEY + "=" + entity.getId() : "";
