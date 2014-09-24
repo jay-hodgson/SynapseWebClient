@@ -17,6 +17,7 @@ import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.web.client.ClientLogger;
 import org.sagebionetworks.web.client.ClientProperties;
 import org.sagebionetworks.web.client.DisplayConstants;
+import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.ProgressCallback;
 import org.sagebionetworks.web.client.SynapseClientAsync;
@@ -117,7 +118,8 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 		percentFormat = gwt.getNumberFormat("##");
 		clearHandlers();
 		uploadLog = new StringBuilder();
-		isDirectUploadSupported = synapseJsniUtils.isDirectUploadSupported();
+		isDirectUploadSupported = false;
+//		isDirectUploadSupported = synapseJsniUtils.isDirectUploadSupported();
 		if (!isDirectUploadSupported)
 			disableMultipleFileUploads();
 	}		
@@ -158,15 +160,13 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 
 	@Override
 	public String getDefaultUploadActionUrl() {
-		boolean isFileEntity = entity == null || entity instanceof FileEntity;
-//		testing sftp on local machine
-//		String uploadUrl = getSftpUploadUrl("localhost", "local_sftp", "xxx");
-		String uploadUrl = isFileEntity ? 
-				//new way
-				getBaseFileHandleUrl():
-				//old way
-				getOldUploadUrl();
-		return uploadUrl;
+//		boolean isFileEntity = entity == null || entity instanceof FileEntity;
+//		String uploadUrl = isFileEntity ? 
+//				//new way				
+//				getBaseFileHandleUrl(): 
+//				//old way
+//				getOldUploadUrl();
+		return getSftpUploadUrl("sftp://localhost/inasubdir/a-prefix-");
 	}
 	
 	public void uploadFiles() {
@@ -190,7 +190,6 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 	public void handleUploads() {
 		if (fileNames == null) {
 			//setup upload process.
-			
 			fileHasBeenUploaded = false;
 			currIndex = 0;
 			if ((fileNames = synapseJsniUtils.getMultipleUploadFileNames(UploaderViewImpl.FILE_FIELD_ID)) == null) {
@@ -541,8 +540,8 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 		if (currentAttempt >= MAX_RETRY)
 			uploadError("Exceeded the maximum number of attempts to combine all of the parts. " + errorMessage);
 		else //retry
-			directUploadStep5(requestList, currentAttempt+1);
-	}
+					directUploadStep5(requestList, currentAttempt+1);
+				}
 	
 	public void checkStatusAgainLater(final String daemonId, final String entityId, final String parentEntityId, final List<String> requestList, final int currentAttempt) {
 		//in one second, do a web service call to check the status again
@@ -707,29 +706,30 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 	 */
 	@Override
 	public void handleSubmitResult(String resultHtml) {
+		synapseJsniUtils.consoleLog(resultHtml);
 		if(resultHtml == null) resultHtml = "";
 		// response from server
 		//try to parse
-		UploadResult uploadResult = null;
-		String detailedErrorMessage = null;
-		try{
-			uploadResult = AddAttachmentDialog.getUploadResult(resultHtml);
-			if (uploadResult.getUploadStatus() == UploadStatus.SUCCESS) {
-				//upload result has file handle id if successful
-				String fileHandleId = uploadResult.getMessage();
-				setFileEntityFileHandle(fileHandleId);
-			}else {
-				uploadError("Upload result status indicated upload was unsuccessful.");
-			}
-		} catch (Throwable th) {detailedErrorMessage = th.getMessage();};//wasn't an UplaodResult
-		
-		if (uploadResult == null) {
-			if(!resultHtml.contains(DisplayConstants.UPLOAD_SUCCESS)) {
-				uploadError(detailedErrorMessage);
-			} else {
-				uploadSuccess();
-			}
-		}
+//		UploadResult uploadResult = null;
+//		String detailedErrorMessage = null;
+//		try{
+//			uploadResult = AddAttachmentDialog.getUploadResult(resultHtml);
+//			if (uploadResult.getUploadStatus() == UploadStatus.SUCCESS) {
+//				//upload result has file handle id if successful
+//				String fileHandleId = uploadResult.getMessage();
+//				setFileEntityFileHandle(fileHandleId);
+//			}else {
+//				uploadError("Upload result status indicated upload was unsuccessful.");
+//			}
+//		} catch (Throwable th) {detailedErrorMessage = th.getMessage();};//wasn't an UplaodResult
+//		
+//		if (uploadResult == null) {
+//			if(!resultHtml.contains(DisplayConstants.UPLOAD_SUCCESS)) {
+//				uploadError(detailedErrorMessage);
+//			} else {
+//				uploadSuccess();
+//			}
+//		}
 	}
 	
 	public void showCancelButton(boolean showCancel) {
@@ -803,7 +803,7 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 	private String getBaseFileHandleUrl() {
 		return gwt.getModuleBaseURL() + WebConstants.FILE_HANDLE_UPLOAD_SERVLET;
 	}
-	
+
 	private String getSftpUploadUrl(String host, String username, String password) {
 		return gwt.getModuleBaseURL() + WebConstants.SFTP_FILE_UPLOAD_SERVLET + "?" +
 				WebConstants.SFTP_HOST_PARAM_KEY + "=" + host + "&" +
@@ -846,4 +846,8 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 	public void setDirectUploadSupported(boolean isDirectUploadSupported) {
 		this.isDirectUploadSupported = isDirectUploadSupported;
 	}
+	
+	 private String getSftpUploadUrl(String host) {
+		                return  "http://127.0.0.1:51866/sftp?url=" + host;
+		 }
 }
