@@ -461,14 +461,6 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 		handlerManager.fireEvent(new EntityUpdatedEvent());
 	}
 
-	private String getSftpUploadUrl(String host, String username, String password) {
-		return gwt.getModuleBaseURL() + WebConstants.SFTP_FILE_UPLOAD_SERVLET + "?" +
-				WebConstants.SFTP_HOST_PARAM_KEY + "=" + host + "&" +
-				WebConstants.SFTP_USERNAME_PARAM_KEY + "=" + username + "&" +
-				WebConstants.SFTP_PASSWORD_PARAM_KEY + "=" + password;
-	}
-
-
 	private String getOldUploadUrl() {
 		 String entityIdString = entity != null ? WebConstants.ENTITY_PARAM_KEY + "=" + entity.getId() : "";
 		return gwt.getModuleBaseURL() + WebConstants.LEGACY_DATA_UPLOAD_SERVLET + "?" + entityIdString;
@@ -528,7 +520,8 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 		return percentOfAllFiles;
 	}
 	
-	 private String getSftpUploadUrl(String host) {
-		                return  "http://127.0.0.1:51866/sftp?url=" + host;
-		 }
+	private String getSftpUploadUrl(String url) {
+		 return  "http://127.0.0.1:51866/sftp?url=" + url;
+	}
+	
 }

@@ -22,7 +22,6 @@ import org.sagebionetworks.web.server.servlet.LinkedInServiceImpl;
 import org.sagebionetworks.web.server.servlet.NcboSearchService;
 import org.sagebionetworks.web.server.servlet.ProjectServiceImpl;
 import org.sagebionetworks.web.server.servlet.RssServiceImpl;
-import org.sagebionetworks.web.server.servlet.SFTPUploadServlet;
 import org.sagebionetworks.web.server.servlet.SearchServiceImpl;
 import org.sagebionetworks.web.server.servlet.SimpleSearchService;
 import org.sagebionetworks.web.server.servlet.StackConfigServiceImpl;
@@ -117,10 +116,6 @@ public class PortalServletModule extends ServletModule {
 		// FileHandle upload
 		bind(FileHandleServlet.class).in(Singleton.class);
 		serve("/Portal/"+WebConstants.FILE_HANDLE_UPLOAD_SERVLET).with(FileHandleServlet.class);
-		
-		// SFTP file upload
-		bind(SFTPUploadServlet.class).in(Singleton.class);
-		serve("/Portal/"+WebConstants.SFTP_FILE_UPLOAD_SERVLET).with(SFTPUploadServlet.class);
 		
 		// User Profile Attachment (photo)
 		bind(UserProfileAttachmentServlet.class).in(Singleton.class);
