@@ -151,6 +151,7 @@ public class WebConstants {
 	
 	public static final String FILE_HANDLE_UPLOAD_SERVLET = "filehandle";
 	
+	public static final String SFTP_FILE_UPLOAD_SERVLET = "sftp";
 	public static final String LEGACY_DATA_UPLOAD_SERVLET = "upload";
 
 	public static final String JIRA_PROJECT_ID ="org.sagebionetworks.portal.jira_project_id";
@@ -215,4 +216,9 @@ public class WebConstants {
 	public static final String SELECT_ID_FROM_ENTITY_WHERE_PARENT_ID = "select id from entity where parentId == '";
 	public static final String AND_NAME_EQUALS = "' and name == '";
 	public static final String LIMIT_ONE = "' limit 1";
+	
+	//sftp request params
+	public static final String SFTP_USERNAME_PARAM_KEY = "username";
+	public static final String SFTP_PASSWORD_PARAM_KEY = "password";
+	public static final String SFTP_HOST_PARAM_KEY = "host";
 }

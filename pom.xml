@@ -522,6 +522,13 @@
 			<artifactId>oauth</artifactId>
 			<version>20100527</version>
 		</dependency>
+		
+		<!-- jsch is to support SFTP -->
+		<dependency>
+		    <groupId>com.jcraft</groupId>
+		    <artifactId>jsch</artifactId>
+		    <version>0.1.51</version>
+		</dependency>
 
 		<!-- Test only dependencies -->
 		<dependency>

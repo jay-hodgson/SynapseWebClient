@@ -7,6 +7,7 @@ import org.sagebionetworks.repo.model.attachment.UploadStatus;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.web.client.ClientProperties;
 import org.sagebionetworks.web.client.DisplayConstants;
+import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.SynapseJSNIUtils;
@@ -44,7 +45,7 @@ import com.google.inject.Inject;
  */
 public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter, SynapsePersistable, ProgressingFileUploadHandler {
 	
-	public static final long OLD_BROWSER_MAX_SIZE = (long)ClientProperties.MB * 5; //5MB	
+	public static final long OLD_BROWSER_MAX_SIZE = (long)ClientProperties.MB * 5; //5MB
 	private UploaderView view;
 	private NodeModelCreator nodeModelCreator;
 	private HandlerManager handlerManager;
@@ -133,7 +134,6 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 	public void handleUploads() {
 		if (fileNames == null) {
 			//setup upload process.
-			
 			fileHasBeenUploaded = false;
 			currIndex = 0;
 			if ((fileNames = synapseJsniUtils.getMultipleUploadFileNames(UploaderViewImpl.FILE_FIELD_ID)) == null) {
@@ -174,7 +174,7 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 			throw new IllegalArgumentException(DisplayConstants.LARGE_FILE_ON_UNSUPPORTED_BROWSER);
 		}
 	}
-
+	
 	/**
 	 * Look for a file with the same name (if we aren't uploading to an existing File already).
 	 * @param fileName
@@ -245,8 +245,8 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 			handleUploads();
 		}
 	}
-
 	
+		
 	public void setFileEntityFileHandle(String fileHandleId) {
 		if (entityId != null || parentEntityId != null) {
 			try {
@@ -381,6 +381,7 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 	 */
 	@Override
 	public void handleSubmitResult(String resultHtml) {
+		synapseJsniUtils.consoleLog(resultHtml);
 		if(resultHtml == null) resultHtml = "";
 		// response from server
 		//try to parse
@@ -394,9 +395,9 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 				setFileEntityFileHandle(fileHandleId);
 			}else {
 				uploadError("Upload result status indicated upload was unsuccessful.");
-			}
+	}
 		} catch (Throwable th) {detailedErrorMessage = th.getMessage();};//wasn't an UplaodResult
-		
+	
 		if (uploadResult == null) {
 			if(!resultHtml.contains(DisplayConstants.UPLOAD_SUCCESS)) {
 				uploadError(detailedErrorMessage);
@@ -409,7 +410,7 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 	public void showCancelButton(boolean showCancel) {
 		view.setShowCancelButton(showCancel);
 	}
-	
+
 	@Override
 	public void cancelClicked() {		
 		fireCancelEvent();
@@ -459,6 +460,14 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 		resetUploadProgress();
 		handlerManager.fireEvent(new EntityUpdatedEvent());
 	}
+
+	private String getSftpUploadUrl(String host, String username, String password) {
+		return gwt.getModuleBaseURL() + WebConstants.SFTP_FILE_UPLOAD_SERVLET + "?" +
+				WebConstants.SFTP_HOST_PARAM_KEY + "=" + host + "&" +
+				WebConstants.SFTP_USERNAME_PARAM_KEY + "=" + username + "&" +
+				WebConstants.SFTP_PASSWORD_PARAM_KEY + "=" + password;
+	}
+
 
 	private String getOldUploadUrl() {
 		 String entityIdString = entity != null ? WebConstants.ENTITY_PARAM_KEY + "=" + entity.getId() : "";
@@ -518,4 +527,8 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 		double percentOfAllFiles = percentPerFile*percentOfCurrentFile + (percentPerFile*currentFileIndex);
 		return percentOfAllFiles;
 	}
+	
+	 private String getSftpUploadUrl(String host) {
+		                return  "http://127.0.0.1:51866/sftp?url=" + host;
+		 }
 }
