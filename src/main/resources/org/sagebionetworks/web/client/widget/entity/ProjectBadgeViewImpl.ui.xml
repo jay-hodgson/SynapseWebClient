@@ -15,5 +15,9 @@
 			<bh:Span addStyleNames="smallGreyText">Last activity on: </bh:Span>
 			<bh:Span ui:field="additionalText" addStyleNames="smallGreyText"></bh:Span>
 		</bh:Span>
+		<bh:Span ui:field="createdOnUI" addStyleNames="margin-left-5">
+			<bh:Span addStyleNames="smallGreyText">Created on: </bh:Span>
+			<bh:Span ui:field="createdOnText" addStyleNames="smallGreyText"></bh:Span>
+		</bh:Span>
 	</bh:Div>
 </ui:UiBinder>

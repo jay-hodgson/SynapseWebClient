@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.gwtbootstrap3.client.ui.Tooltip;
 import org.gwtbootstrap3.client.ui.html.Span;
-import org.sagebionetworks.repo.model.ProjectHeader;
 import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.SageImageBundle;
@@ -40,6 +39,10 @@ public class ProjectBadgeViewImpl implements ProjectBadgeView {
 	Span additionalText;
 	@UiField
 	Span additionalTextUI;
+	@UiField
+	Span createdOnText;
+	@UiField
+	Span createdOnUI;
 	
 	boolean isPopoverInitialized;
 	boolean isPopover;
@@ -94,8 +97,13 @@ public class ProjectBadgeViewImpl implements ProjectBadgeView {
 	}
 	
 	@Override
-	public void setLastActivityText(String text) {
+	public void setLastActivityValue(String text) {
 		additionalText.setText(text);
+	}
+	
+	@Override
+	public void setCreatedOnValue(String text) {
+		createdOnText.setText(text);
 	}
 	
 	public void showPopover() {
@@ -131,6 +139,11 @@ public class ProjectBadgeViewImpl implements ProjectBadgeView {
 	@Override
 	public void setLastActivityVisible(boolean isVisible) {
 		additionalTextUI.setVisible(isVisible);
+	}
+	
+	@Override
+	public void setCreatedOnVisible(boolean isVisible) {
+		createdOnUI.setVisible(isVisible);
 	}
 	
 	@Override

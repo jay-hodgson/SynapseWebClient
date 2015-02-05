@@ -16,8 +16,10 @@ public interface ProjectBadgeView extends IsWidget {
 	 */
 	void setPresenter(Presenter presenter);
 	void setProject(String projectName, String projectId);
-	void setLastActivityText(String text);
+	void setLastActivityValue(String text);
 	void setLastActivityVisible(boolean isVisible);
+	void setCreatedOnValue(String text);
+	void setCreatedOnVisible(boolean isVisible);
 	String getSimpleDateString(Date date);
 	
 	/**

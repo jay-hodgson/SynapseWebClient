@@ -51,12 +51,19 @@ public class ProjectBadge implements ProjectBadgeView.Presenter, SynapseWidgetPr
 	public void configure(ProjectHeader header) {
 		this.header = header;
 		view.setLastActivityVisible(false);
+		view.setCreatedOnVisible(false);
 		if (header != null) {
 			if (header.getLastActivity() != null) {
 				try {
 					String dateString = view.getSimpleDateString(header.getLastActivity());
 					view.setLastActivityVisible(true);
-					view.setLastActivityText(dateString);
+					view.setLastActivityValue(dateString);
+				} catch(Exception e) {};
+			} else if (header.getCreatedOn() != null) {
+				try {
+					String dateString = view.getSimpleDateString(header.getCreatedOn());
+					view.setCreatedOnVisible(true);
+					view.setCreatedOnValue(dateString);
 				} catch(Exception e) {};
 			}
 			view.setProject(header.getName(), header.getId());

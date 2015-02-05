@@ -26,7 +26,6 @@ import org.sagebionetworks.web.client.place.Synapse;
 import org.sagebionetworks.web.client.widget.entity.EntityIconsCache;
 import org.sagebionetworks.web.client.widget.entity.ProjectBadge;
 import org.sagebionetworks.web.client.widget.entity.ProjectBadgeView;
-import org.sagebionetworks.web.shared.EntityWrapper;
 import org.sagebionetworks.web.shared.KeyValueDisplay;
 import org.sagebionetworks.web.test.helper.AsyncMockStubber;
 
@@ -65,43 +64,62 @@ public class ProjectBadgeTest {
 		AsyncMockStubber.callSuccessWith(userProfile).when(mockSynapseClient).getUserProfile(anyString(), any(AsyncCallback.class));
 	}
 	
-	private void setupEntity(Project entity, Date lastActivityDate) throws JSONObjectAdapterException {
+	private void setupEntity(Project entity, Date lastActivityDate, Date createdOnDate) throws JSONObjectAdapterException {
 		AsyncMockStubber.callSuccessWith(entity).when(mockSynapseClient).getProject(anyString(), any(AsyncCallback.class));
 		ProjectHeader header = new ProjectHeader();
 		header.setId(entity.getId());
 		header.setName(entity.getName());
 		header.setLastActivity(lastActivityDate);
+		header.setCreatedOn(createdOnDate);
 		widget.configure(header);
 	}
 	
 	@Test
 	public void testConfigure() throws Exception {
-		ProjectHeader header = new ProjectHeader();
+		Project entity = new Project();
 		String id = "syn37373";
 		String name = "a name";
 		Date lastActivity = new Date();
-		header.setId(id);
-		header.setName(name);
-		header.setLastActivity(lastActivity);
-		widget.configure(header);
+		Date createdOnDate = new Date();
+		entity.setName(name);
+		entity.setId(id);
+		setupEntity(entity, lastActivity, createdOnDate);
 		verify(mockView).setProject(name, id);
 		verify(mockView).setLastActivityVisible(true);
-		verify(mockView).setLastActivityText(anyString());
+		verify(mockView).setLastActivityValue(anyString());
 	}
 	
 	@Test
-	public void testConfigureNoActivityDate() throws Exception {
-		ProjectHeader header = new ProjectHeader();
+	public void testConfigureNoActivityOrCreationDate() throws Exception {
+		Project entity = new Project();
 		String id = "syn37373";
 		String name = "a name";
-		header.setId(id);
-		header.setName(name);
-		widget.configure(header);
+		entity.setName(name);
+		entity.setId(id);
+		setupEntity(entity, null, null);
 		verify(mockView).setProject(name, id);
 		verify(mockView).setLastActivityVisible(false);
-		verify(mockView, never()).setLastActivityText(anyString());
+		verify(mockView, never()).setLastActivityValue(anyString());
+		verify(mockView).setCreatedOnVisible(false);
+		verify(mockView, never()).setCreatedOnValue(anyString());
 	}
-
+	
+	@Test
+	public void testConfigureNoActivityWithCreationDate() throws Exception {
+		Project entity = new Project();
+		String id = "syn37373";
+		String name = "a name";
+		entity.setName(name);
+		entity.setId(id);
+		Date creationDate = new Date();
+		setupEntity(entity, null, creationDate);
+		verify(mockView).setProject(name, id);
+		verify(mockView).setLastActivityVisible(false);
+		verify(mockView, never()).setLastActivityValue(anyString());
+		verify(mockView).setCreatedOnVisible(true);
+		verify(mockView).setCreatedOnValue(anyString());
+	}
+	
 	@Test
 	public void testGetInfoHappyCase() throws Exception {
 		String entityId = "syn12345";
@@ -109,14 +127,14 @@ public class ProjectBadgeTest {
 		testProject.setModifiedBy("4444");
 		//note: can't test modified on because it format it using the gwt DateUtils (calls GWT.create())
 		testProject.setId(entityId);
-		setupEntity(testProject, null);
+		setupEntity(testProject, null, null);
 		widget.getInfo(getInfoCallback);
 		verify(getInfoCallback).onSuccess(any(KeyValueDisplay.class));
 	}
 
 	@Test
 	public void testGetInfoFailure() throws Exception {
-		setupEntity(new Project(), null);
+		setupEntity(new Project(), null, null);
 		//failure to get entity
 		Exception ex = new Exception("unhandled");
 		AsyncMockStubber.callFailureWith(ex).when(mockSynapseClient).getProject(anyString(), any(AsyncCallback.class));
@@ -131,7 +149,7 @@ public class ProjectBadgeTest {
 		Project testProject = new Project();
 		testProject.setModifiedBy("4444");
 		testProject.setId(entityId);
-		setupEntity(testProject, null);
+		setupEntity(testProject, null, null);
 		Exception ex = new Exception("unhandled get profile error");
 		AsyncMockStubber.callFailureWith(ex).when(mockSynapseClient).getUserProfile(anyString(), any(AsyncCallback.class));
 		
