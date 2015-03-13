@@ -53,7 +53,6 @@ import org.sagebionetworks.repo.model.EntityHeader;
 import org.sagebionetworks.repo.model.EntityIdList;
 import org.sagebionetworks.repo.model.EntityPath;
 import org.sagebionetworks.repo.model.FileEntity;
-import org.sagebionetworks.repo.model.Locationable;
 import org.sagebionetworks.repo.model.LogEntry;
 import org.sagebionetworks.repo.model.MembershipInvitation;
 import org.sagebionetworks.repo.model.MembershipInvtnSubmission;
@@ -2282,30 +2281,20 @@ public class SynapseClientImpl extends RemoteServiceServlet implements
 			long memberCount = allMembers.getTotalNumberOfResults();
 			boolean isAdmin = false;
 			Team team = synapseClient.getTeam(teamId);
-			String membershipStatusJsonString = null;
+			TeamMembershipStatus membershipStatus = null;
 			// get membership state for the current user
 			if (isLoggedIn) {
-				TeamMembershipStatus membershipStatus = synapseClient
-						.getTeamMembershipStatus(teamId, userId);
-				JSONObjectAdapter membershipStatusJson = membershipStatus
-						.writeToJSONObject(adapterFactory.createNew());
-				membershipStatusJsonString = membershipStatusJson
-						.toJSONString();
+				membershipStatus = synapseClient.getTeamMembershipStatus(teamId, userId);
 				if (membershipStatus.getIsMember()) {
 					TeamMember teamMember = synapseClient.getTeamMember(teamId,
 							userId);
 					isAdmin = teamMember.getIsAdmin();
 				}
 			}
-
-			JSONObjectAdapter teamJson = team.writeToJSONObject(adapterFactory
-					.createNew());
-			return new TeamBundle(teamJson.toJSONString(), memberCount,
-					membershipStatusJsonString, isAdmin);
+			return new TeamBundle(team, memberCount,
+					membershipStatus, isAdmin);
 		} catch (SynapseException e) {
 			throw ExceptionUtil.convertSynapseException(e);
-		} catch (JSONObjectAdapterException e) {
-			throw new UnknownErrorException(e.getMessage());
 		}
 	}
 

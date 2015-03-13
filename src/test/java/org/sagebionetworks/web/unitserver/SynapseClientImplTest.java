@@ -54,7 +54,6 @@ import org.sagebionetworks.repo.model.AccessControlList;
 import org.sagebionetworks.repo.model.AccessRequirement;
 import org.sagebionetworks.repo.model.Annotations;
 import org.sagebionetworks.repo.model.BatchResults;
-import org.sagebionetworks.repo.model.Data;
 import org.sagebionetworks.repo.model.EntityBundle;
 import org.sagebionetworks.repo.model.EntityHeader;
 import org.sagebionetworks.repo.model.EntityIdList;
@@ -62,9 +61,6 @@ import org.sagebionetworks.repo.model.EntityPath;
 import org.sagebionetworks.repo.model.ExampleEntity;
 import org.sagebionetworks.repo.model.FileEntity;
 import org.sagebionetworks.repo.model.Folder;
-import org.sagebionetworks.repo.model.LayerTypeNames;
-import org.sagebionetworks.repo.model.LocationData;
-import org.sagebionetworks.repo.model.LocationTypeNames;
 import org.sagebionetworks.repo.model.LogEntry;
 import org.sagebionetworks.repo.model.MembershipInvitation;
 import org.sagebionetworks.repo.model.MembershipInvtnSubmission;
@@ -1172,10 +1168,8 @@ public class SynapseClientImplTest {
 		TeamBundle bundle = synapseClient.getTeamBundle("myUserId", "myTeamId", true);
 		
 		//now verify round all values were returned in the bundle (based on the mocked service calls)
-		String membershipStatusJson = membershipStatus.writeToJSONObject(adapterFactory.createNew()).toJSONString();
-		String teamJson = team.writeToJSONObject(adapterFactory.createNew()).toJSONString();
-		assertEquals(teamJson, bundle.getTeamJson());
-		assertEquals(membershipStatusJson, bundle.getTeamMembershipStatusJson());
+		assertEquals(team, bundle.getTeam());
+		assertEquals(membershipStatus, bundle.getTeamMembershipStatus());
 		assertEquals(isAdmin, bundle.isUserAdmin());
 		assertEquals(testMemberCount, bundle.getTotalMemberCount());
 	}
