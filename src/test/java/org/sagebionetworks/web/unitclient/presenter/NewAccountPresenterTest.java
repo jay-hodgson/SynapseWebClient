@@ -1,12 +1,7 @@
 package org.sagebionetworks.web.unitclient.presenter;
 
 import static org.mockito.Matchers.*;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
 
 import java.util.Map;
 
@@ -15,6 +10,7 @@ import static junit.framework.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.sagebionetworks.repo.model.principal.AliasType;
 import org.sagebionetworks.web.client.ClientProperties;
@@ -86,6 +82,20 @@ public class NewAccountPresenterTest {
 		NewAccount newPlace = Mockito.mock(NewAccount.class);
 		newAccountPresenter.setPlace(newPlace);
 		verify(mockView).setPresenter(newAccountPresenter);
+	}
+	
+	@Test
+	public void testSetPlaceDecodeEmailOnFF() {
+		reset(mockView);
+		NewAccount newPlace = Mockito.mock(NewAccount.class);
+		String testToken = "firstname=&lastname=&email=user%40gmail.com&timestamp=2015-04-13T16%3A12%3A36.010%2B0000&domain=SYNAPSE&mac=eD9Vv03m%123%3D";
+		when(newPlace.getFixedToken()).thenReturn(testToken);
+		newAccountPresenter.setPlace(newPlace);
+		
+		ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
+		verify(mockSynapseClient).isAliasAvailable(emailCaptor.capture(), eq(AliasType.USER_EMAIL.toString()), any(AsyncCallback.class));
+		String email = emailCaptor.getValue();
+		assertEquals("user@gmail.com", email);
 	}
 	
 	@Test
