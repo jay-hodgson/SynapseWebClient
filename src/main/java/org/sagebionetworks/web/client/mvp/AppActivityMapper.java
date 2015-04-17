@@ -31,6 +31,7 @@ import org.sagebionetworks.web.client.place.Synapse;
 import org.sagebionetworks.web.client.place.Team;
 import org.sagebionetworks.web.client.place.TeamSearch;
 import org.sagebionetworks.web.client.place.Trash;
+import org.sagebionetworks.web.client.place.Welcome;
 import org.sagebionetworks.web.client.place.Wiki;
 import org.sagebionetworks.web.client.place.WikiPlace;
 import org.sagebionetworks.web.client.place.users.PasswordReset;
@@ -38,6 +39,7 @@ import org.sagebionetworks.web.client.place.users.RegisterAccount;
 import org.sagebionetworks.web.client.presenter.BulkPresenterProxy;
 import org.sagebionetworks.web.client.presenter.HomePresenter;
 import org.sagebionetworks.web.client.presenter.PresenterProxy;
+import org.sagebionetworks.web.client.presenter.WelcomePresenter;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 
 import com.google.gwt.activity.shared.Activity;
@@ -72,6 +74,7 @@ public class AppActivityMapper implements ActivityMapper {
 		
 		openAccessPlaces = new ArrayList<Class>();
 		openAccessPlaces.add(Home.class);
+		openAccessPlaces.add(Welcome.class);
 		openAccessPlaces.add(LoginPlace.class);
 		openAccessPlaces.add(PasswordReset.class);
 		openAccessPlaces.add(RegisterAccount.class);
@@ -94,6 +97,7 @@ public class AppActivityMapper implements ActivityMapper {
 		
 		excludeFromLastPlace = new ArrayList<Class>();
 		excludeFromLastPlace.add(Home.class);
+		excludeFromLastPlace.add(Welcome.class);
 		excludeFromLastPlace.add(LoginPlace.class);
 		excludeFromLastPlace.add(PasswordReset.class);
 		excludeFromLastPlace.add(RegisterAccount.class);
@@ -137,10 +141,10 @@ public class AppActivityMapper implements ActivityMapper {
 		
 		// We use GIN to generate and inject all presenters with 
 		// their dependencies.
-		if(place instanceof Home) {
+		if(place instanceof Welcome) {
 			// Split the code
-			PresenterProxy<HomePresenter, Home> presenter = ginjector.getHomePresenter();
-			presenter.setPlace((Home)place);
+			PresenterProxy<WelcomePresenter, Welcome> presenter = ginjector.getWelcomePresenter();
+			presenter.setPlace((Welcome)place);
 			presenter.setGinInjector(ginjector);
 			lastActivity = presenter;
 			return presenter;
@@ -164,7 +168,7 @@ public class AppActivityMapper implements ActivityMapper {
 	 * @return
 	 */
 	public static Place getDefaultPlace() {
-		return new Home(ClientProperties.DEFAULT_PLACE_TOKEN);
+		return new Welcome(Welcome.DEFAULT_WELCOME_PLACE_TOKEN);
 	}
 	
 }

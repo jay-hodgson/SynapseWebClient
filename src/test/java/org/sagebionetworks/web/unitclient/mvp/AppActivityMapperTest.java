@@ -19,10 +19,12 @@ import org.sagebionetworks.web.client.mvp.AppActivityMapper;
 import org.sagebionetworks.web.client.place.Home;
 import org.sagebionetworks.web.client.place.LoginPlace;
 import org.sagebionetworks.web.client.place.Synapse;
+import org.sagebionetworks.web.client.place.Welcome;
 import org.sagebionetworks.web.client.presenter.BulkPresenterProxy;
 import org.sagebionetworks.web.client.presenter.HomePresenter;
 import org.sagebionetworks.web.client.presenter.LoginPresenter;
 import org.sagebionetworks.web.client.presenter.PresenterProxy;
+import org.sagebionetworks.web.client.presenter.WelcomePresenter;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 
 import com.google.gwt.activity.shared.Activity;
@@ -38,7 +40,7 @@ public class AppActivityMapperTest {
 	
 	PortalGinInjector mockInjector;
 
-	PresenterProxy<HomePresenter, Home> mockAll;
+	PresenterProxy<WelcomePresenter, Welcome> mockAll;
 	GlobalApplicationState mockGlobalApplicationState;
 	SynapseJSNIUtils mockSynapseJSNIUtils;
 	AppActivityMapper appActivityMapper;
@@ -62,7 +64,8 @@ public class AppActivityMapperTest {
 		
 		// Home
 		mockAll = Mockito.mock(PresenterProxy.class);
-		when(mockInjector.getHomePresenter()).thenReturn(mockAll);
+		when(mockInjector.getWelcomePresenter()).thenReturn(mockAll);
+		
 		// Global App State
 		mockGlobalApplicationState = Mockito.mock(GlobalApplicationState.class);
 		when(mockInjector.getGlobalApplicationState()).thenReturn(mockGlobalApplicationState);
@@ -76,14 +79,14 @@ public class AppActivityMapperTest {
 	public void testUnknown(){
 
 		// This is the place we will pass in
-		Home unknownPlace = new Home(""); 
+		Welcome unknownPlace = new Welcome(""); 
 
 		// Create the mapper
 		Activity object = appActivityMapper.getActivity(unknownPlace);
 		assertNotNull(object);
 		
 		// Validate that the place was set.
-		verify(mockAll).setPlace((Home) anyObject());
+		verify(mockAll).setPlace((Welcome) anyObject());
 		
 		// validate that the place change was recorded
 		verify(mockSynapseJSNIUtils, Mockito.times(1)).recordPageVisit(historyToken);
