@@ -3,6 +3,12 @@ package org.sagebionetworks.web.client.widget.entity.editor;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.sagebionetworks.web.client.DisplayUtils;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
@@ -20,6 +26,21 @@ public class TabbedTableConfigViewImpl implements TabbedTableConfigView {
 	@Inject
 	public TabbedTableConfigViewImpl(TabbedTableConfigViewImplUiBinder binder) {
 		widget = binder.createAndBindUi(this);
+		tableContents.addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				GWT.debugger();
+				if (KeyCodes.KEY_TAB == event.getNativeKeyCode()) {
+					event.preventDefault();
+					event.stopPropagation();
+					int index = tableContents.getCursorPos();
+			        String text = tableContents.getText();
+			        tableContents.setText(text.substring(0, index) 
+			                   + "\t" + text.substring(index));
+			        tableContents.setCursorPos(index + 1);
+				}	
+			}
+		});
 	}
 	
 	@Override
