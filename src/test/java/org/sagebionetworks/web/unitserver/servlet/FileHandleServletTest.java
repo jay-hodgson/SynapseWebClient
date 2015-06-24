@@ -42,7 +42,6 @@ public class FileHandleServletTest {
 	HttpServletResponse mockResponse;
 	ServiceUrlProvider mockUrlProvider;
 	SynapseProvider mockSynapseProvider;
-	TokenProvider mockTokenProvider;
 	SynapseClient mockSynapse;
 	ServletOutputStream responseOutputStream;
 	FileHandleServlet servlet;
@@ -76,12 +75,10 @@ public class FileHandleServletTest {
 		when(mockSynapse.getTeamIcon(anyString())).thenReturn(resolvedUrl);
 
 		mockUrlProvider = mock(ServiceUrlProvider.class);
-		mockTokenProvider = mock(TokenProvider.class);
-
+		
 		servlet.setServiceUrlProvider(mockUrlProvider);
 		servlet.setSynapseProvider(mockSynapseProvider);
-		servlet.setTokenProvider(mockTokenProvider);
-
+		
 		// Setup output stream and response
 		responseOutputStream = mock(ServletOutputStream.class);
 		mockResponse = mock(HttpServletResponse.class);

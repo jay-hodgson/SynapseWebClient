@@ -65,12 +65,6 @@ public class FileHandleServlet extends HttpServlet {
 	@SuppressWarnings("unused")
 	private ServiceUrlProvider urlProvider;
 	private SynapseProvider synapseProvider = new SynapseProviderImpl();
-	private TokenProvider tokenProvider = new TokenProvider() {
-		@Override
-		public String getSessionToken() {
-			return UserDataProvider.getThreadLocalUserToken(FileHandleServlet.perThreadRequest.get());
-		}
-	};
 
 	/**
 	 * Unit test can override this.
@@ -89,15 +83,6 @@ public class FileHandleServlet extends HttpServlet {
 	@Inject
 	public void setServiceUrlProvider(ServiceUrlProvider provider) {
 		this.urlProvider = provider;
-	}
-
-	/**
-	 * Unit test uses this to provide a mock token provider
-	 *
-	 * @param tokenProvider
-	 */
-	public void setTokenProvider(TokenProvider tokenProvider) {
-		this.tokenProvider = tokenProvider;
 	}
 
 	@Override
@@ -123,8 +108,8 @@ public class FileHandleServlet extends HttpServlet {
 		response.setHeader(WebConstants.PRAGMA_KEY, WebConstants.NO_CACHE_VALUE); // Set standard HTTP/1.0 no-cache header.
 		response.setDateHeader(WebConstants.EXPIRES_KEY, 0L); // Proxy
 
-		String token = getSessionToken(request);
-		SynapseClient client = createNewClient(token);
+		String sessionToken = UserDataProvider.getThreadLocalUserToken(request);
+		SynapseClient client = createNewClient(sessionToken);
 		boolean isProxy = false;
 		String proxy = request.getParameter(WebConstants.PROXY_PARAM_KEY);
 		if (proxy != null)
@@ -319,15 +304,15 @@ public class FileHandleServlet extends HttpServlet {
 	public void doPost(final HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		// Before we do anything make sure we can get the users token
-		String token = getSessionToken(request);
-		if (token == null) {
+		String sessionToken = UserDataProvider.getThreadLocalUserToken(request);
+		if (sessionToken == null) {
 			FileHandleServlet.setForbiddenMessage(response);
 			return;
 		}
 
 		try {
 			//Connect to synapse
-			SynapseClient client = createNewClient(token);
+			SynapseClient client = createNewClient(sessionToken);
 			FileHandle newFileHandle = FileHandleServlet.uploadFile(client, request);
 			FileHandleServlet.fillResponseWithSuccess(response, newFileHandle.getId());
 		} catch (Exception e) {
@@ -391,15 +376,6 @@ public class FileHandleServlet extends HttpServlet {
 		};
 	}
 		
-	/**
-	 * Get the session token
-	 * @param request
-	 * @return
-	 */
-	public String getSessionToken(final HttpServletRequest request){
-		return tokenProvider.getSessionToken();
-	}
-
 	/**
 	 * The call was forbidden
 	 *
