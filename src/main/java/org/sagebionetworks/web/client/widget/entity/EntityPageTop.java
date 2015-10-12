@@ -18,6 +18,7 @@ import org.sagebionetworks.repo.model.table.TableEntity;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.SynapseClientAsync;
+import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.events.EntityUpdatedEvent;
 import org.sagebionetworks.web.client.events.EntityUpdatedHandler;
 import org.sagebionetworks.web.client.place.Synapse;
@@ -60,6 +61,7 @@ public class EntityPageTop implements EntityPageTopView.Presenter, SynapseWidget
 	private ChallengeTab adminTab;
 	private EntityMetadata projectMetadata;
 	private SynapseClientAsync synapseClient;
+	private SynapseJSNIUtils synapseJSNIUtils;
 	private GWTWrapper gwt;
 	
 	private EntityActionController controller;
@@ -77,7 +79,8 @@ public class EntityPageTop implements EntityPageTopView.Presenter, SynapseWidget
 			ChallengeTab adminTab,
 			EntityActionController controller,
 			ActionMenuWidget actionMenu,
-			GWTWrapper gwt
+			GWTWrapper gwt,
+			SynapseJSNIUtils synapseJSNIUtils
 			) {
 		this.view = view;
 		this.synapseClient = synapseClient;
@@ -90,6 +93,7 @@ public class EntityPageTop implements EntityPageTopView.Presenter, SynapseWidget
 		this.controller = controller;
 		this.actionMenu = actionMenu;
 		this.gwt = gwt;
+		this.synapseJSNIUtils = synapseJSNIUtils;
 		
 		initTabs();
 		view.setTabs(tabs.asWidget());
@@ -309,6 +313,7 @@ public class EntityPageTop implements EntityPageTopView.Presenter, SynapseWidget
 				// Note: The fix for SWC-1785 was to set this check to area == null.  Prior to this change it was area != WIKI.
 				if(isWikiTabShown) {
 					tabs.showTab(filesTab.asTab());
+					replaceURLWithProjectAlias();
 				}
 			}
 		};
@@ -319,6 +324,7 @@ public class EntityPageTop implements EntityPageTopView.Presenter, SynapseWidget
 		if (isWikiTabShown) {
 			//initially push the configured place into the browser history
 			tabs.showTab(wikiTab.asTab());
+			replaceURLWithProjectAlias();
 		}
 
 		CallbackP<String> wikiReloadHandler = new CallbackP<String>(){
@@ -328,6 +334,15 @@ public class EntityPageTop implements EntityPageTopView.Presenter, SynapseWidget
 			}
 		};
 		wikiTab.setWikiReloadHandler(wikiReloadHandler);
+	}
+	
+	public void replaceURLWithProjectAlias() {
+		if (projectBundle != null) {
+			String alias = ((Project)projectBundle.getEntity()).getAlias();
+			if (alias != null && alias.length() > 0) {
+				synapseJSNIUtils.replaceHistoryStateNoHash(alias);	
+			}
+		}
 	}
 	
 	public void configureAdminTab() {

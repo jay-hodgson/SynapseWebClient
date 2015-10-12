@@ -443,7 +443,17 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 	
 	private static native void _replaceHistoryState(String token)/*-{
 		var stateObj = { source: 'replaceState' };
-		$wnd.history.replaceState( stateObj , '', '#'+token );
+		$wnd.history.replaceState( stateObj , '', '/#'+token );
+	}-*/;
+	
+	@Override
+	public void replaceHistoryStateNoHash(String token) {
+		_replaceHistoryStateNoHash(token);
+	}
+	
+	private static native void _replaceHistoryStateNoHash(String token)/*-{
+		var stateObj = { source: 'replaceState' };
+		$wnd.history.replaceState( stateObj , '', '/' + token );
 	}-*/;
 
 	@Override
@@ -453,7 +463,7 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 
 	private static native void _pushHistoryState(String token)/*-{
 		var stateObj = { source: 'pushState' };
-		$wnd.history.pushState( stateObj , '', '#'+token );
+		$wnd.history.pushState( stateObj , '', '/#'+token );
 	}-*/;
 
 	@Override
