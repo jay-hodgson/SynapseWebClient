@@ -411,15 +411,14 @@ public class MarkdownItImpl implements MarkdownIt {
 				linkify : true,
 				maxNesting : 100
 			});
-			$wnd.md.disable([ 'heading' ]);
-			$wnd.md.disable([ 'lheading' ]);
+			$wnd.md.disable([ 'heading', 'lheading' ]);
 			$wnd.md.use($wnd.markdownitSub)
 				.use($wnd.markdownitSup)
 				.use($wnd.markdownitCentertext)
 				.use($wnd.markdownitSynapseHeading)
 				.use($wnd.markdownitSynapseTable)
-				.use($wnd.markdownitStrikethroughAlt);
-
+				.use($wnd.markdownitStrikethroughAlt)
+				.use($wnd.markdownitListStandalone);
 			$wnd.md.set({
 				highlight : function(str, lang) {
 					if (lang && $wnd.hljs.getLanguage(lang)) {
