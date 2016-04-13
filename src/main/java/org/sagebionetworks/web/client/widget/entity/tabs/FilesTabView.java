@@ -29,4 +29,6 @@ public interface FilesTabView extends IsWidget {
 	void clearActionMenuContainer();
 	void setModifiedCreatedBy(IsWidget modifiedCreatedBy);
 	void setRefreshAlert(Widget w);
+	void addIFrameToRenderHtml(String url);
+	void clearIFrameToRenderHtml();
 }

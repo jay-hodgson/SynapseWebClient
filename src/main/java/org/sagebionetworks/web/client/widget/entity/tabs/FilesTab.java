@@ -24,10 +24,12 @@ import org.sagebionetworks.repo.model.ObjectType;
 import org.sagebionetworks.repo.model.Project;
 import org.sagebionetworks.repo.model.Reference;
 import org.sagebionetworks.repo.model.Versionable;
+import org.sagebionetworks.repo.model.file.FileHandle;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.PortalGinInjector;
 import org.sagebionetworks.web.client.SynapseClientAsync;
+import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.events.EntityUpdatedEvent;
 import org.sagebionetworks.web.client.events.EntityUpdatedHandler;
 import org.sagebionetworks.web.client.place.Synapse;
@@ -72,6 +74,7 @@ public class FilesTab implements FilesTabView.Presenter{
 	StuAlert synAlert;
 	SynapseClientAsync synapseClient;
 	GlobalApplicationState globalApplicationState;
+	SynapseJSNIUtils synapseJSNIUtils;
 	
 	Entity currentEntity;
 	String currentEntityId;
@@ -102,7 +105,8 @@ public class FilesTab implements FilesTabView.Presenter{
 			SynapseClientAsync synapseClient,
 			PortalGinInjector ginInjector,
 			GlobalApplicationState globalApplicationState,
-			ModifiedCreatedByWidget modifiedCreatedBy
+			ModifiedCreatedByWidget modifiedCreatedBy,
+			SynapseJSNIUtils synapseJSNIUtils
 			) {
 		this.view = view;
 		this.tab = tab;
@@ -118,6 +122,7 @@ public class FilesTab implements FilesTabView.Presenter{
 		this.ginInjector = ginInjector;
 		this.globalApplicationState = globalApplicationState;
 		this.modifiedCreatedBy = modifiedCreatedBy;
+		this.synapseJSNIUtils = synapseJSNIUtils; 
 		view.setPresenter(this);
 		
 		previewWidget.setHeight(WIDGET_HEIGHT_PX + "px");
@@ -190,6 +195,7 @@ public class FilesTab implements FilesTabView.Presenter{
 		view.setWikiPageWidgetVisible(false);
 		view.setFileBrowserVisible(false);
 		view.clearActionMenuContainer();
+		view.clearIFrameToRenderHtml();
 		breadcrumb.clear();
 		view.setProgrammaticClientsVisible(false);
 		view.setProvenanceVisible(false);
@@ -316,6 +322,15 @@ public class FilesTab implements FilesTabView.Presenter{
 		if (isFile) {
 			fileTitleBar.configure(bundle);
 			previewWidget.configure(bundle);
+			FileHandle fileHandle = DisplayUtils.getFileHandle(bundle);
+			if (fileHandle.getFileName().toLowerCase().endsWith("html")) {
+				//render html
+				FileEntity fileEntity = (FileEntity) currentEntity;
+				String url = DisplayUtils.createFileEntityUrl(synapseJSNIUtils.getBaseFileHandleUrl(), fileEntity.getId(), fileEntity.getVersionNumber(), false, true);
+				view.addIFrameToRenderHtml(url);
+//				TODO: view.setPreviewVisible(false);
+//				TODO: view.setProvenanceVisible(false);
+			}
 		}
 		
 		view.setFolderTitlebarVisible(isFolder);

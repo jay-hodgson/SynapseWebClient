@@ -11,6 +11,8 @@ import org.sagebionetworks.web.client.widget.user.UserBadge;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -49,6 +51,8 @@ public class FilesTabViewImpl implements FilesTabView {
 	SimplePanel synapseAlertContainer;
 	@UiField
 	SimplePanel refreshAlertContainer;
+	@UiField
+	SimplePanel htmlIFrameContainer;
 	
 	public interface TabsViewImplUiBinder extends UiBinder<Widget, FilesTabViewImpl> {}
 	private Presenter presenter;
@@ -203,4 +207,17 @@ public class FilesTabViewImpl implements FilesTabView {
 	public void setRefreshAlert(Widget w) {
 		refreshAlertContainer.setWidget(w);
 	};
+	@Override
+	public void addIFrameToRenderHtml(String url) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<iframe width=\"100%\" height=\"500px\" src=\"");
+		sb.append(url);
+		sb.append("\" frameborder=\"0\" allowfullscreen></iframe>");
+		
+		htmlIFrameContainer.setWidget(new HTML(sb.toString()));
+	}
+	@Override
+	public void clearIFrameToRenderHtml() {
+		htmlIFrameContainer.clear();
+	}
 }
