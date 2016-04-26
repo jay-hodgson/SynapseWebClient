@@ -14,7 +14,9 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.sagebionetworks.repo.model.search.query.KeyValue;
 import org.sagebionetworks.repo.model.search.query.SearchQuery;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
@@ -23,7 +25,9 @@ import org.sagebionetworks.web.client.ClientProperties;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.IconsImageBundle;
 import org.sagebionetworks.web.client.PlaceChanger;
+import org.sagebionetworks.web.client.RequestBuilderWrapper;
 import org.sagebionetworks.web.client.SynapseClientAsync;
+import org.sagebionetworks.web.client.cookie.CookieProvider;
 import org.sagebionetworks.web.client.place.Search;
 import org.sagebionetworks.web.client.place.Synapse;
 import org.sagebionetworks.web.client.presenter.SearchPresenter;
@@ -50,8 +54,13 @@ public class SearchPresenterTest {
 	String exampleTerm;
 	String exampleTermSearchQueryJson;
 	SearchQuery exampleTermSearchQuery;
+	@Mock
+	CookieProvider mockCookies;
+	@Mock
+	RequestBuilderWrapper mockRequestBuilder;
 	@Before
 	public void setup() throws Exception{
+		MockitoAnnotations.initMocks(this);
 		mockView = mock(SearchView.class);
 		mockGlobalApplicationState = mock(GlobalApplicationState.class);
 		mockSynapseClient = mock(SynapseClientAsync.class);
@@ -64,7 +73,10 @@ public class SearchPresenterTest {
 				mockGlobalApplicationState,
 				mockSynapseClient,
 				new JSONObjectAdapterImpl(),
-				mockSynAlert);
+				mockSynAlert,
+				mockCookies,
+				mockRequestBuilder
+				);
 		
 		exampleTerm = "searchQueryTerm";
 		exampleTermSearchQuery = SearchQueryUtils.getDefaultSearchQuery();

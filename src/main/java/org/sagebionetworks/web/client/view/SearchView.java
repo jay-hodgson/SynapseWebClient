@@ -12,6 +12,7 @@ import org.sagebionetworks.web.client.SynapseView;
 import org.sagebionetworks.web.client.widget.search.PaginationEntry;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -22,6 +23,11 @@ public interface SearchView extends IsWidget, SynapseView {
 	 * @param searchResults
 	 */
 	public void setSearchResults(SearchResults searchResults, String searchTerm, boolean newQuery);
+	
+	
+	void setSearchTerm(String searchTerm);
+	void setGoogleSearchResults(String html);
+	
 	
 	/**
 	 * Set this view's presenter

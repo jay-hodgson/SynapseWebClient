@@ -159,6 +159,19 @@ public class SearchViewImpl extends Composite implements SearchView {
 	}
 
 	@Override
+	public void setSearchTerm(String searchTerm) {
+		searchField.setText(searchTerm);
+	}
+	
+	@Override
+	public void setGoogleSearchResults(String html) {
+		resultsPanel.clear();
+		resultsPanel.add(new HTMLPanel(html));
+		// scroll user to top of page
+		Window.scrollTo(0, 0);
+	}
+	
+	@Override
 	public void setSearchResults(SearchResults searchResults,
 			String searchTerm, boolean newQuery) {
 		// set searchTerm into search box

@@ -19,7 +19,9 @@ import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GlobalApplicationState;
+import org.sagebionetworks.web.client.RequestBuilderWrapper;
 import org.sagebionetworks.web.client.SynapseClientAsync;
+import org.sagebionetworks.web.client.cookie.CookieProvider;
 import org.sagebionetworks.web.client.place.Search;
 import org.sagebionetworks.web.client.place.Synapse;
 import org.sagebionetworks.web.client.view.SearchView;
@@ -29,8 +31,21 @@ import org.sagebionetworks.web.client.widget.search.PaginationUtil;
 import org.sagebionetworks.web.shared.SearchQueryUtils;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.Callback;
+import com.google.gwt.core.client.ScriptInjector;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
@@ -51,18 +66,24 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 	private boolean newQuery = false;
 	private Map<String,String> timeValueToDisplay = new HashMap<String, String>();
 	private Date searchStartTime;
+	private CookieProvider cookies;
+	private RequestBuilderWrapper requestBuilder;
 	
 	@Inject
 	public SearchPresenter(SearchView view,
 			GlobalApplicationState globalApplicationState,
 			SynapseClientAsync synapseClient,
 			JSONObjectAdapter jsonObjectAdapter,
-			SynapseAlert synAlert) {
+			SynapseAlert synAlert, 
+			CookieProvider cookies,
+			RequestBuilderWrapper requestBuilder) {
 		this.view = view;
 		this.globalApplicationState = globalApplicationState;
 		this.synapseClient = synapseClient;
 		this.jsonObjectAdapter = jsonObjectAdapter;
 		this.synAlert = synAlert;
+		this.cookies = cookies;
+		this.requestBuilder = requestBuilder;
 		currentSearch = getBaseSearchQuery();
 		view.setPresenter(this);
 		view.setSynAlertWidget(synAlert.asWidget());
@@ -80,13 +101,70 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 		view.setPresenter(this);
 		String queryTerm = place.getSearchTerm();
 		if (queryTerm == null) queryTerm = "";
-
-		currentSearch = checkForJson(queryTerm);
-		if (place.getStart() != null)
-			currentSearch.setStart(place.getStart());
-		executeSearch();
+		
+		// if in alpha mode, use Google custom search
+		if(DisplayUtils.isInTestWebsite(cookies)) {
+			executeGoogleCustomSearch(queryTerm);
+		} else {
+			currentSearch = checkForJson(queryTerm);
+			if (place.getStart() != null)
+				currentSearch.setStart(place.getStart());
+			executeSearch();	
+		}
 	}
+	
+	public void executeGoogleCustomSearch(String searchTerm) {
+		view.setSearchTerm(searchTerm);
+		String encodedSearchTerm = URL.encodeQueryString(searchTerm);
+		String url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyCiKk874fJ5H0QRvrNoZlvlcyehkkP1lIY&cx=011610888334356746975:2h4iorbko2u&q=" + encodedSearchTerm;
+		executeGoogleCustomSearchUrl(url);
+	}
+	
+	public void executeGoogleCustomSearchUrl(String url) {
+		//get results from google api
+		//url encode search term
+		requestBuilder.configure(RequestBuilder.GET, url);
+		view.showLoading();
+		try {
+			requestBuilder.sendRequest(null, new RequestCallback() {
 
+				@Override
+				public void onResponseReceived(Request request,
+						Response response) {
+					int statusCode = response.getStatusCode();
+					if (statusCode == Response.SC_OK) {
+						StringBuilder builder = new StringBuilder();
+						JSONObject value = JSONParser.parseStrict(response.getText()).isObject();
+						JSONArray items = value.get("items").isArray();
+						for (int i = 0; i < items.size(); i++) {
+							JSONObject item = items.get(i).isObject();
+							builder.append("<a href=\"");
+							builder.append(item.get("link").isString().stringValue());
+							builder.append("\">");
+							builder.append(item.get("htmlTitle").isString().stringValue());
+							builder.append("</a><br>");
+							builder.append(item.get("htmlSnippet").isString().stringValue());
+							builder.append("<br><br>");
+						}
+						view.setGoogleSearchResults(builder.toString());
+					} else {
+						JSONObject value = JSONParser.parseStrict(response.getText()).isObject();
+						String reason = value.get("message").isString().stringValue();
+						onError(null, new IllegalArgumentException("Unable to retrieve search results. Reason: " + reason));
+					}
+				}
+
+				@Override
+				public void onError(Request request, Throwable exception) {
+					synAlert.handleException(exception);
+				}
+			});
+		} catch (final Exception e) {
+			synAlert.handleException(e);
+		}
+		
+	}
+	
 	@Override
     public String mayStop() {
         view.clear();
