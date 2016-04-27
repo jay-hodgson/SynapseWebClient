@@ -68,7 +68,8 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 	private Date searchStartTime;
 	private CookieProvider cookies;
 	private RequestBuilderWrapper requestBuilder;
-	
+	private static String GOOGLE_API_KEY = "AIzaSyBH1ZOIRGBY09yMgX75mGQmkYVJrKsBV3w";
+	private static String GOOGLE_SEARCH_ENGINE_ID_CX = "011729395372098405859:0vx7jvfcbik";
 	@Inject
 	public SearchPresenter(SearchView view,
 			GlobalApplicationState globalApplicationState,
@@ -116,7 +117,7 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 	public void executeGoogleCustomSearch(String searchTerm) {
 		view.setSearchTerm(searchTerm);
 		String encodedSearchTerm = URL.encodeQueryString(searchTerm);
-		String url = "https://www.googleapis.com/customsearch/v1?key=AIzaSyCiKk874fJ5H0QRvrNoZlvlcyehkkP1lIY&cx=011610888334356746975:2h4iorbko2u&q=" + encodedSearchTerm;
+		String url = "https://www.googleapis.com/customsearch/v1?fields=items(htmlTitle,link,htmlSnippet)&key="+GOOGLE_API_KEY+"&cx="+GOOGLE_SEARCH_ENGINE_ID_CX+"&q=" + encodedSearchTerm;
 		executeGoogleCustomSearchUrl(url);
 	}
 	
