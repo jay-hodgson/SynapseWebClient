@@ -177,11 +177,11 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 							JSONArray items = value.get("items").isArray();
 							for (int i = 0; i < items.size(); i++) {
 								JSONObject item = items.get(i).isObject();
-								builder.append("<a href=\"");
+								builder.append("<h5><a href=\"");
 								builder.append(item.get("link").isString().stringValue());
 								builder.append("\">");
 								builder.append(item.get("htmlTitle").isString().stringValue());
-								builder.append("</a><br>");
+								builder.append("</a></h5>");
 								builder.append(item.get("htmlSnippet").isString().stringValue().replaceAll("<br>", ""));
 								builder.append("<br><br>");
 							}
