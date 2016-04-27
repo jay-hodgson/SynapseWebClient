@@ -27,7 +27,7 @@ public interface SearchView extends IsWidget, SynapseView {
 	
 	void setSearchTerm(String searchTerm);
 	void setGoogleSearchResults(String html);
-	
+	void setGooglePaginationWidget(Widget w);
 	
 	/**
 	 * Set this view's presenter

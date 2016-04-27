@@ -172,6 +172,12 @@ public class SearchViewImpl extends Composite implements SearchView {
 	}
 	
 	@Override
+	public void setGooglePaginationWidget(Widget w) {
+		paginationPanel.clear();
+		paginationPanel.add(w);
+	}
+	
+	@Override
 	public void setSearchResults(SearchResults searchResults,
 			String searchTerm, boolean newQuery) {
 		// set searchTerm into search box

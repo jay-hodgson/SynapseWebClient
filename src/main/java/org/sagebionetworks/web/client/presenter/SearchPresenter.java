@@ -23,16 +23,16 @@ import org.sagebionetworks.web.client.RequestBuilderWrapper;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.cookie.CookieProvider;
 import org.sagebionetworks.web.client.place.Search;
-import org.sagebionetworks.web.client.place.Synapse;
 import org.sagebionetworks.web.client.view.SearchView;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
+import org.sagebionetworks.web.client.widget.pagination.BasicPaginationWidget;
+import org.sagebionetworks.web.client.widget.pagination.DetailedPaginationWidget;
+import org.sagebionetworks.web.client.widget.pagination.PageChangeListener;
 import org.sagebionetworks.web.client.widget.search.PaginationEntry;
 import org.sagebionetworks.web.client.widget.search.PaginationUtil;
 import org.sagebionetworks.web.shared.SearchQueryUtils;
 
 import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.core.client.Callback;
-import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.http.client.Request;
@@ -43,14 +43,11 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
-public class SearchPresenter extends AbstractActivity implements SearchView.Presenter, Presenter<Search> {
+public class SearchPresenter extends AbstractActivity implements SearchView.Presenter, Presenter<Search>, PageChangeListener {
 	
 	//private final List<String> FACETS_DEFAULT = Arrays.asList(new String[] {"node_type","disease","species","tissue","platform","num_samples","created_by","modified_by","created_on","modified_on","acl","reference"});
 	
@@ -70,6 +67,9 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 	private RequestBuilderWrapper requestBuilder;
 	private static String GOOGLE_API_KEY = "AIzaSyBH1ZOIRGBY09yMgX75mGQmkYVJrKsBV3w";
 	private static String GOOGLE_SEARCH_ENGINE_ID_CX = "011729395372098405859:0vx7jvfcbik";
+	// pagination widget used in google results
+	BasicPaginationWidget paginationWidget;
+	
 	@Inject
 	public SearchPresenter(SearchView view,
 			GlobalApplicationState globalApplicationState,
@@ -77,7 +77,8 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 			JSONObjectAdapter jsonObjectAdapter,
 			SynapseAlert synAlert, 
 			CookieProvider cookies,
-			RequestBuilderWrapper requestBuilder) {
+			RequestBuilderWrapper requestBuilder,
+			BasicPaginationWidget paginationWidget) {
 		this.view = view;
 		this.globalApplicationState = globalApplicationState;
 		this.synapseClient = synapseClient;
@@ -85,6 +86,7 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 		this.synAlert = synAlert;
 		this.cookies = cookies;
 		this.requestBuilder = requestBuilder;
+		this.paginationWidget = paginationWidget;
 		currentSearch = getBaseSearchQuery();
 		view.setPresenter(this);
 		view.setSynAlertWidget(synAlert.asWidget());
@@ -102,22 +104,47 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 		view.setPresenter(this);
 		String queryTerm = place.getSearchTerm();
 		if (queryTerm == null) queryTerm = "";
-		
+		currentSearch = checkForJson(queryTerm);
 		// if in alpha mode, use Google custom search
 		if(DisplayUtils.isInTestWebsite(cookies)) {
-			executeGoogleCustomSearch(queryTerm);
+			//start index is 1 in this api!
+			view.clear();
+			executeGoogleCustomSearch(0L);
 		} else {
-			currentSearch = checkForJson(queryTerm);
 			if (place.getStart() != null)
 				currentSearch.setStart(place.getStart());
 			executeSearch();	
 		}
 	}
 	
-	public void executeGoogleCustomSearch(String searchTerm) {
-		view.setSearchTerm(searchTerm);
-		String encodedSearchTerm = URL.encodeQueryString(searchTerm);
-		String url = "https://www.googleapis.com/customsearch/v1?fields=items(htmlTitle,link,htmlSnippet)&key="+GOOGLE_API_KEY+"&cx="+GOOGLE_SEARCH_ENGINE_ID_CX+"&q=" + encodedSearchTerm;
+	@Override
+	public void onPageChange(Long newOffset) {
+		executeGoogleCustomSearch(newOffset);
+	}
+	
+	public String getBasicSearchTermFromCurrentQuery() {
+		List<String> searchTerms = currentSearch.getQueryTerm();
+		StringBuilder query = new StringBuilder();
+		for (String term : searchTerms) {
+			query.append(term);
+			query.append(' ');
+		}
+		String queryString = query.toString();
+		if (queryString.indexOf("%20") > -1) {
+			queryString = URL.decode(queryString);
+		}
+		return queryString;
+	}
+	
+	public void executeGoogleCustomSearch(Long index) {
+		if (index < 1) {
+			index = 1L;
+		}
+		String searchTerms = getBasicSearchTermFromCurrentQuery();
+		view.setSearchTerm(searchTerms);
+		String encodedSearchTerm = URL.encodeQueryString(searchTerms);
+		//add filter for performance: fields=items(htmlTitle,link,htmlSnippet)
+		String url = "https://www.googleapis.com/customsearch/v1?prettyPrint=false&key="+GOOGLE_API_KEY+"&start="+index+"&cx="+GOOGLE_SEARCH_ENGINE_ID_CX+"&q=" + encodedSearchTerm;
 		executeGoogleCustomSearchUrl(url);
 	}
 	
@@ -128,7 +155,6 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 		view.showLoading();
 		try {
 			requestBuilder.sendRequest(null, new RequestCallback() {
-
 				@Override
 				public void onResponseReceived(Request request,
 						Response response) {
@@ -136,18 +162,32 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 					if (statusCode == Response.SC_OK) {
 						StringBuilder builder = new StringBuilder();
 						JSONObject value = JSONParser.parseStrict(response.getText()).isObject();
-						JSONArray items = value.get("items").isArray();
-						for (int i = 0; i < items.size(); i++) {
-							JSONObject item = items.get(i).isObject();
-							builder.append("<a href=\"");
-							builder.append(item.get("link").isString().stringValue());
-							builder.append("\">");
-							builder.append(item.get("htmlTitle").isString().stringValue());
-							builder.append("</a><br>");
-							builder.append(item.get("htmlSnippet").isString().stringValue());
-							builder.append("<br><br>");
+						//determine previous and next page start index
+						JSONObject queries = value.get("queries").isObject();
+						
+						// set up pagination
+						JSONObject requestQuery = queries.get("request").isArray().get(0).isObject();
+						Long limit = (long)requestQuery.get("count").isNumber().doubleValue();
+						Long offset = (long)requestQuery.get("startIndex").isNumber().doubleValue();
+						Long totalCount = Long.parseLong(requestQuery.get("totalResults").isString().stringValue());
+						if (totalCount > 0) {
+							paginationWidget.configure(limit, offset, totalCount, SearchPresenter.this);	
+						} 
+						if (value.containsKey("items")) {
+							JSONArray items = value.get("items").isArray();
+							for (int i = 0; i < items.size(); i++) {
+								JSONObject item = items.get(i).isObject();
+								builder.append("<a href=\"");
+								builder.append(item.get("link").isString().stringValue());
+								builder.append("\">");
+								builder.append(item.get("htmlTitle").isString().stringValue());
+								builder.append("</a><br>");
+								builder.append(item.get("htmlSnippet").isString().stringValue().replaceAll("<br>", ""));
+								builder.append("<br><br>");
+							}
 						}
 						view.setGoogleSearchResults(builder.toString());
+						view.setGooglePaginationWidget(paginationWidget.asWidget());
 					} else {
 						JSONObject value = JSONParser.parseStrict(response.getText()).isObject();
 						String reason = value.get("message").isString().stringValue();
