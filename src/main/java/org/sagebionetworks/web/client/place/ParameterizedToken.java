@@ -63,4 +63,7 @@ public class ParameterizedToken {
 		params.clear();
 	}
 	
+	public int size() {
+		return params.size();
+	}
 }

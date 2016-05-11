@@ -6,74 +6,58 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
 
-public class Profile extends Place implements RestartActivityOptional{
+public class Profile extends ParameterizedPlace implements RestartActivityOptional{
+	public static final String USER_ID_PARAM = "userId";
+	public static final String AREA_PARAM = "area";
+	public static final String PROJECT_FILTER_PARAM = "projects";
+	public static final String USERNAME_PARAM = "username";
+	public static final String MESSAGE_PARAM = "message";
+	
 	public static final String EDIT_PROFILE_TOKEN="edit";
-	public static final String DELIMITER = "/"; 
+	public static final String DELIMITER = "/";
 	public static final String SETTINGS_DELIMITER = getDelimiter(Synapse.ProfileArea.SETTINGS);
 	public static final String PROJECTS_DELIMITER = getDelimiter(Synapse.ProfileArea.PROJECTS);
 	public static final String CHALLENGES_DELIMITER = getDelimiter(Synapse.ProfileArea.CHALLENGES);
 	public static final String TEAMS_DELIMITER = getDelimiter(Synapse.ProfileArea.TEAMS);
 	
-	private String token;
-	private String userId;
-	private ProfileArea area;
+	private String rawToken;
 	private boolean noRestartActivity;
 	
 	public Profile(String token) {
-		this.token = token;
+		super(token);
+		this.rawToken = token;
 		int firstSlash = token.indexOf(DELIMITER);
 		if (firstSlash > -1) {
-			userId = token.substring(0, firstSlash);
+			putParam(USER_ID_PARAM, token.substring(0, firstSlash));
 			//there's more
 			String toProcess = token.substring(firstSlash);
-			
 			if(toProcess.contains(SETTINGS_DELIMITER)) {
-				area = Synapse.ProfileArea.SETTINGS;
-				return;
+				putParam(AREA_PARAM, ProfileArea.SETTINGS.name());
 			} else if(toProcess.contains(PROJECTS_DELIMITER)) {
-				area = Synapse.ProfileArea.PROJECTS;
-				return;
+				putParam(AREA_PARAM, ProfileArea.PROJECTS.name());
 			} else if(toProcess.contains(CHALLENGES_DELIMITER)) {
-				area = Synapse.ProfileArea.CHALLENGES;
-				return;
+				putParam(AREA_PARAM, ProfileArea.CHALLENGES.name());
 			} else if(toProcess.contains(TEAMS_DELIMITER)) {
-				area = Synapse.ProfileArea.TEAMS;
-				return;
+				putParam(AREA_PARAM, ProfileArea.TEAMS.name());
 			}
 		} else {
+			
 			userId = token;
 			//and by default go to the projects tab
 			area = Synapse.ProfileArea.PROJECTS;
 		}
 	}
 	
-	public Profile(String userId, ProfileArea area) {	
-		String areaToken = area == null ? "" : DELIMITER + area.toString().toLowerCase();
-		this.token = userId + areaToken;
-			
-		this.userId = userId;
-		this.area = area;
-	}
-	
 	public String toToken() {
-		return token;
+		return rawToken;
 	}
 	
 	public ProfileArea getArea() {
-		return area;
-	}
-	
-	public void setArea(ProfileArea area) {
-		this.area = area;
-		calculateToken(userId, area);
-	}
-	
-	public String getUserId() {
-		return userId;
-	}
-	
-	public void setUserId(String userId) {
-		this.userId = userId;
+		String area = getParam(AREA_PARAM);
+		if (area == null || area.isEmpty()) {
+			return ProfileArea.PROJECTS;
+		}
+		return ProfileArea.valueOf(area);
 	}
 	
 	public static String getDelimiter(Synapse.ProfileArea tab) {
@@ -102,12 +86,4 @@ public class Profile extends Place implements RestartActivityOptional{
 	public boolean isNoRestartActivity() {
 		return noRestartActivity;
 	}
-
-	private void calculateToken(String userId, Synapse.ProfileArea area) {
-		this.token = userId;
-		if(area != null) {
-			this.token += getDelimiter(area);
-		}
-	}
-
 }

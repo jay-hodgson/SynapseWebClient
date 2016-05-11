@@ -2,6 +2,7 @@ package org.sagebionetworks.web.client.widget.entity.file;
 
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.sagebionetworks.repo.model.Entity;
 import org.sagebionetworks.repo.model.EntityBundle;
 import org.sagebionetworks.repo.model.EntityType;
@@ -193,6 +194,7 @@ public class FileTitleBarViewImpl extends Composite implements FileTitleBarView 
 			if (directDownloadUrl.startsWith(sftpProxy)) {
 				authorizedDirectDownloadLink.setVisible(true);
 				authorizedDirectDownloadLink.setHTML(SafeHtmlUtils.htmlEscape(entity.getName()));
+				authorizedDirectDownloadLink.add(new Icon(IconType.DOWNLOAD));
 				loginModalWidget.configure(directDownloadUrl, FormPanel.METHOD_POST, FormPanel.ENCODING_MULTIPART);
 				String url = ((ExternalFileHandle) fileHandle).getExternalURL();
 				presenter.queryForSftpLoginInstructions(url);
@@ -200,6 +202,7 @@ public class FileTitleBarViewImpl extends Composite implements FileTitleBarView 
 				directDownloadLink.setVisible(true);
 				directDownloadLink.setHref(directDownloadUrl);
 				directDownloadLink.setHTML(SafeHtmlUtils.htmlEscape(entity.getName()));
+				directDownloadLink.add(new Icon(IconType.DOWNLOAD));
 			}
 		}
 		else {

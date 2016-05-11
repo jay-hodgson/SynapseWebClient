@@ -36,4 +36,8 @@ public class ParameterizedPlace extends Place {
 	public ParameterizedToken getParameterizedToken(){
 		return parameterizedToken;
 	}
+	
+	public int getParameterCount(){
+		return parameterizedToken.size();
+	}
 }
