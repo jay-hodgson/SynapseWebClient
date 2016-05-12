@@ -76,7 +76,6 @@ public class FileTitleBarViewImpl extends Composite implements FileTitleBarView 
 	@UiField
 	SpanElement externalUrl;
 	
-	
 	interface FileTitleBarViewImplUiBinder extends UiBinder<Widget, FileTitleBarViewImpl> {
 	}
 
@@ -189,12 +188,14 @@ public class FileTitleBarViewImpl extends Composite implements FileTitleBarView 
 		});
 		String directDownloadUrl = licensedDownloader.getDirectDownloadURL();
 		if (directDownloadUrl != null) {
+			Icon downloadIcon = new Icon(IconType.DOWNLOAD);
+			downloadIcon.addStyleName("margin-left-5");
 			//special case, if this starts with sftp proxy, then handle
 			String sftpProxy = globalAppState.getSynapseProperty(WebConstants.SFTP_PROXY_ENDPOINT);
 			if (directDownloadUrl.startsWith(sftpProxy)) {
 				authorizedDirectDownloadLink.setVisible(true);
 				authorizedDirectDownloadLink.setHTML(SafeHtmlUtils.htmlEscape(entity.getName()));
-				authorizedDirectDownloadLink.add(new Icon(IconType.DOWNLOAD));
+				authorizedDirectDownloadLink.add(downloadIcon);
 				loginModalWidget.configure(directDownloadUrl, FormPanel.METHOD_POST, FormPanel.ENCODING_MULTIPART);
 				String url = ((ExternalFileHandle) fileHandle).getExternalURL();
 				presenter.queryForSftpLoginInstructions(url);
@@ -202,7 +203,7 @@ public class FileTitleBarViewImpl extends Composite implements FileTitleBarView 
 				directDownloadLink.setVisible(true);
 				directDownloadLink.setHref(directDownloadUrl);
 				directDownloadLink.setHTML(SafeHtmlUtils.htmlEscape(entity.getName()));
-				directDownloadLink.add(new Icon(IconType.DOWNLOAD));
+				directDownloadLink.add(downloadIcon);
 			}
 		}
 		else {
