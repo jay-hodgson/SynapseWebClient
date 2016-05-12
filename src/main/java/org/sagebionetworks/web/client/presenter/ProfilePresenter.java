@@ -834,7 +834,8 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 			Place gotoPlace = null;
 			if (authenticationController.isLoggedIn()) {
 				//replace url with current user id
-				token = authenticationController.getCurrentUserPrincipalId() + token.substring(1);
+				String userId = authenticationController.getCurrentUserPrincipalId() + token.substring(1);
+				place.putParam(Profile.USER_ID_PARAM, value);
 				gotoPlace = new Profile(token);
 			} else {
 				//does not make sense, go home
@@ -848,29 +849,11 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 			updateProfileView(place.getUserId(), place.getArea());
 		}
 		else if(!"".equals(token) && token != null) {
-			//if this contains an oauth_token, it's from linkedin
-			if (token.contains("oauth_token"))
-			{
-				// User just logged in to LinkedIn. Get the request token and their info to update
-				// their profile with.
-
+			if (place.isLinkedIn()) {
 				//must be logged in
 				loggedInCheck();
-
-				String requestToken = "";
-				String verifier = "";
-				if (token.startsWith("?"))
-					token = token.substring(1);
-				String[] oAuthTokens = token.split("&");
-				for(String s : oAuthTokens) {
-					String[] tokenParts = s.split("=");
-					if(tokenParts[0].equals("oauth_token")) {
-						requestToken = tokenParts[1];
-					} else if(tokenParts[0].equals("oauth_verifier")) {
-						verifier = tokenParts[1];
-					}
-				}
-				
+				String requestToken = place.getLinkedInRequestToken();
+				String verifier = place.getLinkedInVerifier();
 				if(!requestToken.equals("") && !verifier.equals("")) {
 					updateProfileWithLinkedIn(requestToken, verifier);
 				} else {

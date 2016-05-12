@@ -22,32 +22,56 @@ public class Profile extends ParameterizedPlace implements RestartActivityOption
 	
 	private String rawToken;
 	private boolean noRestartActivity;
+	private boolean isLinkedIn;
+	private String linkedInRequestToken, linkedInVerifier;
 	
 	public Profile(String token) {
 		super(token);
 		this.rawToken = token;
+		isLinkedIn = false;
 		int firstSlash = token.indexOf(DELIMITER);
+		putParam(AREA_PARAM, ProfileArea.PROJECTS.name());
 		if (firstSlash > -1) {
 			putParam(USER_ID_PARAM, token.substring(0, firstSlash));
 			//there's more
 			String toProcess = token.substring(firstSlash);
 			if(toProcess.contains(SETTINGS_DELIMITER)) {
 				putParam(AREA_PARAM, ProfileArea.SETTINGS.name());
-			} else if(toProcess.contains(PROJECTS_DELIMITER)) {
-				putParam(AREA_PARAM, ProfileArea.PROJECTS.name());
 			} else if(toProcess.contains(CHALLENGES_DELIMITER)) {
 				putParam(AREA_PARAM, ProfileArea.CHALLENGES.name());
 			} else if(toProcess.contains(TEAMS_DELIMITER)) {
 				putParam(AREA_PARAM, ProfileArea.TEAMS.name());
 			}
+		} else if (rawToken.indexOf("oauth_token") > -1){
+			// from LinkedIn
+			isLinkedIn = true;
+			linkedInRequestToken = "";
+			linkedInVerifier = "";
+			if (token.startsWith("?"))
+				token = token.substring(1);
+			String[] oAuthTokens = token.split("&");
+			for(String s : oAuthTokens) {
+				String[] tokenParts = s.split("=");
+				if(tokenParts[0].equals("oauth_token")) {
+					linkedInRequestToken = tokenParts[1];
+				} else if(tokenParts[0].equals("oauth_verifier")) {
+					linkedInVerifier = tokenParts[1];
+				}
+			}
 		} else {
-			
-			userId = token;
-			//and by default go to the projects tab
-			area = Synapse.ProfileArea.PROJECTS;
+			// no slashes, and not from LinkedIn
 		}
 	}
 	
+	public boolean isLinkedIn() {
+		return isLinkedIn;
+	}
+	public String getLinkedInRequestToken() {
+		return linkedInRequestToken;
+	}
+	public String getLinkedInVerifier() {
+		return linkedInVerifier;
+	}
 	public String toToken() {
 		return rawToken;
 	}
