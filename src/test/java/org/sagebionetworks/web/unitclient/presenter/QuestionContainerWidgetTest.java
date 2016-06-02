@@ -37,8 +37,7 @@ public class QuestionContainerWidgetTest {
 	QuestionContainerWidget questionContainerWidget;
 	MultichoiceAnswer mockAnswerOne;
 	MultichoiceAnswer mockAnswerTwo;
-	WikiPageKey mockMoreInfoKey;	
-	
+	String helpUrl = "http://docs.synapse.org/articles/access_controls.html#how-to-share-a-project";
 	@Before
 	public void setup(){
 		mockView = mock(QuestionContainerWidgetView.class);
@@ -48,7 +47,6 @@ public class QuestionContainerWidgetTest {
 		mockMultichoiceQuestion = mock(MultichoiceQuestion.class, withSettings().extraInterfaces(Question.class));
 		mockAnswerOne = mock(MultichoiceAnswer.class);
 		mockAnswerTwo = mock(MultichoiceAnswer.class);
-		mockMoreInfoKey = mock(WikiPageKey.class);		
 		
 		questionContainerWidget = new QuestionContainerWidget(mockView);
 		
@@ -62,10 +60,7 @@ public class QuestionContainerWidgetTest {
 		when(mockMultichoiceQuestion.getQuestionIndex()).thenReturn(4L);
 		//when((MultichoiceQuestion)mockMultichoiceQuestion).thenReturn(mockMultichoiceQuestion);
 		when(mockMultichoiceQuestion.getAnswers()).thenReturn(answers);
-		when(mockMultichoiceQuestion.getReference()).thenReturn(mockMoreInfoKey);
-		when(mockMoreInfoKey.getOwnerObjectId()).thenReturn("Chewie");
-		when(mockMoreInfoKey.getOwnerObjectType()).thenReturn(ObjectType.FILE);
-		when(mockMoreInfoKey.getWikiPageId()).thenReturn("123");
+		when(mockMultichoiceQuestion.getHelpURL()).thenReturn(helpUrl);
 	}	
 	
 	private void setExclusive(boolean isExclusive) {
@@ -77,17 +72,20 @@ public class QuestionContainerWidgetTest {
 		setExclusive(true);
 		questionContainerWidget.configure(1L, mockMultichoiceQuestion, null);
 		verify(mockView, times(2)).addRadioButton(eq(mockMultichoiceQuestion.getQuestionIndex()), anyString(), any(ClickHandler.class), eq(false));
-		verify(mockView).configureMoreInfo(mockMoreInfoKey.getOwnerObjectId(),
-				mockMoreInfoKey.getOwnerObjectType().name(), mockMoreInfoKey.getWikiPageId());
+		verify(mockView).setMoreInfoLinkVisible(true);
+		
+		//click on the help link
+		questionContainerWidget.onHelpClick();
+		verify(mockView).showHelpModal(helpUrl);
 	}
 	
 	@Test
 	public void testConfigureCheckBoxes() {
 		setExclusive(false);
+		when(mockMultichoiceQuestion.getHelpURL()).thenReturn(null);
 		questionContainerWidget.configure(1L, mockMultichoiceQuestion, null);
 		verify(mockView, times(2)).addCheckBox(eq(mockMultichoiceQuestion.getQuestionIndex()), anyString(), any(ClickHandler.class), eq(false));
-		verify(mockView).configureMoreInfo(mockMoreInfoKey.getOwnerObjectId(),
-		mockMoreInfoKey.getOwnerObjectType().name(), mockMoreInfoKey.getWikiPageId());
+		verify(mockView).setMoreInfoLinkVisible(false);
 	}
 	
 	

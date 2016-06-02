@@ -32,7 +32,7 @@ public interface QuestionContainerWidgetView extends IsWidget {
 		void onHelpClick();
 	}
 	void setPresenter(Presenter presenter);
-	void setHelpModal(Widget widget);
+	void showHelpModal(String helpUrl);
 	void addAnswer(Widget answerContainer);
 	void showSuccess(boolean isShown);
 	void showFailure(boolean isShown);

@@ -7,6 +7,8 @@ import java.util.Set;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.Modal;
+import org.gwtbootstrap3.client.ui.ModalSize;
 import org.sagebionetworks.web.client.place.Wiki;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -14,8 +16,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -34,7 +38,9 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 	@UiField
 	Anchor moreInfoLink;
 	@UiField
-	SimplePanel helpModalContainer;	
+	Modal helpModal;
+	@UiField
+	Frame helpFrame;
 	@UiField
 	Icon successIcon;
 	
@@ -57,6 +63,7 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 				presenter.onHelpClick();
 			}
 		});
+		helpFrame.getElement().setAttribute("seamless", "true");
 	}
 	@Override
 	public void setPresenter(Presenter presenter) {
@@ -114,9 +121,10 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 	}
 	
 	@Override
-	public void setHelpModal(Widget widget) {
-		helpModalContainer.clear();
-		helpModalContainer.add(widget);
+	public void showHelpModal(String helpUrl) {
+		helpFrame.setHeight((Window.getClientHeight()-180) + "px");
+		helpFrame.setUrl(helpUrl);
+		helpModal.show();
 	}
 	
 	@Override 

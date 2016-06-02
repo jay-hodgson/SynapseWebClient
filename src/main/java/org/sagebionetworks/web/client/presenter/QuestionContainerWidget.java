@@ -8,8 +8,6 @@ import org.sagebionetworks.repo.model.quiz.MultichoiceQuestion;
 import org.sagebionetworks.repo.model.quiz.MultichoiceResponse;
 import org.sagebionetworks.repo.model.quiz.Question;
 import org.sagebionetworks.web.client.view.QuestionContainerWidgetView;
-import org.sagebionetworks.web.client.widget.WikiModalWidget;
-import org.sagebionetworks.web.shared.WikiPageKey;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -18,18 +16,15 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class QuestionContainerWidget implements QuestionContainerWidgetView.Presenter {
-
 	private QuestionContainerWidgetView view;
 	private Set<Long> answers;
 	// Used to disable the buttons after scoring is performed
 	private Long questionIndex;
-	private WikiModalWidget helpModal;
-	private WikiPageKey moreInfoKey;
+	private String helpUrl;
 	
 	@Inject
-	public QuestionContainerWidget(QuestionContainerWidgetView view, WikiModalWidget helpModal) {
+	public QuestionContainerWidget(QuestionContainerWidgetView view) {
 		this.view = view;
-		this.helpModal = helpModal;
 		view.setPresenter(this);
 	}
 	
@@ -72,11 +67,8 @@ public class QuestionContainerWidget implements QuestionContainerWidgetView.Pres
 					}, wasSelected(response, answer.getAnswerIndex()));
 				}
 			}
-			org.sagebionetworks.repo.model.dao.WikiPageKey helpKey = question.getReference();
-			view.setMoreInfoLinkVisible(helpKey != null && helpKey.getOwnerObjectId() != null);
-			if (helpKey != null) {
-				moreInfoKey = new WikiPageKey(helpKey.getOwnerObjectId(), helpKey.getOwnerObjectType().name(), helpKey.getWikiPageId());	
-			}
+			helpUrl = question.getHelpURL();
+			view.setMoreInfoLinkVisible(helpUrl != null);
 		}
 	}
 	
@@ -113,6 +105,6 @@ public class QuestionContainerWidget implements QuestionContainerWidgetView.Pres
 
 	@Override
 	public void onHelpClick() {
-		helpModal.show(moreInfoKey);
+		view.showHelpModal(helpUrl);
 	}
 }
