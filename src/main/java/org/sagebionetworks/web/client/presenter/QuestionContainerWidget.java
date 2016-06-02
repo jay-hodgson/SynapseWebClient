@@ -3,12 +3,13 @@ package org.sagebionetworks.web.client.presenter;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.sagebionetworks.repo.model.dao.WikiPageKey;
 import org.sagebionetworks.repo.model.quiz.MultichoiceAnswer;
 import org.sagebionetworks.repo.model.quiz.MultichoiceQuestion;
 import org.sagebionetworks.repo.model.quiz.MultichoiceResponse;
 import org.sagebionetworks.repo.model.quiz.Question;
 import org.sagebionetworks.web.client.view.QuestionContainerWidgetView;
+import org.sagebionetworks.web.client.widget.WikiModalWidget;
+import org.sagebionetworks.web.shared.WikiPageKey;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -22,10 +23,14 @@ public class QuestionContainerWidget implements QuestionContainerWidgetView.Pres
 	private Set<Long> answers;
 	// Used to disable the buttons after scoring is performed
 	private Long questionIndex;
+	private WikiModalWidget helpModal;
+	private WikiPageKey moreInfoKey;
 	
 	@Inject
-	public QuestionContainerWidget(QuestionContainerWidgetView view) {
+	public QuestionContainerWidget(QuestionContainerWidgetView view, WikiModalWidget helpModal) {
 		this.view = view;
+		this.helpModal = helpModal;
+		view.setPresenter(this);
 	}
 	
 	@Override 
@@ -67,13 +72,15 @@ public class QuestionContainerWidget implements QuestionContainerWidgetView.Pres
 					}, wasSelected(response, answer.getAnswerIndex()));
 				}
 			}
-			final WikiPageKey moreInfoKey = question.getReference();
-			if (moreInfoKey != null && moreInfoKey.getOwnerObjectId() != null) {
-				view.configureMoreInfo(moreInfoKey.getOwnerObjectId(), moreInfoKey.getOwnerObjectType().name(), moreInfoKey.getWikiPageId());
+			org.sagebionetworks.repo.model.dao.WikiPageKey helpKey = question.getReference();
+			view.setMoreInfoLinkVisible(helpKey != null && helpKey.getOwnerObjectId() != null);
+			if (helpKey != null) {
+				moreInfoKey = new WikiPageKey(helpKey.getOwnerObjectId(), helpKey.getOwnerObjectType().name(), helpKey.getWikiPageId());	
 			}
 		}
-
 	}
+	
+	
 	
 	private boolean wasSelected(MultichoiceResponse response, Long answerIndex) {
 		return response != null && response.getAnswerIndex().contains(answerIndex);
@@ -102,5 +109,10 @@ public class QuestionContainerWidget implements QuestionContainerWidgetView.Pres
 	@Override
 	public void setEnabled(boolean enabled) {
 		view.setIsEnabled(enabled);
+	}
+
+	@Override
+	public void onHelpClick() {
+		helpModal.show(moreInfoKey);
 	}
 }

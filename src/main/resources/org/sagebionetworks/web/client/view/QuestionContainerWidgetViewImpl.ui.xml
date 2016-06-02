@@ -15,13 +15,13 @@
             </t:TableData>
             <t:TableData paddingRight="2">
             	<g:FlowPanel ui:field="questionContainer" addStyleNames="margin-bottom-40 margin-left-15">
-			        <b:Heading ui:field="questionHeader" size="H5" addStyleNames="inline-block control-label margin-right-10">
-			        </b:Heading>
-			        <b:Anchor ui:field="moreInfoLink" addStyleNames="margin-left-9" target="_blank">
+			        <b:Heading ui:field="questionHeader" size="H5" addStyleNames="inline-block control-label margin-right-10" />
+			        <b:Anchor ui:field="moreInfoLink" addStyleNames="margin-left-9">
 			            <span class="glyphicon glyphicon-question-sign font-size-15"></span>
 			            <span>Need help answering this question?</span>
 			        </b:Anchor>
 				</g:FlowPanel>
+				<g:SimplePanel ui:field="helpModalContainer" />
             </t:TableData>
         </t:TableRow>
 	</t:Table>

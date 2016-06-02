@@ -9,6 +9,7 @@ import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.sagebionetworks.web.client.place.Wiki;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -32,7 +33,8 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 	
 	@UiField
 	Anchor moreInfoLink;
-		
+	@UiField
+	SimplePanel helpModalContainer;	
 	@UiField
 	Icon successIcon;
 	
@@ -43,14 +45,23 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 	
 	Set<RadioButton> radioButtons;
 	Set<CheckBox> checkBoxes;
-		
+	Presenter presenter;
 	public interface Binder extends UiBinder<Widget, QuestionContainerWidgetViewImpl> {}
 		
 	@Inject
 	public QuestionContainerWidgetViewImpl(Binder uiBinder) {
 		widget = uiBinder.createAndBindUi(this);
+		moreInfoLink.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				presenter.onHelpClick();
+			}
+		});
 	}
-	
+	@Override
+	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
+	}
 	@Override
 	public void showSuccess(boolean isShown) {
 		successIcon.setVisible(isShown);
@@ -103,11 +114,10 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 	}
 	
 	@Override
-	public void configureMoreInfo(String ownerObjectId, String wikiTypeName, String wikiPageId) {
-		Wiki place = new Wiki(ownerObjectId, wikiTypeName, wikiPageId);
-		moreInfoLink.setHref("#!Wiki:" + place.toToken());
+	public void setHelpModal(Widget widget) {
+		helpModalContainer.clear();
+		helpModalContainer.add(widget);
 	}
-	
 	
 	@Override 
 	public void configure(Long questionNumber, String questionPrompt) {
@@ -125,5 +135,8 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 			checkBox.setEnabled(isEnabled);
 		}
 	}
-	
+	@Override
+	public void setMoreInfoLinkVisible(boolean visible) {
+		moreInfoLink.setVisible(visible);
+	}
 }

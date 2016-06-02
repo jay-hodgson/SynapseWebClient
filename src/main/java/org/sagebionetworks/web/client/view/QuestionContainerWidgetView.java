@@ -29,9 +29,10 @@ public interface QuestionContainerWidgetView extends IsWidget {
 
 		void configure(Long questionNumber, Question question,
 				MultichoiceResponse response);
-
+		void onHelpClick();
 	}
-
+	void setPresenter(Presenter presenter);
+	void setHelpModal(Widget widget);
 	void addAnswer(Widget answerContainer);
 	void showSuccess(boolean isShown);
 	void showFailure(boolean isShown);
@@ -41,6 +42,5 @@ public interface QuestionContainerWidgetView extends IsWidget {
 			ClickHandler clickHandler, boolean isSelected);
 	public void configure(Long questionNumber, String prompt);
 	void setIsEnabled(boolean isEnabled);
-	void configureMoreInfo(String ownerObjectId, String wikiTypeName,
-			String wikiPageId);
+	void setMoreInfoLinkVisible(boolean visible);
 }
