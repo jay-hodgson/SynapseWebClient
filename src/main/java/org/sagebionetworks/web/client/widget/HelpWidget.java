@@ -1,0 +1,57 @@
+package org.sagebionetworks.web.client.widget;
+
+import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.Popover;
+import org.gwtbootstrap3.client.ui.constants.Placement;
+
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+
+/**
+ * View only widget used to show a help icon (and help text).  When clicked, a popover is shown that contains basic help, and a More Info button.  
+ * When the More Info button is clicked, the browser will open a new tab to the full help documentation (typically to the docs.synapse.org site).
+ * 
+ * @author jayhodgson
+ *
+ */
+public class HelpWidget implements IsWidget {
+	@UiField
+	Anchor moreInfoLink;
+	@UiField
+	SpanElement moreInfoText;
+	@UiField
+	Popover helpPopover;
+	Widget widget;
+	public interface Binder extends UiBinder<Widget, HelpWidget> {}
+	private static Binder uiBinder = GWT.create(Binder.class);
+	
+	public HelpWidget() {
+		widget = uiBinder.createAndBindUi(this);
+	}
+
+	public void configure(String text, String basicHelpText, String fullHelpHref) {
+		if (text != null) {
+			moreInfoText.setInnerText(text);
+		}
+		helpPopover.setTitle(SafeHtmlUtils.htmlEscape(basicHelpText));
+		helpPopover.setContent("<a class=\"btn btn-primary btn-xs right\" target=\"_blank\" href=\"" + SafeHtmlUtils.htmlEscape(fullHelpHref) + "\" role=\"button\">More info</a>");
+	}
+	
+	@Override
+	public Widget asWidget() {
+		return widget;
+	}
+	
+	public void setVisible(boolean visible) {
+		widget.setVisible(visible);
+	}
+	
+	public void setPlacement(final Placement placement) {
+		helpPopover.setPlacement(placement);		
+	}
+}

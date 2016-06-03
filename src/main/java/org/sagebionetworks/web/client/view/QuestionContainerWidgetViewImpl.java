@@ -7,8 +7,11 @@ import java.util.Set;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.Popover;
+import org.sagebionetworks.web.client.widget.HelpWidget;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -23,17 +26,13 @@ import com.google.inject.Inject;
 
 public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetView, IsWidget {
 	
+	public static final String NEED_HELP_TEXT = "Need help answering this question?";
 	@UiField
 	FlowPanel questionContainer;
-	
 	@UiField
 	Heading questionHeader;
-	
-	@UiField
-	Anchor moreInfoLink;
 	@UiField
 	Icon successIcon;
-	
 	@UiField
 	Icon failureIcon;
 	
@@ -42,8 +41,10 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 	Set<RadioButton> radioButtons;
 	Set<CheckBox> checkBoxes;
 	Presenter presenter;
+	@UiField
+	HelpWidget helpWidget;
 	public interface Binder extends UiBinder<Widget, QuestionContainerWidgetViewImpl> {}
-		
+	
 	@Inject
 	public QuestionContainerWidgetViewImpl(Binder uiBinder) {
 		widget = uiBinder.createAndBindUi(this);
@@ -121,11 +122,11 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 	}
 	@Override
 	public void setMoreInfoLinkVisible(boolean visible) {
-		moreInfoLink.setVisible(visible);
+		helpWidget.setVisible(visible);
 	}
 	
 	@Override
-	public void setMoreInfoLink(String href) {
-		moreInfoLink.setHref(href);
+	public void setPopoverHelp(String basicHelp, String fullHelpHref) {
+		helpWidget.configure(NEED_HELP_TEXT, basicHelp, fullHelpHref);
 	}
 }

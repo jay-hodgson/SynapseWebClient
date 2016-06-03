@@ -67,10 +67,11 @@ public class QuestionContainerWidget implements QuestionContainerWidgetView.Pres
 				}
 			}
 			String helpUrl = question.getHelpURL();
+			String helpText = question.getHelpText();
 			boolean isHelpVisible = helpUrl != null;
 			view.setMoreInfoLinkVisible(isHelpVisible);
 			if (isHelpVisible) {
-				view.setMoreInfoLink(helpUrl);
+				view.setPopoverHelp(helpText, helpUrl);
 			}
 		}
 	}
