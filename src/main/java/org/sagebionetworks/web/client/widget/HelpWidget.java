@@ -16,6 +16,25 @@ import com.google.gwt.user.client.ui.Widget;
  * View only widget used to show a help icon (and help text).  When clicked, a popover is shown that contains basic help, and a More Info button.  
  * When the More Info button is clicked, the browser will open a new tab to the full help documentation (typically to the docs.synapse.org site).
  * 
+ * ## Usage
+ * 
+ * In your ui.xml, add the help widget.
+ * ```
+ * xmlns:w="urn:import:org.sagebionetworks.web.client.widget"
+ * <w:HelpWidget ui:field="helpWidget" />
+ * ```
+ * 
+ * In your code, bind it and configure.
+ * ```
+ * @UiField
+ * HelpWidget helpWidget;
+ * ...
+ * helpWidget.configure(helpLinkText, basicHelp, fullHelpHref);
+ * ```
+ * 
+ * That's it!
+ * You can set visibility and placement today, and we can easily extend it to have additional options in the future.
+ * 
  * @author jayhodgson
  *
  */
