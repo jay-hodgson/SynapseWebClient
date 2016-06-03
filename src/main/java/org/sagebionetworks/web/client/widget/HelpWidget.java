@@ -57,8 +57,7 @@ public class HelpWidget implements IsWidget {
 		if (text != null) {
 			moreInfoText.setInnerText(text);
 		}
-		helpPopover.setTitle(SafeHtmlUtils.htmlEscape(basicHelpText));
-		helpPopover.setContent("<a class=\"btn btn-primary btn-xs right\" target=\"_blank\" href=\"" + SafeHtmlUtils.htmlEscape(fullHelpHref) + "\" role=\"button\">More info</a>");
+		helpPopover.setContent(SafeHtmlUtils.htmlEscape(basicHelpText) + "<div><a class=\"btn btn-primary btn-xs right\" target=\"_blank\" href=\"" + SafeHtmlUtils.htmlEscape(fullHelpHref) + "\" role=\"button\">More info</a></div>");
 	}
 	
 	@Override
