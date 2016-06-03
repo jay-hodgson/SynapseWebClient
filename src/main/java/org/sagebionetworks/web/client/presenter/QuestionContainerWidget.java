@@ -20,7 +20,6 @@ public class QuestionContainerWidget implements QuestionContainerWidgetView.Pres
 	private Set<Long> answers;
 	// Used to disable the buttons after scoring is performed
 	private Long questionIndex;
-	private String helpUrl;
 	
 	@Inject
 	public QuestionContainerWidget(QuestionContainerWidgetView view) {
@@ -67,8 +66,12 @@ public class QuestionContainerWidget implements QuestionContainerWidgetView.Pres
 					}, wasSelected(response, answer.getAnswerIndex()));
 				}
 			}
-			helpUrl = question.getHelpURL();
-			view.setMoreInfoLinkVisible(helpUrl != null);
+			String helpUrl = question.getHelpURL();
+			boolean isHelpVisible = helpUrl != null;
+			view.setMoreInfoLinkVisible(isHelpVisible);
+			if (isHelpVisible) {
+				view.setMoreInfoLink(helpUrl);
+			}
 		}
 	}
 	
@@ -101,10 +104,5 @@ public class QuestionContainerWidget implements QuestionContainerWidgetView.Pres
 	@Override
 	public void setEnabled(boolean enabled) {
 		view.setIsEnabled(enabled);
-	}
-
-	@Override
-	public void onHelpClick() {
-		view.showHelpModal(helpUrl);
 	}
 }

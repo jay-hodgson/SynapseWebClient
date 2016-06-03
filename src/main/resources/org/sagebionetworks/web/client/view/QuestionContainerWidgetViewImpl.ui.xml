@@ -16,20 +16,11 @@
             <t:TableData paddingRight="2">
             	<g:FlowPanel ui:field="questionContainer" addStyleNames="margin-bottom-40 margin-left-15">
 			        <b:Heading ui:field="questionHeader" size="H5" addStyleNames="inline-block control-label margin-right-10" />
-			        <b:Anchor ui:field="moreInfoLink" addStyleNames="margin-left-9">
+			        <b:Anchor ui:field="moreInfoLink" target="_blank" addStyleNames="margin-left-9">
 			            <span class="glyphicon glyphicon-question-sign font-size-15"></span>
 			            <span>Need help answering this question?</span>
 			        </b:Anchor>
 				</g:FlowPanel>
-				<!-- IFrame for external help documentation -->
-				<b:Modal ui:field="helpModal" closable="true" fade="true" dataBackdrop="STATIC" dataKeyboard="false" addStyleNames="modal-fullscreen">
-					<b:ModalBody>
-						<g:Frame ui:field="helpFrame"/>
-					</b:ModalBody>
-					<b:ModalFooter>
-						<b:Button type="PRIMARY" dataDismiss="MODAL">OK</b:Button>
-					</b:ModalFooter>
-				</b:Modal>
             </t:TableData>
         </t:TableRow>
 	</t:Table>

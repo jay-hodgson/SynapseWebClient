@@ -7,19 +7,13 @@ import java.util.Set;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Icon;
-import org.gwtbootstrap3.client.ui.Modal;
-import org.gwtbootstrap3.client.ui.ModalSize;
-import org.sagebionetworks.web.client.place.Wiki;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SimpleHtmlSanitizer;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -38,10 +32,6 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 	@UiField
 	Anchor moreInfoLink;
 	@UiField
-	Modal helpModal;
-	@UiField
-	Frame helpFrame;
-	@UiField
 	Icon successIcon;
 	
 	@UiField
@@ -57,13 +47,6 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 	@Inject
 	public QuestionContainerWidgetViewImpl(Binder uiBinder) {
 		widget = uiBinder.createAndBindUi(this);
-		moreInfoLink.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				presenter.onHelpClick();
-			}
-		});
-		helpFrame.getElement().setAttribute("seamless", "true");
 	}
 	@Override
 	public void setPresenter(Presenter presenter) {
@@ -120,13 +103,6 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 		checkBoxes.add(checkbox);
 	}
 	
-	@Override
-	public void showHelpModal(String helpUrl) {
-		helpFrame.setHeight((Window.getClientHeight()-180) + "px");
-		helpFrame.setUrl(helpUrl);
-		helpModal.show();
-	}
-	
 	@Override 
 	public void configure(Long questionNumber, String questionPrompt) {
 		questionHeader.add(new InlineHTML("<small class=\"margin-right-10\">"+questionNumber+".</small>"+SimpleHtmlSanitizer.sanitizeHtml(questionPrompt).asString()+"</small>"));
@@ -146,5 +122,10 @@ public class QuestionContainerWidgetViewImpl implements QuestionContainerWidgetV
 	@Override
 	public void setMoreInfoLinkVisible(boolean visible) {
 		moreInfoLink.setVisible(visible);
+	}
+	
+	@Override
+	public void setMoreInfoLink(String href) {
+		moreInfoLink.setHref(href);
 	}
 }

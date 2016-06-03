@@ -29,10 +29,8 @@ public interface QuestionContainerWidgetView extends IsWidget {
 
 		void configure(Long questionNumber, Question question,
 				MultichoiceResponse response);
-		void onHelpClick();
 	}
 	void setPresenter(Presenter presenter);
-	void showHelpModal(String helpUrl);
 	void addAnswer(Widget answerContainer);
 	void showSuccess(boolean isShown);
 	void showFailure(boolean isShown);
@@ -43,4 +41,5 @@ public interface QuestionContainerWidgetView extends IsWidget {
 	public void configure(Long questionNumber, String prompt);
 	void setIsEnabled(boolean isEnabled);
 	void setMoreInfoLinkVisible(boolean visible);
+	void setMoreInfoLink(String href);
 }
