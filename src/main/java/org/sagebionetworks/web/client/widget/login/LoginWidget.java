@@ -1,10 +1,10 @@
 package org.sagebionetworks.web.client.widget.login;
 
 import org.sagebionetworks.repo.model.UserSessionData;
-import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.security.AuthenticationController;
+import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
 import org.sagebionetworks.web.shared.WebConstants;
 import org.sagebionetworks.web.shared.exceptions.LockedException;
 import org.sagebionetworks.web.shared.exceptions.ReadOnlyModeException;
@@ -24,17 +24,24 @@ public class LoginWidget implements LoginWidgetView.Presenter {
 	private String openIdReturnUrl;
 	private GlobalApplicationState globalApplicationState;
 	private SynapseJSNIUtils synapseJsniUtils;
+	private SynapseAlert synAlert;
 	
 	public static final String LOGIN_PLACE  = "LoginPlace";
 	
 	@Inject
-	public LoginWidget(LoginWidgetView view, AuthenticationController controller, GlobalApplicationState globalApplicationState, SynapseJSNIUtils synapseJsniUtils) {
+	public LoginWidget(LoginWidgetView view, 
+			AuthenticationController controller, 
+			GlobalApplicationState globalApplicationState, 
+			SynapseJSNIUtils synapseJsniUtils, 
+			SynapseAlert synAlert) {
 		this.view = view;
 		view.setPresenter(this);
+		this.synAlert = synAlert;
 		this.authenticationController = controller;	
 		this.globalApplicationState = globalApplicationState;
 		this.synapseJsniUtils = synapseJsniUtils;
 		openIdActionUrl = WebConstants.OPEN_ID_URI;
+		view.setSynAlert(synAlert.asWidget());
 		// note, this is now a relative URL
 		openIdReturnUrl = synapseJsniUtils.getLocationPath()+synapseJsniUtils.getLocationQueryString()+"#!"+LOGIN_PLACE;
 	}
@@ -49,7 +56,8 @@ public class LoginWidget implements LoginWidgetView.Presenter {
 	}
 	
 	@Override
-	public void setUsernameAndPassword(final String username, final String password) {		
+	public void setUsernameAndPassword(final String username, final String password) {
+		synAlert.clear();
 		authenticationController.loginUser(username, password, new AsyncCallback<UserSessionData>() {
 			@Override
 			public void onSuccess(UserSessionData userSessionData) {
@@ -64,16 +72,7 @@ public class LoginWidget implements LoginWidgetView.Presenter {
 			@Override
 			public void onFailure(Throwable caught) {				
 				view.clear();
-				if(caught instanceof ReadOnlyModeException) {
-					view.showError(DisplayConstants.LOGIN_READ_ONLY_MODE);
-				} else if(caught instanceof SynapseDownException) {
-					view.showError(DisplayConstants.LOGIN_DOWN_MODE);
-				} else if(caught instanceof LockedException) {
-					view.showError(caught.getMessage());
-				} else {
-					synapseJsniUtils.consoleError(caught.getMessage());
-					view.showAuthenticationFailed();
-				}
+				synAlert.handleException(caught);
 			}
 		});
 	}

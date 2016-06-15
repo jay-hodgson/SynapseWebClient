@@ -2,6 +2,7 @@ package org.sagebionetworks.web.client.widget.login;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 public interface LoginWidgetView extends IsWidget {
 
@@ -27,12 +28,11 @@ public interface LoginWidgetView extends IsWidget {
 	}
 
 	void clearUsername();
-	public void showAuthenticationFailed();
 	
 	public void showTermsOfUseDownloadFailed();
 	
 	public void showError(String message);
-	
+	void setSynAlert(Widget w);
 	public void clear();
 
 }

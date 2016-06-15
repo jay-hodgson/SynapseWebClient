@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SubmitButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -43,7 +44,8 @@ public class LoginWidgetViewImpl extends Composite implements
 	Button registerBtn;
 	@UiField
 	org.gwtbootstrap3.client.ui.Button googleSignInButton;
-	
+	@UiField
+	SimplePanel synAlertContainer;
 	PasswordTextBox password = null;
 	TextBox username = null;
 	
@@ -135,12 +137,6 @@ public class LoginWidgetViewImpl extends Composite implements
 	}
 
 	@Override
-	public void showAuthenticationFailed() {
-		messageLabel.setInnerHTML("<br/><br/><h4 class=\"text-warning\">Invalid username or password.</h4> <span class=\"text-warning\">Please try again.</span>");
-		clear();
-	}
-
-	@Override
 	public void showTermsOfUseDownloadFailed() {
 		messageLabel.setInnerHTML("<br/><br/><h4 class=\"text-warning\">Unable to Download Synapse Terms of Use.</h4>");
 		clear();
@@ -167,6 +163,10 @@ public class LoginWidgetViewImpl extends Composite implements
 		messageLabel.setInnerHTML(""); 
 		presenter.setUsernameAndPassword(username.getValue(), password.getValue());
 	}
-
+	@Override
+	public void setSynAlert(Widget w) {
+		synAlertContainer.clear();
+		synAlertContainer.add(w);
+	}
 	
 }
