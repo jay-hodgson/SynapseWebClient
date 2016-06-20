@@ -9,8 +9,7 @@
 	<ui:with field='icons' type='org.sagebionetworks.web.client.IconsImageBundle'/>
 	<ui:with field='sageImageBundle' type='org.sagebionetworks.web.client.SageImageBundle'/>
 	
-	<g:HTMLPanel>
-
+	<g:HTMLPanel addStyleNames="footer">
 		<!-- FOOTER -->	
 		<b:Container fluid="true">
 	        <b:Row addStyleNames="synapse-blue-bg margin-top-30 padding-15">

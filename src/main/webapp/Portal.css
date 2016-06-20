@@ -30,6 +30,14 @@ a:focus{color:#1e7098; text-decoration:underline;}
 	border-color:#1e7098;
 }
 
+.footer, .page-wrap:after {
+  height: 142px; 
+}
+
+.rootPanel {
+	height: 100%;
+}
+
 @media (min-width: 1500px) {
 	th.visible-xl, td.visible-xl {
 		display: table-cell !important;
@@ -664,12 +672,6 @@ a.shortBtn {
 	height:	50px;
 }
 
-.min-height-500 {
-	min-height: 500px;
-}
-.min-height-400 {
-	min-height: 400px;
-}
 .min-height-200 {
 	min-height: 200px;
 }
@@ -1203,6 +1205,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .maxWidth100 {
 	max-width: 100%;
+}
+
+.height100 {
+	height: 100%;
 }
 
 .maxHeight100 {
@@ -2673,8 +2679,9 @@ pre .apache .tag {
 
 
 
-/* Svarog css.  TODO: remove classes overwritten by bootstrap styling */
-
+html {
+	height: 100%;	
+}
 
 /*-------------------------------------------------------*/
 	/*BODY*/
@@ -2683,7 +2690,9 @@ pre .apache .tag {
 body {
 	color:#666666;
 	font-size:12px;
-	line-height:1.5em;
+	line-height:1.7em;
+	overflow-y: auto; 
+	height: 100%;
 }
 ::selection {
 	background:#000;

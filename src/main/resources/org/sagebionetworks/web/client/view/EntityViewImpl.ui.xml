@@ -6,7 +6,7 @@
 	xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
     <ui:with field='sageImageBundle' type='org.sagebionetworks.web.client.SageImageBundle'/>
 
-	<g:HTMLPanel>
+	<g:HTMLPanel addStyleNames="height100">
 		<!-- HEADER -->
 		<g:SimplePanel ui:field="headerPanel"/>
 		<g:SimplePanel ui:field="synAlertContainer"/>
