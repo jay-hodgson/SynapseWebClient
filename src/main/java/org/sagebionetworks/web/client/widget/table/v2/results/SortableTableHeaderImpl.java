@@ -2,11 +2,13 @@ package org.sagebionetworks.web.client.widget.table.v2.results;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.sagebionetworks.web.client.view.bootstrap.table.TableHeader;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -23,6 +25,8 @@ public class SortableTableHeaderImpl implements SortableTableHeader {
 	
 	@UiField
 	Button button;
+	@UiField
+	TableHeader tableHeader;
 	
 	Widget widget;
 	
@@ -54,4 +58,8 @@ public class SortableTableHeaderImpl implements SortableTableHeader {
 		button.setIcon(icon);	
 	}
 
+	@Override
+	public void add(IsWidget child) {
+		tableHeader.add(child);
+	}
 }

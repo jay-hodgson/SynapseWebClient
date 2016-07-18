@@ -24,4 +24,10 @@ public interface SortableTableHeader extends IsWidget {
 	 */
 	public void setIcon(IconType icon);
 	
+	/**
+	 * Add a child widget to this header
+	 * @param child
+	 */
+	public void add(IsWidget child);
+
 }

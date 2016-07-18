@@ -15,5 +15,10 @@ public interface StaticTableHeader extends IsWidget {
 	 * @param headerText
 	 */
 	public void setHeader(String headerText);
-
+	
+	/**
+	 * Add a child widget to this header
+	 * @param child
+	 */
+	public void add(IsWidget child);
 }

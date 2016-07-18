@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.sagebionetworks.repo.model.table.ColumnModel;
+import org.sagebionetworks.repo.model.table.ColumnType;
 import org.sagebionetworks.repo.model.table.Query;
 import org.sagebionetworks.repo.model.table.QueryResultBundle;
 import org.sagebionetworks.repo.model.table.Row;
@@ -75,6 +76,11 @@ public class TablePageWidget implements TablePageView.Presenter, IsWidget, RowSe
 		List<IsWidget> headers = new ArrayList<IsWidget>();
 		for (ColumnModel type: types) {
 			// Create each header
+			
+			if (ColumnType.FILEHANDLEID.equals(type.getColumnType())) {
+				
+			}
+			
 			String headerName = type.getName();
 			if(!isEditable){
 				// For sorting we need click handler and to set sort direction when needed.
