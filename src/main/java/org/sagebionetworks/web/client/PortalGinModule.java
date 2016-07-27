@@ -1283,6 +1283,8 @@ public class PortalGinModule extends AbstractGinModule {
 		bind(EnumFormCellEditor.class).to(EnumFormCellEditorImpl.class);
 		
 		bind(MarkdownIt.class).to(MarkdownItImpl.class);
+		bind(SanitizeHtml.class).to(SanitizeHtmlImpl.class);
+		
 		bind(SubscriptionView.class).to(SubscriptionViewImpl.class);
 		bind(TopicWidgetView.class).to(TopicWidgetViewImpl.class);
 		bind(SubscribeButtonWidgetView.class).to(SubscribeButtonWidgetViewImpl.class);

@@ -9,6 +9,7 @@ import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.web.client.ClientProperties;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GlobalApplicationState;
+import org.sagebionetworks.web.client.SanitizeHtml;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.place.LoginPlace;
 import org.sagebionetworks.web.client.security.AuthenticationController;
@@ -37,6 +38,7 @@ public class AccessRequirementDialog implements AccessRequirementDialogView.Pres
 	Callback finishedCallback;
 	Callback entityUpdated;
 	WikiPageWidget wikiPageWidget;
+	SanitizeHtml sanitizer;
 	
 	@Inject
 	public AccessRequirementDialog(
@@ -46,7 +48,8 @@ public class AccessRequirementDialog implements AccessRequirementDialogView.Pres
 			JSONObjectAdapter jsonObjectAdapter,
 			GlobalApplicationState globalApplicationState,
 			JiraURLHelper jiraURLHelper,
-			WikiPageWidget wikiPageWidget
+			WikiPageWidget wikiPageWidget,
+			SanitizeHtml sanitizer
 			) {
 		this.view = view;
 		this.authenticationController = authenticationController;
@@ -55,6 +58,7 @@ public class AccessRequirementDialog implements AccessRequirementDialogView.Pres
 		this.jsonObjectAdapter = jsonObjectAdapter;
 		this.jiraURLHelper = jiraURLHelper;
 		this.wikiPageWidget = wikiPageWidget;
+		this.sanitizer = sanitizer;
 		wikiPageWidget.setModifiedCreatedByVisible(false);
 		wikiPageWidget.showWikiHistory(false);
 		view.setPresenter(this);
@@ -112,7 +116,7 @@ public class AccessRequirementDialog implements AccessRequirementDialogView.Pres
      			wikiPageWidget.configure(wikiKey, false, null, false);
      			view.showWikiTermsUI();
      		} else {
-     			view.setTerms(terms);
+     			view.setTerms(sanitizer.sanitizeHtml(terms));
      			view.showTermsUI();
      		}
      		
