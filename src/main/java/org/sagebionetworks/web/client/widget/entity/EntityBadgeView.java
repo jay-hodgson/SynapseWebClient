@@ -24,8 +24,6 @@ public interface EntityBadgeView extends IsWidget, SynapseView {
 	
 	void hideLoadingIcon();
 	
-	void setClickHandler(ClickHandler handler);
-	
 	void setModifiedOn(String modifiedOnString);
 	
 	void setModifiedByWidget(Widget w);
@@ -44,6 +42,8 @@ public interface EntityBadgeView extends IsWidget, SynapseView {
 	boolean isAttached();
 	void setError(String error);
 	void showErrorIcon();
+	void showDirectLink();
+	void hideDirectLink();
 	
 	/**
 	 * Presenter interface

@@ -132,13 +132,6 @@ public class FilesTab {
 		tab.configure("Files", view.asWidget(), "Organize your data by uploading files into a directory structure built in the Files section.", null);
 		
 		configMap = ProvenanceWidget.getDefaultWidgetDescriptor();
-		CallbackP<String> entityClicked = new CallbackP<String> () {
-			@Override
-			public void invoke(String id) {
-				getTargetBundleAndDisplay(id, null);
-			}
-		};
-		filesBrowser.setEntityClickedHandler(entityClicked);
 		initBreadcrumbLinkClickedHandler();
 	}
 

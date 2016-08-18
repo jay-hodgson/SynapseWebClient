@@ -51,6 +51,7 @@ public class EntityBadge implements EntityBadgeView.Presenter, SynapseWidgetPres
 	private SynapseClientAsync synapseClient;
 	private GWTWrapper gwt;
 	private CallbackP<String> customEntityClickHandler;
+	private ClickHandler customClickHandler;
 	private Callback invokeCheckForInViewAndLoadData;
 	private boolean isConfigured;
 	private boolean isAttached;
@@ -89,6 +90,7 @@ public class EntityBadge implements EntityBadgeView.Presenter, SynapseWidgetPres
 				getEntityBundle();
 			}
 		});
+		view.showDirectLink();
 	}
 	public void startCheckingIfAttachedAndConfigured() {
 		if (isAttached && isConfigured) {
@@ -234,18 +236,20 @@ public class EntityBadge implements EntityBadgeView.Presenter, SynapseWidgetPres
 		return sb.toString();
 	}
 	
-	
 	public void setEntityClickedHandler(CallbackP<String> callback) {
 		customEntityClickHandler = callback;
+		view.hideDirectLink();
 	}
 	
 	@Override
 	public void entityClicked(EntityQueryResult entityHeader) {
 		showLoadingIcon();
-		if (customEntityClickHandler == null) {
-			globalAppState.getPlaceChanger().goTo(new Synapse(entityHeader.getId()));	
-		} else {
+		if (customClickHandler != null) {
+			customClickHandler.onClick(null);
+		} else if (customEntityClickHandler != null) {
 			customEntityClickHandler.invoke(entityHeader.getId());
+		} else {
+			globalAppState.getPlaceChanger().goTo(new Synapse(entityHeader.getId()));
 		}
 	}
 	
@@ -262,8 +266,9 @@ public class EntityBadge implements EntityBadgeView.Presenter, SynapseWidgetPres
 	}
 	
 	public void setClickHandler(ClickHandler handler) {
+		this.customClickHandler = handler;
 		modifiedByUserBadge.setCustomClickHandler(handler);
-		view.setClickHandler(handler);
+		view.hideDirectLink();
 	}
 	
 	public String getEntityId() {

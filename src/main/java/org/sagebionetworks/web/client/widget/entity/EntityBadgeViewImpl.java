@@ -1,11 +1,11 @@
 package org.sagebionetworks.web.client.widget.entity;
 
+import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.Tooltip;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.html.Span;
 import org.sagebionetworks.repo.model.entity.query.EntityQueryResult;
-import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.PortalGinInjector;
 import org.sagebionetworks.web.client.SageImageBundle;
@@ -16,11 +16,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -41,16 +38,17 @@ public class EntityBadgeViewImpl extends Composite implements EntityBadgeView {
 	@UiField
 	Icon icon;
 	@UiField
-	FlowPanel entityContainer;
+	Anchor entityLink;
+	@UiField
+	Anchor directEntityLink;
 	@UiField
 	TextBox idField;
 	@UiField
 	SimplePanel modifiedByField;
 	@UiField
 	Label modifiedOnField;
-	
-	ClickHandler nonDefaultClickHandler;
-	
+	@UiField
+	Span errorLoadingUI;
 	@UiField
 	Tooltip annotationsField;
 	@UiField
@@ -108,26 +106,24 @@ public class EntityBadgeViewImpl extends Composite implements EntityBadgeView {
 		if(entityHeader == null)  throw new IllegalArgumentException("Entity is required");
 		
 		if(entityHeader != null) {
-			final Anchor anchor = new Anchor();
-			anchor.setText(entityHeader.getName());
-			anchor.addStyleName("link");
-			
-			anchor.addClickHandler(new ClickHandler() {
+			directEntityLink.setText(entityHeader.getName());
+			directEntityLink.setHref(DisplayUtils.getSynapseHistoryToken(entityHeader.getId()));
+			entityLink.setText(entityHeader.getName());
+			entityLink.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					entityClicked(entityHeader, event);
+					presenter.entityClicked(entityHeader);
 				}
 			});
 			
 			ClickHandler clickHandler = new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					anchor.fireEvent(event);
+					entityLink.fireEvent(event);
 				}
 			};
 			iconContainer.setWidget(icon);
 			iconContainer.addClickHandler(clickHandler);
-			entityContainer.add(anchor);
 			idField.setText(entityHeader.getId());
 		} 		
 	}
@@ -139,13 +135,11 @@ public class EntityBadgeViewImpl extends Composite implements EntityBadgeView {
 	@Override
 	public void showLoadError(String principalId) {
 		clear();
-		entityContainer.add(new HTML(DisplayConstants.ERROR_LOADING));		
+		errorLoadingUI.setVisible(true);		
 	}
 	
 	@Override
 	public void showLoading() {
-		clear();
-		entityContainer.add(new HTML(DisplayUtils.getLoadingHtml(sageImageBundle)));
 	}
 
 	@Override
@@ -164,7 +158,7 @@ public class EntityBadgeViewImpl extends Composite implements EntityBadgeView {
 	@Override
 	public void clear() {
 		iconContainer.clear();
-		entityContainer.clear();
+		errorLoadingUI.setVisible(false);
 	}
 	
 	@Override
@@ -178,11 +172,6 @@ public class EntityBadgeViewImpl extends Composite implements EntityBadgeView {
 	}
 	
 	@Override
-	public void setClickHandler(ClickHandler handler) {
-		nonDefaultClickHandler = handler;
-	}
-	
-	@Override
 	public void setModifiedByWidget(Widget w) {
 		modifiedByField.setWidget(w);
 		this.modifiedByWidget = w;
@@ -191,13 +180,6 @@ public class EntityBadgeViewImpl extends Composite implements EntityBadgeView {
 	@Override
 	public void setModifiedOn(String modifiedOnString) {
 		modifiedOnField.setText(modifiedOnString);
-	}
-	private void entityClicked(EntityQueryResult entityHeader, ClickEvent event) {
-		if (nonDefaultClickHandler == null) {
-			presenter.entityClicked(entityHeader);
-		} else {
-			nonDefaultClickHandler.onClick(event);
-		}
 	}
 	
 	@Override
@@ -265,6 +247,16 @@ public class EntityBadgeViewImpl extends Composite implements EntityBadgeView {
 	public void setFileDownloadButton(Widget w) {
 		fileDownloadButtonContainer.clear();
 		fileDownloadButtonContainer.add(w);
+	}
+	@Override
+	public void showDirectLink() {
+		entityLink.setVisible(false);
+		directEntityLink.setVisible(true);
+	}
+	@Override
+	public void hideDirectLink() {
+		entityLink.setVisible(true);
+		directEntityLink.setVisible(false);
 	}
 	/*
 	 * Private Methods
