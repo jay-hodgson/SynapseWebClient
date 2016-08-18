@@ -17,6 +17,9 @@
 				<bh:Div addStyleNames="margin-right-5"> 
 					<g:FlowPanel ui:field="entityContainer" styleName="displayInline pull-left"/>
 					<bh:Span ui:field="fileDownloadButtonContainer" addStyleNames="right moveup-3"/>
+					<b:Tooltip title="Open in a new window.">
+						<b:Anchor ui:field="newWindowLink" icon="EXTERNAL_LINK" pull="RIGHT" target="_blank" addStyleNames="margin-right-5 margin-left-5" />
+					</b:Tooltip>
 					<b:Tooltip title="Public">
 						<b:Icon ui:field="publicIcon" fixedWidth="true" type="GLOBE" visible="false" pull="RIGHT"/>
 					</b:Tooltip>

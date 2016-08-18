@@ -50,7 +50,8 @@ public class EntityBadgeViewImpl extends Composite implements EntityBadgeView {
 	Label modifiedOnField;
 	
 	ClickHandler nonDefaultClickHandler;
-	
+	@UiField
+	org.gwtbootstrap3.client.ui.Anchor newWindowLink;
 	@UiField
 	Tooltip annotationsField;
 	@UiField
@@ -110,8 +111,8 @@ public class EntityBadgeViewImpl extends Composite implements EntityBadgeView {
 		if(entityHeader != null) {
 			final Anchor anchor = new Anchor();
 			anchor.setText(entityHeader.getName());
-			anchor.addStyleName("link");
-			
+			newWindowLink.setHref(DisplayUtils.getSynapseHistoryToken(entityHeader.getId()));
+			newWindowLink.setVisible(true);
 			anchor.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
@@ -165,6 +166,7 @@ public class EntityBadgeViewImpl extends Composite implements EntityBadgeView {
 	public void clear() {
 		iconContainer.clear();
 		entityContainer.clear();
+		newWindowLink.setVisible(false);
 	}
 	
 	@Override
