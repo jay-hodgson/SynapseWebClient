@@ -18,6 +18,8 @@ public class FilesTabViewImpl implements FilesTabView {
 	@UiField
 	SimplePanel filesWikiPageContainer;
 	@UiField
+	SimplePanel jupyterContainer;
+	@UiField
 	Column filePreviewContainer;
 	@UiField
 	Div filePreviewContainerHighlightBox;
@@ -160,4 +162,10 @@ public class FilesTabViewImpl implements FilesTabView {
 	public void setRefreshAlert(Widget w) {
 		refreshAlertContainer.setWidget(w);
 	};
+	
+	@Override
+	public void setJupyterWidget(Widget w) {
+		jupyterContainer.clear();
+		jupyterContainer.setWidget(w);
+	}
 }

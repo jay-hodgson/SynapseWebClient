@@ -46,6 +46,7 @@ import org.sagebionetworks.web.client.widget.entity.file.FileTitleBar;
 import org.sagebionetworks.web.client.widget.entity.menu.v2.Action;
 import org.sagebionetworks.web.client.widget.entity.menu.v2.ActionMenuWidget;
 import org.sagebionetworks.web.client.widget.entity.menu.v2.ActionMenuWidget.ActionListener;
+import org.sagebionetworks.web.client.widget.jupyter.JupyterWidget;
 import org.sagebionetworks.web.client.widget.provenance.ProvenanceWidget;
 import org.sagebionetworks.web.client.widget.refresh.RefreshAlert;
 import org.sagebionetworks.web.shared.EntityBundlePlus;
@@ -71,6 +72,7 @@ public class FilesTab {
 	StuAlert synAlert;
 	SynapseClientAsync synapseClient;
 	GlobalApplicationState globalApplicationState;
+	JupyterWidget jupyterWidget;
 	
 	Entity currentEntity;
 	String currentEntityId;
@@ -101,7 +103,8 @@ public class FilesTab {
 			SynapseClientAsync synapseClient,
 			PortalGinInjector ginInjector,
 			GlobalApplicationState globalApplicationState,
-			ModifiedCreatedByWidget modifiedCreatedBy
+			ModifiedCreatedByWidget modifiedCreatedBy,
+			JupyterWidget jupyterWidget
 			) {
 		this.view = view;
 		this.tab = tab;
@@ -117,7 +120,7 @@ public class FilesTab {
 		this.ginInjector = ginInjector;
 		this.globalApplicationState = globalApplicationState;
 		this.modifiedCreatedBy = modifiedCreatedBy;
-		
+		this.jupyterWidget = jupyterWidget;
 		previewWidget.addStyleName("min-height-200");
 		view.setFileTitlebar(fileTitleBar.asWidget());
 		view.setFolderTitlebar(folderTitleBar.asWidget());
@@ -127,8 +130,9 @@ public class FilesTab {
 		view.setMetadata(metadata.asWidget());
 		view.setWikiPage(wikiPageWidget.asWidget());
 		view.setSynapseAlert(synAlert.asWidget());
+		view.setJupyterWidget(jupyterWidget.asWidget());
 		view.setModifiedCreatedBy(modifiedCreatedBy);
-		
+		jupyterWidget.setVisible(false);
 		tab.configure("Files", view.asWidget(), "Organize your data by uploading files into a directory structure built in the Files section.", null);
 		
 		configMap = ProvenanceWidget.getDefaultWidgetDescriptor();
@@ -252,6 +256,7 @@ public class FilesTab {
 		shownVersionNumber = versionNumber;
 		currentEntityId = entityId;
 		synAlert.clear();
+		jupyterWidget.setVisible(false);
 		int mask = ENTITY | ANNOTATIONS | PERMISSIONS | ENTITY_PATH | HAS_CHILDREN | ACCESS_REQUIREMENTS | UNMET_ACCESS_REQUIREMENTS | FILE_HANDLES | ROOT_WIKI_ID | DOI | FILE_NAME;
 		AsyncCallback<EntityBundlePlus> ebpCallback = new AsyncCallback<EntityBundlePlus> () {
 
@@ -346,8 +351,14 @@ public class FilesTab {
 		modifiedCreatedBy.configure(currentEntity.getCreatedOn(), currentEntity.getCreatedBy(), 
 				currentEntity.getModifiedOn(), currentEntity.getModifiedBy());
 		
+		boolean isJupyter = isFile && bundle.getFileName().toUpperCase().endsWith("IPYNB");
+		if(isJupyter) {
+			jupyterWidget.setVisible(true);
+			jupyterWidget.configure((FileEntity)bundle.getEntity(), DisplayUtils.getFileHandle(bundle));
+		}
+		
 		//Wiki Page
-		boolean isWikiPageVisible = !isProject;
+		boolean isWikiPageVisible = !isProject && !isJupyter;
 		view.setWikiPageWidgetVisible(isWikiPageVisible);
 		if (isWikiPageVisible) {
 			final boolean canEdit = bundle.getPermissions().getCanCertifiedUserEdit();
