@@ -55,7 +55,6 @@ public class MyEntitiesBrowserViewImpl implements MyEntitiesBrowserView {
 	Div myFavoritesTabContents;
 	@UiField
 	Div currentContextTabContents;
-	
 	private Widget widget;
 	@Inject
 	public MyEntitiesBrowserViewImpl(MyEntitiesBrowserViewImplUiBinder binder, 
@@ -72,6 +71,7 @@ public class MyEntitiesBrowserViewImpl implements MyEntitiesBrowserView {
 			@Override
 			public void onClick(ClickEvent event) {
 				setTabSelected(myProjectsLink, myProjectsListItem, myProjectsTabContents);
+				presenter.loadUserUpdateable();
 			}
 		});
 		
@@ -79,6 +79,7 @@ public class MyEntitiesBrowserViewImpl implements MyEntitiesBrowserView {
 			@Override
 			public void onClick(ClickEvent event) {
 				setTabSelected(myFavoritesLink, myFavoritesListItem, myFavoritesTabContents);
+				presenter.loadFavorites();
 			}
 		});
 		
@@ -86,6 +87,7 @@ public class MyEntitiesBrowserViewImpl implements MyEntitiesBrowserView {
 			@Override
 			public void onClick(ClickEvent event) {
 				setTabSelected(currentContextLink, currentContextListItem, currentContextTabContents);
+				presenter.loadCurrentContext();
 			}
 		});
 		
@@ -122,7 +124,7 @@ public class MyEntitiesBrowserViewImpl implements MyEntitiesBrowserView {
 	@Override
 	public void showLoading() {
 	}
-
+	
 	@Override
 	public void showInfo(String title, String message) {
 		DisplayUtils.showInfo(title, message);

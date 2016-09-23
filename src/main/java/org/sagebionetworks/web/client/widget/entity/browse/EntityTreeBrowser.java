@@ -108,6 +108,9 @@ public class EntityTreeBrowser implements EntityTreeBrowserView.Presenter,
 		view.setLoadingVisible(false);
 	}
 	
+	public void setLoadingVisible(boolean visible) {
+		view.setLoadingVisible(visible);
+	}
 
 	public EntityQueryResults getEntityQueryResultsFromHeaders(
 			List<EntityHeader> headers) {

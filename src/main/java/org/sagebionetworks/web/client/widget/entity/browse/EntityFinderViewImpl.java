@@ -216,7 +216,7 @@ public class EntityFinderViewImpl implements EntityFinderView {
 		});
 		myEntitiesBrowserContainer.clear();
 		myEntitiesBrowserContainer.setWidget(myEntitiesBrowser.asWidget());
-
+		myEntitiesBrowser.refresh();
 		// list entry
 		Widget entry = createNewLeftEntry(DisplayConstants.BROWSE_MY_ENTITIES, new ClickHandler(){
 	        @Override

@@ -9,7 +9,6 @@ import java.util.List;
 import org.sagebionetworks.repo.model.EntityBundle;
 import org.sagebionetworks.repo.model.EntityHeader;
 import org.sagebionetworks.repo.model.EntityPath;
-import org.sagebionetworks.repo.model.EntityType;
 import org.sagebionetworks.repo.model.Project;
 import org.sagebionetworks.repo.model.entity.query.Condition;
 import org.sagebionetworks.repo.model.entity.query.EntityFieldName;
@@ -71,7 +70,6 @@ public class MyEntitiesBrowser implements MyEntitiesBrowserView.Presenter, Synap
 			public void onSelection(String selectedEntityId) {								
 			}
 		};
-		
 		view.setPresenter(this);
 	}	
 
@@ -85,21 +83,17 @@ public class MyEntitiesBrowser implements MyEntitiesBrowserView.Presenter, Synap
 
 	@Override
 	public Widget asWidget() {
-		view.setPresenter(this);
-		refresh();
 		return view.asWidget();
 	}
 	
 	public void refresh() {
 		//do not reload if the session is unchanged, and the context (project) is unchanged.
 		if (!isSameContext()) {
-			loadCurrentContext();
 			loadUserUpdateable();
-			loadFavorites();
 			updateContext();
 		}
 	}
-
+	 
 	public boolean isSameContext() {
 		if (globalApplicationState.getCurrentPlace() == null || authenticationController.getCurrentUserPrincipalId() == null) {
 			return false;
@@ -109,6 +103,10 @@ public class MyEntitiesBrowser implements MyEntitiesBrowserView.Presenter, Synap
 	public void updateContext() {
 		cachedPlace = globalApplicationState.getCurrentPlace();
 		cachedUserId = authenticationController.getCurrentUserPrincipalId();
+		
+		Place currentPlace = globalApplicationState.getCurrentPlace();
+		boolean isSynapsePlace = currentPlace instanceof Synapse;
+		view.setCurrentContextTabVisible(isSynapsePlace);
 	}
 	
 	public void clearCurrentContent() {
@@ -141,14 +139,15 @@ public class MyEntitiesBrowser implements MyEntitiesBrowserView.Presenter, Synap
 		//get the entity path, and ask for each entity to add to the tree
 		Place currentPlace = globalApplicationState.getCurrentPlace();
 		boolean isSynapsePlace = currentPlace instanceof Synapse;
-		view.setCurrentContextTabVisible(isSynapsePlace);
 		if (isSynapsePlace) {
 			String entityId = ((Synapse) currentPlace).getEntityId();
 			int mask = ENTITY_PATH;
+			view.getCurrentContextTreeBrowser().setLoadingVisible(true);
 			synapseClient.getEntityBundle(entityId, mask, new AsyncCallback<EntityBundle>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					view.showErrorMessage(caught.getMessage());
+					view.getCurrentContextTreeBrowser().setLoadingVisible(false);
 				}
 				
 				public void onSuccess(EntityBundle result) {
@@ -160,6 +159,7 @@ public class MyEntitiesBrowser implements MyEntitiesBrowserView.Presenter, Synap
 						projectHeader.add(pathHeaders.get(1));		
 					}
 					//add to the current context tree, and show all children of this container (or siblings if leaf)
+					view.getCurrentContextTreeBrowser().setLoadingVisible(false);
 					view.getCurrentContextTreeBrowser().configure(projectHeader);
 				};
 			});
@@ -169,6 +169,7 @@ public class MyEntitiesBrowser implements MyEntitiesBrowserView.Presenter, Synap
 	public void loadUserUpdateable() {
 		view.getEntityTreeBrowser().clear();
 		if (authenticationController.isLoggedIn()) {
+			view.getEntityTreeBrowser().setLoadingVisible(true);
 			synapseClient.executeEntityQuery(createMyProjectQuery(), new AsyncCallback<EntityQueryResults>() {
 				@Override
 				public void onSuccess(EntityQueryResults results) {
@@ -180,11 +181,12 @@ public class MyEntitiesBrowser implements MyEntitiesBrowserView.Presenter, Synap
 						h.setName(result.getName());
 						headers.add(h);
 					}
-					
+					view.getEntityTreeBrowser().setLoadingVisible(false);
 					view.setUpdatableEntities(headers);
 				}
 				@Override
 				public void onFailure(Throwable caught) {
+					view.getEntityTreeBrowser().setLoadingVisible(false);
 					view.showErrorMessage(caught.getMessage());
 				}
 			});
@@ -217,13 +219,16 @@ public class MyEntitiesBrowser implements MyEntitiesBrowserView.Presenter, Synap
 	@Override
 	public void loadFavorites() {
 		view.getFavoritesTreeBrowser().clear();
+		view.getFavoritesTreeBrowser().setLoadingVisible(true);
 		EntityBrowserUtils.loadFavorites(synapseClient, adapterFactory, globalApplicationState, new AsyncCallback<List<EntityHeader>>() {
 			@Override
 			public void onSuccess(List<EntityHeader> result) {
+				view.getFavoritesTreeBrowser().setLoadingVisible(false);
 				view.setFavoriteEntities(result);
 			}
 			@Override
 			public void onFailure(Throwable caught) {
+				view.getFavoritesTreeBrowser().setLoadingVisible(false);
 				if(!DisplayUtils.handleServiceException(caught, globalApplicationState, authenticationController.isLoggedIn(), view))
 					view.showErrorMessage(DisplayConstants.ERROR_GENERIC_RELOAD);
 			}
