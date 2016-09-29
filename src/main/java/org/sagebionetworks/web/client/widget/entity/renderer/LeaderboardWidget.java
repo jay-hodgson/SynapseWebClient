@@ -95,7 +95,6 @@ public class LeaderboardWidget implements LeaderboardWidgetView.Presenter, Widge
 		String oldURI = widgetDescriptor.get(WidgetConstants.API_TABLE_WIDGET_PATH_KEY);
 		//look for the encoded "evaluation_" string
 		int indexOfEvalId = oldURI.toLowerCase().indexOf(EVALUATION_ID_PREFIX);
-		GWT.debugger();
 		if (indexOfEvalId > -1) {
 			// look for '+'
 			int indexOfSpace = oldURI.indexOf("+", indexOfEvalId);
