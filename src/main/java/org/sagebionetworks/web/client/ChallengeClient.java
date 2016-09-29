@@ -71,4 +71,6 @@ public interface ChallengeClient extends RemoteService {
 	Challenge updateChallenge(Challenge challenge) throws RestServiceException;
 
 	Challenge createChallenge(Challenge challenge) throws RestServiceException;
+
+	PaginatedResults<Evaluation> getProjectEvaluations(String projectId) throws RestServiceException;
 }

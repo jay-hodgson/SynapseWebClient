@@ -131,9 +131,10 @@ public class WidgetRegistrarImpl implements WidgetRegistrar {
 				contentTypeKey.equals(WidgetConstants.IMAGE_LINK_EDITOR_CONTENT_TYPE)) {
 			presenter = ginInjector.getImageRenderer();
 		} else if (contentTypeKey.equals(WidgetConstants.API_TABLE_CONTENT_TYPE) || 
-				contentTypeKey.equals(WidgetConstants.QUERY_TABLE_CONTENT_TYPE) ||
-				contentTypeKey.equals(WidgetConstants.LEADERBOARD_CONTENT_TYPE)) {
+				contentTypeKey.equals(WidgetConstants.QUERY_TABLE_CONTENT_TYPE)) {
 			presenter = ginInjector.getSynapseAPICallRenderer();
+		} else if (contentTypeKey.equals(WidgetConstants.LEADERBOARD_CONTENT_TYPE)) {
+			presenter = ginInjector.getLeaderboardWidget();
 		} else if (contentTypeKey.equals(WidgetConstants.TOC_CONTENT_TYPE)) {
 			presenter = ginInjector.getTableOfContentsRenderer();
 		} else if (contentTypeKey.equals(WidgetConstants.WIKI_FILES_PREVIEW_CONTENT_TYPE)) {

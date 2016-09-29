@@ -353,6 +353,8 @@ import org.sagebionetworks.web.client.widget.entity.renderer.IFrameWidgetView;
 import org.sagebionetworks.web.client.widget.entity.renderer.IFrameWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.entity.renderer.ImageWidgetView;
 import org.sagebionetworks.web.client.widget.entity.renderer.ImageWidgetViewImpl;
+import org.sagebionetworks.web.client.widget.entity.renderer.LeaderboardWidgetView;
+import org.sagebionetworks.web.client.widget.entity.renderer.LeaderboardWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.entity.renderer.ReferenceWidgetView;
 import org.sagebionetworks.web.client.widget.entity.renderer.ReferenceWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.entity.renderer.ShinySiteWidgetView;
@@ -1347,5 +1349,6 @@ public class PortalGinModule extends AbstractGinModule {
 		bind(EntityHeaderAsyncHandler.class).to(EntityHeaderAsyncHandlerImpl.class);
 		
 		bind(GoogleMapView.class).to(GoogleMapViewImpl.class);
+		bind(LeaderboardWidgetView.class).to(LeaderboardWidgetViewImpl.class);
 	}
 }

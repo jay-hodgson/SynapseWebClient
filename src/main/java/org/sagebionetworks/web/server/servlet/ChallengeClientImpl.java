@@ -528,4 +528,12 @@ public class ChallengeClientImpl extends SynapseClientBase implements
 		}		
 	}
 
+	@Override
+	public PaginatedResults<Evaluation> getProjectEvaluations(String projectId) throws RestServiceException {
+		Set<String> evaluationIds = getProjectEvaluationIds(projectId);
+		return getAvailableEvaluations(evaluationIds);
+	}
+	
+	
+
 }

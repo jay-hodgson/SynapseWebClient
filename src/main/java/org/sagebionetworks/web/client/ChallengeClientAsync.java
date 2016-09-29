@@ -63,6 +63,7 @@ public interface ChallengeClientAsync {
 	void deleteEvaluation(String evaluationId, AsyncCallback<Void> callback);
 	
 	void getProjectEvaluationIds(String projectId, AsyncCallback<Set<String>> callback);
+	void getProjectEvaluations(String projectId, AsyncCallback<PaginatedResults<Evaluation>> callback);
 	void deleteChallenge(String challengeId, AsyncCallback<Void> callback);
 	void updateChallenge(Challenge challenge, AsyncCallback<Challenge> callback);
 	void createChallenge(Challenge challenge, AsyncCallback<Challenge> callback);

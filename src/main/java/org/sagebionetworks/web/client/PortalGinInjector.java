@@ -110,6 +110,7 @@ import org.sagebionetworks.web.client.widget.entity.renderer.CytoscapeWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.EmptyWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.EntityListWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.ImageWidget;
+import org.sagebionetworks.web.client.widget.entity.renderer.LeaderboardWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.ReferenceWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.RegisterChallengeTeamWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.ShinySiteWidget;
@@ -316,6 +317,7 @@ public interface PortalGinInjector extends Ginjector {
 	public TeamMembersWidget getTeamMembersWidget();
 	public TeamMemberCountWidget getTeamMemberCountWidget();
 	public LazyLoadWikiWidgetWrapper getLazyLoadWikiWidgetWrapper();
+	public LeaderboardWidget getLeaderboardWidget();
 	//////API Table Column Editor
 	public APITableColumnConfigView getAPITableColumnConfigView();
 	
