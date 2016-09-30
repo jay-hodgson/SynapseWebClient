@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 
 public class LeaderboardWidget implements LeaderboardWidgetView.Presenter, WidgetRendererPresenter {
 	
+	public static final String MISSING_EVALUATION_ID_IN_QUERY = "Unable to find evaluation ID in query.";
 	LeaderboardWidgetView view;
 	APITableWidget apiTableWidget;
 	ChallengeClientAsync challengeClient;
@@ -60,11 +61,17 @@ public class LeaderboardWidget implements LeaderboardWidgetView.Presenter, Widge
 				@Override
 				public void onSuccess(PaginatedResults<Evaluation> results) {
 					evaluations = results.getResults();
-					for (Evaluation evaluation : evaluations) {
-						view.addEvalation(evaluation.getName());
+					if (evaluations.size() > 0) {
+						for (Evaluation evaluation : evaluations) {
+							view.addEvalation(evaluation.getName());
+						}
+						if (evaluations.size() > 1) {
+							view.setEvaluationSelectionVisible(true);	
+						}
+						onSelectEvaluation(0);
+					} else {
+						configureAPITable();
 					}
-					view.setEvaluationSelectionVisible(true);
-					onSelectEvaluation(0);
 				}
 				
 				@Override
@@ -106,7 +113,7 @@ public class LeaderboardWidget implements LeaderboardWidgetView.Presenter, Widge
 			widgetDescriptor.put(WidgetConstants.API_TABLE_WIDGET_PATH_KEY, newURI);
 			configureAPITable();
 		} else {
-			synAlert.showError("Unable to find evaluation ID in query.");
+			synAlert.showError(MISSING_EVALUATION_ID_IN_QUERY);
 		}
 	}
 }
