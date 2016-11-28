@@ -3,6 +3,7 @@ package org.sagebionetworks.web.client.widget.provenance;
 import java.util.List;
 
 import org.sagebionetworks.web.client.SynapseView;
+import org.sagebionetworks.web.client.widget.lazyload.SupportsLazyLoadInterface;
 import org.sagebionetworks.web.shared.KeyValueDisplay;
 import org.sagebionetworks.web.shared.provenance.ExpandGraphNode;
 import org.sagebionetworks.web.shared.provenance.ProvGraph;
@@ -10,7 +11,7 @@ import org.sagebionetworks.web.shared.provenance.ProvGraph;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface ProvenanceWidgetView extends IsWidget, SynapseView {
+public interface ProvenanceWidgetView extends IsWidget, SynapseView, SupportsLazyLoadInterface {
 
 	/**
 	 * Set the presenter.

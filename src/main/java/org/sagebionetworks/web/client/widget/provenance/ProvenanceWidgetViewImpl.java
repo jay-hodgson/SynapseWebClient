@@ -15,6 +15,7 @@ import org.sagebionetworks.web.client.IconsImageBundle;
 import org.sagebionetworks.web.client.PortalGinInjector;
 import org.sagebionetworks.web.client.SageImageBundle;
 import org.sagebionetworks.web.client.SynapseJSNIUtils;
+import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.shared.KeyValueDisplay;
 import org.sagebionetworks.web.shared.WidgetConstants;
 import org.sagebionetworks.web.shared.provenance.ActivityGraphNode;
@@ -63,6 +64,7 @@ public class ProvenanceWidgetViewImpl extends FlowPanel implements ProvenanceWid
 	private boolean blockCloseFullscreen = false;
 	private boolean inFullScreen = false;
 	private Map<String,ProvNodeContainer> nodeToContainer;
+	Callback onAttachCallback;
 	
 	@Inject
 	public ProvenanceWidgetViewImpl(SageImageBundle sageImageBundle,
@@ -368,5 +370,22 @@ public class ProvenanceWidgetViewImpl extends FlowPanel implements ProvenanceWid
 		}
 	}
 	
+
+	@Override
+	public void setOnAttachCallback(Callback onAttachCallback) {
+		this.onAttachCallback = onAttachCallback;
+	}
+
+	@Override
+	protected void onAttach() {
+		super.onAttach();
+		if (onAttachCallback != null) {
+			onAttachCallback.invoke();
+		}
+	}
 	
+	@Override
+	public boolean isInViewport() {
+		return DisplayUtils.isInViewport(this);
+	}
 }

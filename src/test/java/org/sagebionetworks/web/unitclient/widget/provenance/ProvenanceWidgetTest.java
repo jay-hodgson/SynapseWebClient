@@ -42,6 +42,7 @@ import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.cache.ClientCache;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.transform.JsoProvider;
+import org.sagebionetworks.web.client.widget.lazyload.LazyLoadHelper;
 import org.sagebionetworks.web.client.widget.provenance.ProvenanceWidget;
 import org.sagebionetworks.web.client.widget.provenance.ProvenanceWidgetView;
 import org.sagebionetworks.web.client.widget.provenance.nchart.NChartCharacters;
@@ -84,6 +85,8 @@ public class ProvenanceWidgetTest {
 	UserProfile modifiedByUserProfile;
 	@Mock
 	SynapseJSNIUtils mockSynapseJSNIUtils;
+	@Mock
+	LazyLoadHelper mockLazyLoadHelper;
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setup() throws Exception {
@@ -96,7 +99,7 @@ public class ProvenanceWidgetTest {
 		when(mockSynapseJSNIUtils.nChartlayout(any(NChartLayersArray.class), any(NChartCharacters.class))).thenReturn(jsoProvider.newLayoutResult());
 		mockClientCache = mock(ClientCache.class);
 		mockGlobalAppState = mock(GlobalApplicationState.class);
-		provenanceWidget = new ProvenanceWidget(mockView, mockSynapseClient, mockGlobalAppState, mockAuthController, adapterFactory, mockSynapseJSNIUtils, jsoProvider, mockClientCache);
+		provenanceWidget = new ProvenanceWidget(mockView, mockSynapseClient, mockGlobalAppState, mockAuthController, adapterFactory, mockSynapseJSNIUtils, jsoProvider, mockClientCache, mockLazyLoadHelper);
 		verify(mockView).setPresenter(provenanceWidget);
 		
 		outputEntity = new FileEntity();
@@ -261,7 +264,7 @@ public class ProvenanceWidgetTest {
 	public void testFindOldVersionsNotFoundException() throws Exception {
 		SynapseJSNIUtils mockJsniUtils = mock(SynapseJSNIUtils.class);
 		when(mockJsniUtils.nChartlayout(any(NChartLayersArray.class), any(NChartCharacters.class))).thenReturn(jsoProvider.newLayoutResult());
-		provenanceWidget = new ProvenanceWidget(mockView, mockSynapseClient, mockGlobalAppState, mockAuthController, adapterFactory, mockJsniUtils, jsoProvider, mockClientCache);
+		provenanceWidget = new ProvenanceWidget(mockView, mockSynapseClient, mockGlobalAppState, mockAuthController, adapterFactory, mockJsniUtils, jsoProvider, mockClientCache, mockLazyLoadHelper);
 		
 		String message = "entity syn999 was not found";
 		AsyncMockStubber.callFailureWith(new NotFoundException(message)).when(mockSynapseClient).getEntityHeaderBatch(any(ReferenceList.class), any(AsyncCallback.class));

@@ -271,7 +271,7 @@ public class EntityBadgeViewImpl extends Composite implements EntityBadgeView {
 
 	@Override
 	public boolean isInViewport() {
-		return DisplayUtils.isInViewport(this);
+		return DisplayUtils.isInViewport(this, 0);
 	}
 	@Override
 	public void setFileDownloadButton(Widget w) {

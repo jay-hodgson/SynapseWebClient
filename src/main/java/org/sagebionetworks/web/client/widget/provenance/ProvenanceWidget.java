@@ -27,6 +27,7 @@ import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.transform.JsoProvider;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.widget.WidgetRendererPresenter;
+import org.sagebionetworks.web.client.widget.lazyload.LazyLoadHelper;
 import org.sagebionetworks.web.client.widget.provenance.nchart.LayoutResult;
 import org.sagebionetworks.web.client.widget.provenance.nchart.NChartCharacters;
 import org.sagebionetworks.web.client.widget.provenance.nchart.NChartLayersArray;
@@ -79,15 +80,22 @@ public class ProvenanceWidget implements ProvenanceWidgetView.Presenter, WidgetR
 	Stack<String> lookupVersion;
 	ProvGraph currentGraph;
 	ClientCache clientCache;
+	private LazyLoadHelper lazyLoadHelper;
+	WikiPageKey wikiKey; 
+	Map<String, String> widgetDescriptor; 
+	Callback widgetRefreshRequired; 
+	Long wikiVersionInView;
 	
 	@Inject
-	public ProvenanceWidget(ProvenanceWidgetView view, SynapseClientAsync synapseClient,
+	public ProvenanceWidget(ProvenanceWidgetView view, 
+			SynapseClientAsync synapseClient,
 			GlobalApplicationState globalApplicationState,
 			AuthenticationController authenticationController, 
 			AdapterFactory adapterFactory,
 			SynapseJSNIUtils synapseJSNIUtils,
 			JsoProvider jsoProvider, 
-			ClientCache clientCache) {
+			ClientCache clientCache,
+			LazyLoadHelper lazyLoadHelper) {
 		this.view = view;
 		this.synapseClient = synapseClient;
 		this.authenticationController = authenticationController;
@@ -96,7 +104,16 @@ public class ProvenanceWidget implements ProvenanceWidgetView.Presenter, WidgetR
 		this.synapseJSNIUtils = synapseJSNIUtils;
 		this.jsoProvider = jsoProvider;
 		this.clientCache = clientCache;
+		this.lazyLoadHelper = lazyLoadHelper;
 		view.setPresenter(this);
+		Callback loadDataCallback = new Callback() {
+			@Override
+			public void invoke() {
+				lazyLoad();
+			}
+		};
+		
+		lazyLoadHelper.configure(loadDataCallback, view);
 	}
 
 	public void configure(Map<String, String> widgetDescriptor){
@@ -105,6 +122,14 @@ public class ProvenanceWidget implements ProvenanceWidgetView.Presenter, WidgetR
 
 	@Override
 	public void configure(WikiPageKey wikiKey, Map<String, String> widgetDescriptor, Callback widgetRefreshRequired, Long wikiVersionInView) {
+		this.wikiKey = wikiKey;
+		this.widgetDescriptor = widgetDescriptor;
+		this.widgetRefreshRequired = widgetRefreshRequired;
+		this.wikiVersionInView = wikiVersionInView;
+		lazyLoadHelper.setIsConfigured();
+	}
+	
+	public void lazyLoad() {
 		view.setPresenter(this);
 		view.showLoading();
 		//set up view based on descriptor parameters
