@@ -1,6 +1,7 @@
 package org.sagebionetworks.web.client.view;
 
 import org.gwtbootstrap3.client.ui.html.Div;
+import org.sagebionetworks.web.client.Caja;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.PortalGinInjector;
 import org.sagebionetworks.web.client.SageImageBundle;
@@ -31,6 +32,8 @@ public class ComingSoonViewImpl extends Composite implements ComingSoonView {
 	SimplePanel footer;
 	@UiField
 	Div widgetContainer;
+	@UiField
+	Div cajaHtmlDiv;
 	
 	private Presenter presenter;
 	
@@ -42,6 +45,7 @@ public class ComingSoonViewImpl extends Composite implements ComingSoonView {
 	SynapseClientAsync synapseClient;
 	AuthenticationController authenticationController;
 	GoogleMap map;
+	Caja caja;
 	@Inject
 	public ComingSoonViewImpl(ComingSoonViewImplUiBinder binder,
 			Header headerWidget, Footer footerWidget,
@@ -49,8 +53,10 @@ public class ComingSoonViewImpl extends Composite implements ComingSoonView {
 			SageImageBundle sageImageBundle, SynapseJSNIUtils synapseJSNIUtils,
 			PortalGinInjector ginInjector,
 			JiraURLHelper jiraErrorHelper, AuthenticationController authenticationController,
-			GoogleMap map) {		
+			GoogleMap map,
+			Caja caja) {		
 		initWidget(binder.createAndBindUi(this));
+		this.caja = caja;
 		this.headerWidget = headerWidget;
 		this.footerWidget = footerWidget;
 		this.synapseJSNIUtils = synapseJSNIUtils;
@@ -60,8 +66,8 @@ public class ComingSoonViewImpl extends Composite implements ComingSoonView {
 		headerWidget.configure(false);
 		header.add(headerWidget.asWidget());
 		footer.add(footerWidget.asWidget());
-		widgetContainer.add(map.asWidget());
-		map.configure();
+//		widgetContainer.add(map.asWidget());
+//		map.configure();
 	}
 	
 	@Override
@@ -77,6 +83,8 @@ public class ComingSoonViewImpl extends Composite implements ComingSoonView {
 		footer.add(footerWidget.asWidget());
 		headerWidget.refresh();	
 		Window.scrollTo(0, 0); // scroll user to top of page
+		
+		caja.load("people.html", cajaHtmlDiv.getElement());
 	}
 
 	@Override

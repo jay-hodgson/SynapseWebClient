@@ -22,7 +22,7 @@
 			<w:HelpWidget text="Optional help link text" helpMarkdown="This contains basic help." href="http://link/to/more/help" placement="BOTTOM" />
 			<w:HelpWidget helpMarkdown="This contains **very basic** markdown, perhaps with a [link](http://www.jayhodgson.com)."/>
 		</g:FlowPanel>
-		
+		<bh:Div ui:field="cajaHtmlDiv"/>
 		<bh:Div ui:field="widgetContainer" />
 		<h2>Coming Soon</h2>
 		

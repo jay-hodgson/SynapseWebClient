@@ -1385,5 +1385,7 @@ public class PortalGinModule extends AbstractGinModule {
 		bind(FacetColumnResultSliderRangeView.class).to(FacetColumnResultSliderRangeViewImpl.class);
 		bind(FacetColumnResultRangeView.class).to(FacetColumnResultRangeViewImpl.class);
 		bind(FacetColumnResultDateRangeView.class).to(FacetColumnResultDateRangeViewImpl.class);
+		
+		bind(Caja.class).to(CajaImpl.class);
 	}
 }
