@@ -24,6 +24,7 @@
 		</g:FlowPanel>
 		
 		<bh:Div ui:field="widgetContainer" />
+		<bh:Div ui:field="c3Chart" width="100%" />
 		<h2>Coming Soon</h2>
 		
 		This page is coming soon.

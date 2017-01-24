@@ -15,6 +15,7 @@ import org.sagebionetworks.web.client.widget.provenance.ProvenanceWidget;
 
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -31,6 +32,8 @@ public class ComingSoonViewImpl extends Composite implements ComingSoonView {
 	SimplePanel footer;
 	@UiField
 	Div widgetContainer;
+	@UiField
+	Div c3Chart;
 	
 	private Presenter presenter;
 	
@@ -61,7 +64,7 @@ public class ComingSoonViewImpl extends Composite implements ComingSoonView {
 		header.add(headerWidget.asWidget());
 		footer.add(footerWidget.asWidget());
 		widgetContainer.add(map.asWidget());
-		map.configure();
+//		map.configure();
 	}
 	
 	@Override
@@ -75,9 +78,27 @@ public class ComingSoonViewImpl extends Composite implements ComingSoonView {
 		header.add(headerWidget.asWidget());
 		footer.clear();
 		footer.add(footerWidget.asWidget());
-		headerWidget.refresh();	
+		headerWidget.refresh();
+		showChart(c3Chart.getElement());
 		Window.scrollTo(0, 0); // scroll user to top of page
 	}
+	
+	public void showChart(Element el) {
+		_showChart(el);
+	}
+
+	private static native void _showChart(Element el) /*-{
+		var chart = $wnd.c3.generate({
+		    bindto: el,
+		    data: {
+		      columns: [
+		        ['data1', 30, 200, 100, 400, 150, 250],
+		        ['data2', 50, 20, 10, 40, 15, 25]
+		      ]
+		    }
+		});
+	}-*/;
+
 
 	@Override
 	public void showErrorMessage(String message) {
