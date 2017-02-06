@@ -1,11 +1,10 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
-	xmlns:b="urn:import:org.gwtbootstrap3.client.ui" xmlns:t="urn:import:org.sagebionetworks.web.client.widget.table.v2"
-	xmlns:a="urn:import:org.sagebionetworks.web.client.widget.table.v2"
-	xmlns:bg="urn:import:org.gwtbootstrap3.client.ui.gwt" xmlns:bh="urn:import:org.gwtbootstrap3.client.ui.html">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+	xmlns:w="urn:import:org.sagebionetworks.web.client.widget"
+	xmlns:bh="urn:import:org.gwtbootstrap3.client.ui.html">
 
-	<!-- Dialog for creating a new table -->
 	<b:Modal ui:field="modal" title="Edit Project Metadata" closable="true"
 		dataBackdrop="STATIC" dataKeyboard="false">
 		<b:ModalBody>
@@ -16,7 +15,11 @@
 				</b:FormGroup>
 				<bh:Div ui:field="aliasUI">
 					<b:FormGroup>
-						<b:FormLabel>Friendly URL name</b:FormLabel>
+						<bh:Div>
+							<b:FormLabel addStyleNames="displayInline">Friendly URL name</b:FormLabel>
+							<w:HelpWidget helpMarkdown="Share your Synapse project using a personalized URL which will redirect users to your Synapse project.  Note that changing the friendly URL name will release the previous name for anyone to use." 
+									addStyleNames="margin-left-5" placement="BOTTOM"/>
+						</bh:Div>
 						<bh:Div addStyleNames="form-horizontal">
 							<b:FormGroup>
 								<b:FormLabel addStyleNames="col-xs-4 font-weight-normal" width="155px">https://www.synapse.org/</b:FormLabel>
@@ -26,24 +29,58 @@
 							</b:FormGroup>
 						</bh:Div>
 					</b:FormGroup>
-					<g:FlowPanel addStyleNames="help-panel">
-						<b:BlockQuote styleName="panel">
-							<b:Heading text="Friendly URL" size="H4" />
-							<bh:Div>
-								<bh:Text text="Share your Synapse project using a personalized URL - which will redirect users to your Synapse project." />
+				</bh:Div>
+				<bh:Div>
+					<bh:Div>
+						<b:FormLabel addStyleNames="displayInline">Storage Location</b:FormLabel>
+						<w:HelpWidget helpMarkdown="Synapse can access files stored in multiple locations.&#10;By default content is stored in Synapse native storage but can alternatively be setup with other solutions." 
+							href="http://docs.synapse.org/articles/custom_storage_location.html" addStyleNames="margin-left-5" placement="BOTTOM"/>
+					</bh:Div>
+					<bh:Div addStyleNames="form-horizontal margin-left-20 margin-right-20">
+						<b:FormGroup>
+					     	<b:Radio ui:field="synapseStorageButton" name="storageLocationRadio" text="Synapse Storage" addStyleNames="font-size-18"/>
+					     	<b:Radio ui:field="externalS3Button" name="storageLocationRadio" text="Amazon S3 Bucket" addStyleNames="font-size-18" />
+					     	<bh:Div addStyleNames="margin-left-20" ui:field="s3Collapse">
+					     		<bh:Div addStyleNames="margin-bottom-10">
+					     			<b:Anchor href="http://docs.synapse.org/articles/custom_storage_location.html" icon="QUESTION_CIRCLE" target="_blank" text="More info..." />
+					     		</bh:Div>
+								<b:FormLabel for="bucketField" >Bucket</b:FormLabel>
+						     	<b:TextBox ui:field="bucketField" addStyleNames="margin-bottom-10 hide-resize "/>
+						     	<b:FormLabel for="baseKeyField" >Base Key</b:FormLabel>
+						     	<b:TextBox ui:field="baseKeyField" addStyleNames="margin-bottom-10 hide-resize "/>
+						     	<b:FormLabel for="externalS3BannerField" >Banner</b:FormLabel>
+		
+								<b:InputGroup width="100%">
+									<b:InputGroupButton>
+										<b:Button ui:field="externalS3BannerDropdownButton"
+											dataToggle="DROPDOWN" height="28px" />
+										<b:DropDownMenu ui:field="externalS3BannerOptions">
+										</b:DropDownMenu>
+									</b:InputGroupButton>
+									<b:TextBox ui:field="externalS3BannerField" addStyleNames="margin-bottom-10 hide-resize padding-left-10" />
+								</b:InputGroup>
+						     	
 							</bh:Div>
-							<bh:Div>
-								<bh:Text text="E.g. https://www.synapse.org/UberInterestingResearch" />
-							</bh:Div>
-							<b:Alert type="WARNING" addStyleNames="margin-top-10">
-								<bh:Strong text="Note &nbsp;" />
-								<bh:Text text=" Changing the friendly URL name will release the previous name for anyone to use."/>
-							</b:Alert>
-						</b:BlockQuote>
-					</g:FlowPanel>
+					     	<b:Radio ui:field="sftpButton" name="storageLocationRadio" text="SFTP Server" addStyleNames="font-size-18"/>
+					     	<bh:Div addStyleNames="margin-left-20" ui:field="sftpCollapse">
+					         	<b:FormLabel for="sftpUrlField" >URL</b:FormLabel>
+						     	<b:TextBox ui:field="sftpUrlField" addStyleNames="margin-bottom-10 hide-resize"/>
+						     	<b:FormLabel for="sftpBannerField" >Banner</b:FormLabel>
+								<b:InputGroup width="100%">
+									<b:InputGroupButton>
+										<b:Button ui:field="sftpBannerDropdownButton" dataToggle="DROPDOWN"
+											height="28px" />
+										<b:DropDownMenu ui:field="sftpBannerOptions">
+										</b:DropDownMenu>
+									</b:InputGroupButton>
+									<b:TextBox ui:field="sftpBannerField" addStyleNames="margin-bottom-10 hide-resize padding-left-10" />
+								</b:InputGroup>
+						    </bh:Div>
+					    </b:FormGroup>
+					</bh:Div>
 				</bh:Div>
 			</bh:Div>
-			<b:Alert ui:field="alert" type="DANGER" visible="false" />
+			<g:SimplePanel ui:field="synAlertPanel"/>
 		</b:ModalBody>
 		<b:ModalFooter>
 			<b:Button ui:field="primaryButton" type="PRIMARY" dataLoadingText="Saving..." >Save</b:Button>

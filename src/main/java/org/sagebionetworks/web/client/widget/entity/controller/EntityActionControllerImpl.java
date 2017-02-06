@@ -117,7 +117,6 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 	UploadDialogWidget uploader;
 	WikiMarkdownEditor wikiEditor;
 	ProvenanceEditorWidget provenanceEditor;
-	StorageLocationWidget storageLocationEditor;
 	EvaluationEditorModal evalEditor;
 	CookieProvider cookies;
 	ChallengeClientAsync challengeClient;
@@ -249,13 +248,7 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 		}
 		return provenanceEditor;
 	}
-	private StorageLocationWidget getStorageLocationWidget() {
-		if (storageLocationEditor == null) {
-			storageLocationEditor = ginInjector.getStorageLocationWidget();
-			view.addWidget(storageLocationEditor.asWidget());
-		}
-		return storageLocationEditor;
-	}
+	
 	private EvaluationEditorModal getEvaluationEditorModal() {
 		if (evalEditor == null) {
 			evalEditor = ginInjector.getEvaluationEditorModal();
@@ -300,7 +293,6 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 			configureFileHistory();
 			configureFileUpload();
 			configureProvenance();
-			configureChangeStorageLocation();
 			configureCreateDOI();
 			configureEditProjectMetadataAction();
 			configureEditFileMetadataAction();
@@ -368,17 +360,6 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 		} else {
 			actionMenu.setActionVisible(Action.EDIT_PROVENANCE, false);
 			actionMenu.setActionEnabled(Action.EDIT_PROVENANCE, false);
-		}
-	}
-	
-	private void configureChangeStorageLocation() {
-		if(entityBundle.getEntity() instanceof Folder || entityBundle.getEntity() instanceof Project){
-			actionMenu.setActionVisible(Action.CHANGE_STORAGE_LOCATION, permissions.getCanEdit());
-			actionMenu.setActionEnabled(Action.CHANGE_STORAGE_LOCATION, permissions.getCanEdit());
-			actionMenu.setActionListener(Action.CHANGE_STORAGE_LOCATION, this);
-		} else {
-			actionMenu.setActionVisible(Action.CHANGE_STORAGE_LOCATION, false);
-			actionMenu.setActionEnabled(Action.CHANGE_STORAGE_LOCATION, false);
 		}
 	}
 	
@@ -751,9 +732,6 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 		case EDIT_PROVENANCE:
 			onEditProvenance();
 			break;
-		case CHANGE_STORAGE_LOCATION:
-			onChangeStorageLocation();
-			break;
 		case CREATE_DOI:
 			onCreateDOI();
 			break;
@@ -795,11 +773,6 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 			}
 		});
 		getEvaluationEditorModal().show();
-	}
-
-	private void onChangeStorageLocation() {
-		getStorageLocationWidget().configure(this.entityBundle, entityUpdateHandler);
-		getStorageLocationWidget().show();
 	}
 	
 	private void onEditProvenance() {
@@ -1088,7 +1061,7 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 		if (canChangeSettings == null) {
 			canChangeSettings = false;
 		}
-		getEditProjectMetadataModalWidget().configure((Project)entityBundle.getEntity(), canChangeSettings, new Callback() {
+		getEditProjectMetadataModalWidget().configure(entityBundle, canChangeSettings, new Callback() {
 			@Override
 			public void invoke() {
 				entityUpdateHandler.onPersistSuccess(new EntityUpdatedEvent());

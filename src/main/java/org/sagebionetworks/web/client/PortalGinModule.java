@@ -136,8 +136,6 @@ import org.sagebionetworks.web.client.widget.discussion.DiscussionThreadListItem
 import org.sagebionetworks.web.client.widget.discussion.DiscussionThreadListItemWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.discussion.DiscussionThreadListWidgetView;
 import org.sagebionetworks.web.client.widget.discussion.DiscussionThreadListWidgetViewImpl;
-import org.sagebionetworks.web.client.widget.discussion.SubscribersWidgetView;
-import org.sagebionetworks.web.client.widget.discussion.SubscribersWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.discussion.ForumWidgetView;
 import org.sagebionetworks.web.client.widget.discussion.ForumWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.discussion.NewReplyWidgetView;
@@ -146,6 +144,8 @@ import org.sagebionetworks.web.client.widget.discussion.ReplyWidgetView;
 import org.sagebionetworks.web.client.widget.discussion.ReplyWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.discussion.SingleDiscussionThreadWidgetView;
 import org.sagebionetworks.web.client.widget.discussion.SingleDiscussionThreadWidgetViewImpl;
+import org.sagebionetworks.web.client.widget.discussion.SubscribersWidgetView;
+import org.sagebionetworks.web.client.widget.discussion.SubscribersWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.discussion.modal.DiscussionThreadModalView;
 import org.sagebionetworks.web.client.widget.discussion.modal.DiscussionThreadModalViewImpl;
 import org.sagebionetworks.web.client.widget.discussion.modal.ReplyModalView;
@@ -229,7 +229,6 @@ import org.sagebionetworks.web.client.widget.entity.WikiMarkdownEditorView;
 import org.sagebionetworks.web.client.widget.entity.WikiMarkdownEditorViewImpl;
 import org.sagebionetworks.web.client.widget.entity.WikiPageWidgetView;
 import org.sagebionetworks.web.client.widget.entity.WikiPageWidgetViewImpl;
-import org.sagebionetworks.web.client.widget.entity.act.ApproveUserAccessModal;
 import org.sagebionetworks.web.client.widget.entity.act.ApproveUserAccessModalView;
 import org.sagebionetworks.web.client.widget.entity.act.ApproveUserAccessModalViewImpl;
 import org.sagebionetworks.web.client.widget.entity.act.UserBadgeListView;
@@ -271,8 +270,6 @@ import org.sagebionetworks.web.client.widget.entity.controller.ProvenanceListWid
 import org.sagebionetworks.web.client.widget.entity.controller.ProvenanceListWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.entity.controller.ProvenanceURLDialogWidgetView;
 import org.sagebionetworks.web.client.widget.entity.controller.ProvenanceURLDialogWidgetViewImpl;
-import org.sagebionetworks.web.client.widget.entity.controller.StorageLocationWidgetView;
-import org.sagebionetworks.web.client.widget.entity.controller.StorageLocationWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.entity.controller.StuAlertView;
 import org.sagebionetworks.web.client.widget.entity.controller.StuAlertViewImpl;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
@@ -1289,7 +1286,6 @@ public class PortalGinModule extends AbstractGinModule {
 		bind(ProvenanceURLDialogWidgetView.class).to(ProvenanceURLDialogWidgetViewImpl.class);
 		bind(EntityRefProvEntryView.class).to(EntityRefProvEntryViewImpl.class);
 		bind(URLProvEntryView.class).to(URLProvEntryViewImpl.class);
-		bind(StorageLocationWidgetView.class).to(StorageLocationWidgetViewImpl.class);
 		bind(ErrorView.class).to(ErrorViewImpl.class);
 		bind(PreviewConfigView.class).to(PreviewConfigViewImpl.class);
 		
