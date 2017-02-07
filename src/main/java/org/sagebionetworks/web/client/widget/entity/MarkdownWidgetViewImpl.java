@@ -158,14 +158,14 @@ public class MarkdownWidgetViewImpl implements MarkdownWidgetView {
 	}-*/;
 	
 	/**
-	 * For all children of contentPanelEl, show if startHeadingIndex <= childIndex < endHeadingIndex, otherwise hide.
+	 * For all children of contentPanelEl, show if startHeadingIndex < childIndex < endHeadingIndex, otherwise hide.
 	 * @param contentPanelEl
 	 * @param startHeadingIndex
 	 * @param endHeadingIndex
 	 */
 	private static native void _showH3Section(Element contentPanelEl, int startHeadingIndex, int endHeadingIndex) /*-{
 		$wnd.jQuery(contentPanelEl).children().each(function( index ) {
-			if (startHeadingIndex <= index && index < endHeadingIndex ){
+			if (startHeadingIndex < index && index < endHeadingIndex ){
 				$wnd.jQuery(this).show();
 			} else {
 				$wnd.jQuery(this).hide();
