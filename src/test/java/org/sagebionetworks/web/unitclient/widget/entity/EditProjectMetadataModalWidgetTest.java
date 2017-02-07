@@ -1,6 +1,7 @@
 package org.sagebionetworks.web.unitclient.widget.entity;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,24 +12,32 @@ import static org.sagebionetworks.web.client.widget.entity.RenameEntityModalWidg
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.sagebionetworks.repo.model.Entity;
+import org.sagebionetworks.repo.model.EntityBundle;
 import org.sagebionetworks.repo.model.Project;
 import org.sagebionetworks.repo.model.table.TableEntity;
+import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.SynapseClientAsync;
+import org.sagebionetworks.web.client.cookie.CookieProvider;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.widget.entity.EditProjectMetadataModalView;
 import org.sagebionetworks.web.client.widget.entity.EditProjectMetadataModalWidgetImpl;
 import org.sagebionetworks.web.client.widget.entity.PromptModalView;
 import org.sagebionetworks.web.client.widget.entity.RenameEntityModalWidgetImpl;
+import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
 import org.sagebionetworks.web.test.helper.AsyncMockStubber;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class EditProjectMetadataModalWidgetTest {
-
+	@Mock
 	EditProjectMetadataModalView mockView;
+	@Mock
 	SynapseClientAsync mockSynapseClient;
+	@Mock
 	Callback mockCallback;
 	String startName;
 	String parentId;
@@ -37,23 +46,28 @@ public class EditProjectMetadataModalWidgetTest {
 	boolean canChangeSettings;
 	String newEntityName;
 	String newAlias;
+	@Mock
+	SynapseAlert mockSynAlert;
+	@Mock
+	CookieProvider mockCookies;
+	@Mock
+	EntityBundle mockBundle;
 	
 	@Before
 	public void before(){
-		mockView = Mockito.mock(EditProjectMetadataModalView.class);
-		mockSynapseClient = Mockito.mock(SynapseClientAsync.class);
-		mockCallback = Mockito.mock(Callback.class);
+		MockitoAnnotations.initMocks(this);
 		entity = new Project();
 		startName = "Start Name";
 		canChangeSettings = true;
 		entity.setName(startName);
 		entity.setAlias(null);
-		widget = new EditProjectMetadataModalWidgetImpl(mockView, mockSynapseClient);
+		widget = new EditProjectMetadataModalWidgetImpl(mockView, mockSynapseClient, mockSynAlert, mockCookies);
 		newEntityName = "Modified Entity Name";
 		when(mockView.getEntityName()).thenReturn(newEntityName);
 		newAlias = "modified";
 		when(mockView.getAlias()).thenReturn(newAlias);
 		AsyncMockStubber.callSuccessWith(new Project()).when(mockSynapseClient).updateEntity(any(Entity.class), any(AsyncCallback.class));
+		when(mockCookies.getCookie(eq(DisplayUtils.SYNAPSE_TEST_WEBSITE_COOKIE_KEY))).thenReturn(null);
 	}
 	
 	@Test

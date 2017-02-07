@@ -15,7 +15,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.sagebionetworks.web.client.widget.entity.controller.EntityActionControllerImpl.ARE_YOU_SURE_YOU_WANT_TO_DELETE;
 import static org.sagebionetworks.web.client.widget.entity.controller.EntityActionControllerImpl.DELETED;
+import static org.sagebionetworks.web.client.widget.entity.controller.EntityActionControllerImpl.DELETE_FOLDER_EXPLANATION;
 import static org.sagebionetworks.web.client.widget.entity.controller.EntityActionControllerImpl.DELETE_PREFIX;
 import static org.sagebionetworks.web.client.widget.entity.controller.EntityActionControllerImpl.EDIT_WIKI_PREFIX;
 import static org.sagebionetworks.web.client.widget.entity.controller.EntityActionControllerImpl.IS_ACT_MEMBER_MASK;
@@ -91,7 +93,6 @@ import org.sagebionetworks.web.client.widget.entity.controller.EntityActionContr
 import org.sagebionetworks.web.client.widget.entity.controller.EntityActionControllerView;
 import org.sagebionetworks.web.client.widget.entity.controller.PreflightController;
 import org.sagebionetworks.web.client.widget.entity.controller.ProvenanceEditorWidget;
-import org.sagebionetworks.web.client.widget.entity.controller.StorageLocationWidget;
 import org.sagebionetworks.web.client.widget.entity.download.UploadDialogWidget;
 import org.sagebionetworks.web.client.widget.entity.menu.v2.Action;
 import org.sagebionetworks.web.client.widget.entity.menu.v2.ActionMenuWidget;
@@ -108,8 +109,6 @@ import org.sagebionetworks.web.test.helper.AsyncMockStubber;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import static org.sagebionetworks.web.client.widget.entity.controller.EntityActionControllerImpl.*;
 
 public class EntityActionControllerImplTest {
 
@@ -142,7 +141,6 @@ public class EntityActionControllerImplTest {
 	String wikiPageTitle="To delete, or not to delete.";
 	WikiMarkdownEditor mockMarkdownEditorWidget;
 	ProvenanceEditorWidget mockProvenanceEditorWidget;
-	StorageLocationWidget mockStorageLocationWidget;
 	Reference selected;
 	V2WikiPage mockWikiPageToDelete;
 	List<AccessRequirement> accessReqs;
@@ -191,7 +189,6 @@ public class EntityActionControllerImplTest {
 		mockEntityFinder = Mockito.mock(EntityFinder.class);
 		mockSubmitter = Mockito.mock(EvaluationSubmitter.class);
 		mockUploader = Mockito.mock(UploadDialogWidget.class);
-		mockStorageLocationWidget = Mockito.mock(StorageLocationWidget.class);
 		when(mockAuthenticationController.isLoggedIn()).thenReturn(true);
 		when(mockAuthenticationController.getCurrentUserPrincipalId()).thenReturn(currentUserId);
 		when(mockGlobalApplicationState.getPlaceChanger()).thenReturn(mockPlaceChanger);
@@ -204,7 +201,6 @@ public class EntityActionControllerImplTest {
 		when(mockPortalGinInjector.getUploadDialogWidget()).thenReturn(mockUploader);
 		when(mockPortalGinInjector.getWikiMarkdownEditor()).thenReturn(mockMarkdownEditorWidget);
 		when(mockPortalGinInjector.getProvenanceEditorWidget()).thenReturn(mockProvenanceEditorWidget);
-		when(mockPortalGinInjector.getStorageLocationWidget()).thenReturn(mockStorageLocationWidget);
 		when(mockPortalGinInjector.getEvaluationEditorModal()).thenReturn(mockEvalEditor);
 		when(mockPortalGinInjector.getSelectTeamModal()).thenReturn(mockSelectTeamModal);
 		when(mockPortalGinInjector.getApproveUserAccessModal()).thenReturn(mockApproveUserAccessModal);
@@ -1006,22 +1002,22 @@ public class EntityActionControllerImplTest {
 		entityBundle.setEntity(project);
 		
 		AsyncMockStubber.callWithInvoke().when(mockPreflightController).checkUpdateEntity(any(EntityBundle.class), any(Callback.class));
-		AsyncMockStubber.callNoInvovke().when(mockEditProjectMetadataModalWidget).configure(any(Project.class), anyBoolean(), any(Callback.class));
+		AsyncMockStubber.callNoInvovke().when(mockEditProjectMetadataModalWidget).configure(any(EntityBundle.class), anyBoolean(), any(Callback.class));
 		controller.configure(mockActionMenu, entityBundle, true,wikiPageId, mockEntityUpdatedHandler);
 		// method under test
 		controller.onAction(Action.EDIT_PROJECT_METADATA);
-		verify(mockEditProjectMetadataModalWidget).configure(any(Project.class), anyBoolean(), any(Callback.class));
+		verify(mockEditProjectMetadataModalWidget).configure(any(EntityBundle.class), anyBoolean(), any(Callback.class));
 		verify(mockEntityUpdatedHandler, never()).onPersistSuccess(any(EntityUpdatedEvent.class));
 	}
 	
 	@Test
 	public void testEditProjectMetadataFailedPreFlight(){
 		AsyncMockStubber.callNoInvovke().when(mockPreflightController).checkUpdateEntity(any(EntityBundle.class), any(Callback.class));
-		AsyncMockStubber.callNoInvovke().when(mockEditProjectMetadataModalWidget).configure(any(Project.class), anyBoolean(), any(Callback.class));
+		AsyncMockStubber.callNoInvovke().when(mockEditProjectMetadataModalWidget).configure(any(EntityBundle.class), anyBoolean(), any(Callback.class));
 		controller.configure(mockActionMenu, entityBundle, true,wikiPageId, mockEntityUpdatedHandler);
 		// method under test
 		controller.onAction(Action.EDIT_PROJECT_METADATA);
-		verify(mockEditProjectMetadataModalWidget, never()).configure(any(Project.class), anyBoolean(), any(Callback.class));
+		verify(mockEditProjectMetadataModalWidget, never()).configure(any(EntityBundle.class), anyBoolean(), any(Callback.class));
 		verify(mockEntityUpdatedHandler, never()).onPersistSuccess(any(EntityUpdatedEvent.class));
 	}
 	
