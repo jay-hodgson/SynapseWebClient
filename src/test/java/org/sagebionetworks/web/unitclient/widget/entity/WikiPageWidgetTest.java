@@ -136,7 +136,7 @@ public class WikiPageWidgetTest {
 		presenter.configure(new WikiPageKey("ownerId", ObjectType.ENTITY.toString(), null, null), canEdit, null, showSubpages);
 		verify(mockView).setLoadingVisible(true);
 		verify(mockSynapseClient).getV2WikiPageAsV1(any(WikiPageKey.class), any(AsyncCallback.class));
-		verify(mockMarkdownWidget).configure(anyString(), any(WikiPageKey.class), any(Long.class));
+		verify(mockMarkdownWidget).configure(anyString(), any(WikiPageKey.class), any(Long.class), false);
 		verify(mockBreadcrumb, never()).configure(anyList(), anyString());
 		verify(mockHistoryWidget).configure(any(WikiPageKey.class), anyBoolean(), any(ActionHandler.class));
 		verify(mockView, times(2)).setWikiHistoryWidget(any(IsWidget.class));
@@ -309,7 +309,7 @@ public class WikiPageWidgetTest {
 		
 		presenter.configure(wikiPageKey, false, null, false);
 		verify(mockSynapseClient, never()).getV2WikiPageAsV1(any(WikiPageKey.class), any(AsyncCallback.class));
-		verify(mockMarkdownWidget).configure(eq(md), eq(wikiPageKey), anyLong());
+		verify(mockMarkdownWidget).configure(eq(md), eq(wikiPageKey), anyLong(), false);
 	}
 	
 	@Test
@@ -334,7 +334,7 @@ public class WikiPageWidgetTest {
 		
 		presenter.configure(wikiPageKey, false, null, false);
 		verify(mockSynapseClient).getV2WikiPageAsV1(any(WikiPageKey.class), any(AsyncCallback.class));
-		verify(mockMarkdownWidget).configure(eq(testPage.getMarkdown()), eq(wikiPageKey), anyLong());
+		verify(mockMarkdownWidget).configure(eq(testPage.getMarkdown()), eq(wikiPageKey), anyLong(), false);
 	}
 	
 	@Test

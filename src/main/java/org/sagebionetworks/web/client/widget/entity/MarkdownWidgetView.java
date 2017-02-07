@@ -10,7 +10,7 @@ public interface MarkdownWidgetView extends IsWidget {
 
 	public interface Presenter {
 
-		void configure(String md, WikiPageKey wikiKey, Long wikiVersionInView);
+		void configure(String md, WikiPageKey wikiKey, Long wikiVersionInView, boolean isStoryboard);
 
 		void clear();
 
@@ -30,5 +30,5 @@ public interface MarkdownWidgetView extends IsWidget {
 	void callbackWhenAttached(final Callback callback);
 
 	void clearMarkdown();
-
+	void loadStoryboard();
 }

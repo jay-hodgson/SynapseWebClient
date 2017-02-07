@@ -405,7 +405,7 @@ public class MarkdownEditorWidget implements MarkdownEditorWidgetView.Presenter,
 	
 	public void previewClicked() {
 	    //get the html for the markdown
-		markdownPreview.configure(getMarkdown(), wikiKey, null);
+		markdownPreview.configure(getMarkdown(), wikiKey, null, false);
 		view.showPreview();
 	}
 

@@ -15,7 +15,6 @@ import org.sagebionetworks.web.client.PortalGinInjector;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.cache.SessionStorage;
-import org.sagebionetworks.web.client.cookie.CookieProvider;
 import org.sagebionetworks.web.client.resources.ResourceLoader;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.utils.Callback;
@@ -45,7 +44,6 @@ public class MarkdownWidget implements MarkdownWidgetView.Presenter, IsWidget {
 	private MarkdownIt markdownIt;
 	private SynapseJSNIUtils synapseJSNIUtils;
 	private WidgetRegistrar widgetRegistrar;
-	private CookieProvider cookies;
 	AuthenticationController authenticationController;
 	GWTWrapper gwt;
 	private SessionStorage sessionStorage;
@@ -56,10 +54,10 @@ public class MarkdownWidget implements MarkdownWidgetView.Presenter, IsWidget {
 	private SynapseAlert synAlert;
 	private WikiPageKey wikiKey;
 	private Long wikiVersionInView;
+	boolean isStoryboard;
 	@Inject
 	public MarkdownWidget(SynapseClientAsync synapseClient,
 			SynapseJSNIUtils synapseJSNIUtils, WidgetRegistrar widgetRegistrar,
-			CookieProvider cookies,
 			ResourceLoader resourceLoader, 
 			GWTWrapper gwt,
 			PortalGinInjector ginInjector,
@@ -71,7 +69,6 @@ public class MarkdownWidget implements MarkdownWidgetView.Presenter, IsWidget {
 		this.synapseClient = synapseClient;
 		this.synapseJSNIUtils = synapseJSNIUtils;
 		this.widgetRegistrar = widgetRegistrar;
-		this.cookies = cookies;
 		this.resourceLoader = resourceLoader;
 		this.gwt = gwt;
 		this.ginInjector = ginInjector;
@@ -87,15 +84,16 @@ public class MarkdownWidget implements MarkdownWidgetView.Presenter, IsWidget {
 	 * @param md
 	 */
 	public void configure(final String md) {
-		configure(md, null, null);
+		configure(md, null, null, false);
 	}
 	
 	@Override
-	public void configure(final String md, final WikiPageKey wikiKey, final Long wikiVersionInView) {
+	public void configure(final String md, final WikiPageKey wikiKey, final Long wikiVersionInView, boolean isStoryboard) {
 		clear();
 		this.md = md;
 		this.wikiKey = wikiKey;
 		this.wikiVersionInView = wikiVersionInView;
+		this.isStoryboard = isStoryboard;
 		final String uniqueSuffix = new Date().getTime() + "" + gwt.nextRandomInt();
 //		boolean isInTestWebsite = DisplayUtils.isInTestWebsite(cookies);
 //		String hostPrefix = gwt.getHostPrefix();
@@ -152,17 +150,12 @@ public class MarkdownWidget implements MarkdownWidgetView.Presenter, IsWidget {
 		if(result != null && !result.isEmpty()) {
 			view.setEmptyVisible(false);
 			view.setMarkdown(result);
-			boolean isInTestWebsite = DisplayUtils.isInTestWebsite(cookies);
-
-			//TODO: remove highlightCodeBlocks call once markdown-it has replaced the server-side processor
-			// (because code highlighting is does in the new parser)
-			if (!isInTestWebsite) {
-				synapseJSNIUtils.highlightCodeBlocks();
-			}
-				
 			loadMath(uniqueSuffix);
 			loadWidgets(wikiKey, wikiVersionInView, uniqueSuffix);	
 			loadTableSorters();
+			if (isStoryboard) {
+				loadStoryboard();
+			}
 		} else {
 			view.setEmptyVisible(true);
 		}
@@ -257,6 +250,9 @@ public class MarkdownWidget implements MarkdownWidgetView.Presenter, IsWidget {
 		}
 		return contentTypes;
 	}
+	public void loadStoryboard() {
+		view.loadStoryboard();
+	}
 	
 	public void loadMarkdownFromWikiPage(final WikiPageKey wikiKey, final boolean isIgnoreLoadingFailure) {
 		synAlert.clear();
@@ -265,7 +261,7 @@ public class MarkdownWidget implements MarkdownWidgetView.Presenter, IsWidget {
 			@Override
 			public void onSuccess(WikiPage page) {
 				wikiKey.setWikiPageId(page.getId());
-				configure(page.getMarkdown(), wikiKey, null);
+				configure(page.getMarkdown(), wikiKey, null, false);
 			}
 			@Override
 			public void onFailure(Throwable caught) {
@@ -279,7 +275,7 @@ public class MarkdownWidget implements MarkdownWidgetView.Presenter, IsWidget {
 	
 	
 	public void refresh() {
-		configure(md, wikiKey, wikiVersionInView);
+		configure(md, wikiKey, wikiVersionInView, false);
 	}
 	
 	public Widget asWidget() {

@@ -644,7 +644,7 @@ public class MarkdownEditorWidgetTest {
 	@Test
 	public void testPreview() throws Exception {
 		presenter.previewClicked();
-		verify(mockMarkdownPreview).configure(anyString(), any(WikiPageKey.class), any(Long.class));
+		verify(mockMarkdownPreview).configure(anyString(), any(WikiPageKey.class), any(Long.class), false);
 		verify(mockView).showPreview();
 	}
 	

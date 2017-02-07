@@ -252,13 +252,13 @@ public class WikiPageWidget implements WikiPageWidgetView.Presenter, SynapseWidg
 	public void resetWikiMarkdown(String markdown) {
 		view.setMarkdownVisible(true);
 		if(!isCurrentVersion) {
-			markdownWidget.configure(markdown, wikiKey, versionInView);
+			markdownWidget.configure(markdown, wikiKey, versionInView, false);
 			view.setDiffVersionAlertVisible(true);
 			if (canEdit) {
 				view.setRestoreButtonVisible(true);
 			}
 		} else {
-			markdownWidget.configure(markdown, wikiKey, null);
+			markdownWidget.configure(markdown, wikiKey, null, false);
 		}
 	}
 	

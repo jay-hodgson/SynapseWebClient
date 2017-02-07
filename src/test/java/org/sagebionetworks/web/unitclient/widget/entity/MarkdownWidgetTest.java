@@ -97,7 +97,7 @@ public class MarkdownWidgetTest {
 		when(mockElementWrapper.getAttribute("widgetParams")).thenReturn(elementContentType);
 		when(mockInjector.getMarkdownCacheKey()).thenReturn(mockMarkdownCacheKey);
 		when(mockInjector.getMarkdownCacheValue()).thenReturn(mockMarkdownCacheValue);
-		presenter = new MarkdownWidget(mockSynapseClient, mockSynapseJSNIUtils, mockWidgetRegistrar, mockCookies, mockResourceLoader, mockGwt, mockInjector, mockView, mockSynAlert, mockSessionStorage, mockMarkdownIt);
+		presenter = new MarkdownWidget(mockSynapseClient, mockSynapseJSNIUtils, mockWidgetRegistrar, mockResourceLoader, mockGwt, mockInjector, mockView, mockSynAlert, mockSessionStorage, mockMarkdownIt);
 	}
 	
 	@Test
@@ -110,7 +110,7 @@ public class MarkdownWidgetTest {
 		when(mockView.getElementById(Mockito.contains(WidgetConstants.DIV_ID_MATHJAX_PREFIX + "0"))).thenReturn(mockElementWrapper);
 		when(mockView.getElementById(Mockito.contains(org.sagebionetworks.markdown.constants.WidgetConstants.DIV_ID_WIDGET_PREFIX + "0"))).thenReturn(mockElementWrapper);
 		when(mockResourceLoader.isLoaded(any(WebResource.class))).thenReturn(true);
-		presenter.configure(testMarkdown, mockWikiPageKey, null);
+		presenter.configure(testMarkdown, mockWikiPageKey, null, false);
 		ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
 		verify(mockView).callbackWhenAttached(callbackCaptor.capture());
 		callbackCaptor.getValue().invoke();
@@ -181,7 +181,7 @@ public class MarkdownWidgetTest {
 		String sampleHTML = "<h1>heading</h1><p>foo baz bar</p>";
 		when(mockMarkdownIt.markdown2Html(anyString(), anyString())).thenReturn(sampleHTML);
 		String markdown="input markdown that is transformed";
-		presenter.configure(markdown, mockWikiPageKey, 1L);
+		presenter.configure(markdown, mockWikiPageKey, 1L, false);
 		
 		ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
 		verify(mockView).callbackWhenAttached(callbackCaptor.capture());
@@ -202,7 +202,7 @@ public class MarkdownWidgetTest {
 		when(mockMarkdownIt.markdown2Html(anyString(), anyString())).thenThrow(mockJsException);
 		
 		String markdown="input markdown that is transformed";
-		presenter.configure(markdown, mockWikiPageKey, 1L);
+		presenter.configure(markdown, mockWikiPageKey, 1L, false);
 		
 		ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
 		verify(mockView).callbackWhenAttached(callbackCaptor.capture());
@@ -229,7 +229,7 @@ public class MarkdownWidgetTest {
 		when(mockSessionStorage.getItem(anyString())).thenReturn("json representing MarkdownCacheValue");
 		when(mockMarkdownCacheValue.getHtml()).thenReturn(sampleHTML);
 		when(mockMarkdownCacheValue.getUniqueSuffix()).thenReturn(uniqueSuffix);
-		presenter.configure(testMarkdown, mockWikiPageKey, null);
+		presenter.configure(testMarkdown, mockWikiPageKey, null, false);
 		
 		ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
 		verify(mockView).callbackWhenAttached(callbackCaptor.capture());
