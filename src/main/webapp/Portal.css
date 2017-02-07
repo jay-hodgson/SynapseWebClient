@@ -93,6 +93,18 @@ a.btn-primary {
 	color: #fff !important;
 }
 
+#rootPanel .navbar-storyboard .navbar-nav>.active>a, #rootPanel .navbar-storyboard .navbar-nav>.active>a:hover, #rootPanel .navbar-storyboard .navbar-nav>.active>a:focus {
+	color: white;
+	background-color: #7772b4;
+	width: 150px;
+	height: 110px;
+}
+
+#rootPanel .navbar-storyboard .navbar-nav>li>a {
+	width: 150px;
+	height: 110px;
+}
+
 /***************
 End Synapse color scheme
 ****************/

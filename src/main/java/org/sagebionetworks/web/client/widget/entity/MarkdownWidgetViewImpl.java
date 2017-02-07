@@ -107,6 +107,7 @@ public class MarkdownWidgetViewImpl implements MarkdownWidgetView {
 		final Element contentPanelEl = contentPanel.getElement();
 		Element[] storyboardHeadings = _getAllH3Elements(contentPanelEl);
 		Navbar navBar = new Navbar();
+		navBar.addStyleName("navbar-storyboard");
 		storyboardDiv.add(navBar);
 		NavbarNav navbarNav = new NavbarNav();
 		navBar.add(navbarNav);
