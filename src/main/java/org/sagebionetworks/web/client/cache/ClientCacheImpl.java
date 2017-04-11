@@ -4,9 +4,6 @@ import com.google.inject.Inject;
 
 public class ClientCacheImpl implements ClientCache {
 	private StorageWrapper storage;
-
-	//default to an hour
-	public static final Long DEFAULT_CACHE_TIME_MS = 1000L*60L*60L;
 	public static final String SUFFIX = "_EXPIRE_TIME";
 	@Inject
 	public ClientCacheImpl(StorageWrapper storage) {
@@ -15,23 +12,30 @@ public class ClientCacheImpl implements ClientCache {
 	
 	@Override
 	public String get(String key) {
-		String expireTimeString = storage.getItem(key + SUFFIX);
-		if (storage.isStorageSupported() && expireTimeString != null) {
-			Long expireTime = Long.parseLong(expireTimeString);
-			if (System.currentTimeMillis() < expireTime) {
-				return storage.getItem(key); 
+		if (storage.isStorageSupported()) {
+			String expireTimeString = storage.getItem(key + SUFFIX);
+			if (expireTimeString != null) {
+				Long expireTime = Long.parseLong(expireTimeString);
+				if (System.currentTimeMillis() < expireTime) {
+					return storage.getItem(key);
+				} else {
+					//expired, clean up
+					storage.removeItem(key);
+					storage.removeItem(key + SUFFIX);
+				}	
 			} else {
-				//expired, clean up
-				storage.removeItem(key);
-				storage.removeItem(key + SUFFIX);
+				return storage.getItem(key);
 			}
+			
 		}
 		return null;
 	}
 
 	@Override
 	public void put(String key, String value) {
-		put(key, value, System.currentTimeMillis() + DEFAULT_CACHE_TIME_MS);
+		if (storage.isStorageSupported()) {
+			storage.setItem(key, value);
+		}
 	}
 
 	@Override

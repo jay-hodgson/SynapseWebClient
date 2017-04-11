@@ -1,17 +1,20 @@
 package org.sagebionetworks.web.unitclient.cache;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.cache.ClientCacheImpl;
 import org.sagebionetworks.web.client.cache.StorageWrapper;
-
-import com.google.gwt.storage.client.Storage;
 
 public class ClientCacheImplTest {
 	
@@ -30,9 +33,23 @@ public class ClientCacheImplTest {
 		String key = "testkey";
 		String value = "testValue";
 		when(mockStorage.getItem(eq(key))).thenReturn(value);
-		cache.put(key, value);
-		when(mockStorage.getItem(key + ClientCacheImpl.SUFFIX)).thenReturn(Long.toString(System.currentTimeMillis() + ClientCacheImpl.DEFAULT_CACHE_TIME_MS));
+		Long expireTime = System.currentTimeMillis() + 100000;
+		cache.put(key, value, expireTime);
+		when(mockStorage.getItem(key + ClientCacheImpl.SUFFIX)).thenReturn(Long.toString(expireTime));
 		verify(mockStorage).setItem(eq(key), eq(value));
+		verify(mockStorage).setItem(key + ClientCacheImpl.SUFFIX, Long.toString(expireTime));
+		assertTrue(cache.contains(key));
+		assertEquals(value, cache.get(key));
+	}
+	
+	@Test
+	public void testRoundTripWithoutExpiration() {
+		String key = "testkey";
+		String value = "testValue";
+		when(mockStorage.getItem(eq(key))).thenReturn(value);
+		cache.put(key, value);
+		verify(mockStorage).setItem(eq(key), eq(value));
+		verify(mockStorage, never()).setItem(eq(key + ClientCacheImpl.SUFFIX), anyString());
 		assertTrue(cache.contains(key));
 		assertEquals(value, cache.get(key));
 	}
