@@ -59,5 +59,5 @@ public interface UserProfileEditorWidgetView extends IsWidget {
 	void setLink(String url);
 
 	void addKeyDownHandlerToFields(KeyDownHandler keyDownHandler);
-
+	void initPlacesAutocomplete();
 }

@@ -2,14 +2,19 @@ package org.sagebionetworks.web.client.widget.profile;
 
 import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.web.client.ClientProperties;
+import org.sagebionetworks.web.client.RequestBuilderWrapper;
+import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.ValidationUtils;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.utils.CallbackP;
+import org.sagebionetworks.web.client.widget.googlemap.GoogleMap;
 import org.sagebionetworks.web.client.widget.upload.FileHandleUploadWidget;
 import org.sagebionetworks.web.client.widget.upload.FileUpload;
 import org.sagebionetworks.web.client.widget.upload.ImageFileValidator;
 
+import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -19,19 +24,28 @@ public class UserProfileEditorWidgetImpl implements UserProfileEditorWidget, Use
 	public static final String PLEASE_SELECT_A_FILE = "Please select a file";
 	public static final String CAN_ONLY_INCLUDE = "Can only include letters, numbers, dot (.), dash (-), and underscore (_)";
 	public static final String MUST_BE_AT_LEAST_3_CHARACTERS = "Must be at least 3 characters";
+	public static boolean isLoaded = false;
 	
 	UserProfileEditorWidgetView view;
 	ProfileImageWidget imageWidget;
 	FileHandleUploadWidget fileHandleUploadWidget;
 	String fileHandleId;
+	RequestBuilderWrapper requestBuilder;
+	SynapseJSNIUtils jsniUtils;
 	
 	@Inject
-	public UserProfileEditorWidgetImpl(UserProfileEditorWidgetView view,
-			ProfileImageWidget imageWidget, FileHandleUploadWidget fileHandleUploadWidget) {
+	public UserProfileEditorWidgetImpl(
+			UserProfileEditorWidgetView view,
+			ProfileImageWidget imageWidget, 
+			FileHandleUploadWidget fileHandleUploadWidget,
+			RequestBuilderWrapper requestBuilder,
+			SynapseJSNIUtils jsniUtils) {
 		super();
 		this.view = view;
 		this.imageWidget = imageWidget;
 		this.fileHandleUploadWidget = fileHandleUploadWidget;
+		this.requestBuilder = requestBuilder;
+		this.jsniUtils = jsniUtils;
 		this.view.addFileInputWidget(fileHandleUploadWidget);
 		this.view.addImageWidget(imageWidget);
 		this.view.setPresenter(this);
@@ -73,6 +87,42 @@ public class UserProfileEditorWidgetImpl implements UserProfileEditorWidget, Use
 		ImageFileValidator imageValidator = new ImageFileValidator();
 		imageValidator.setMaxSize(MAX_IMAGE_SIZE);
 		fileHandleUploadWidget.setValidation(imageValidator);
+		loadPlacesAutocomplete();
+	}
+	
+	public void loadPlacesAutocomplete() {
+		if (!isLoaded) {
+			requestBuilder.get(GoogleMap.GOOGLE_MAP_URL, new AsyncCallback<String>() {
+				@Override
+				public void onSuccess(String result) {
+					ScriptInjector.fromUrl("https://maps.googleapis.com/maps/api/js?libraries=places&key=" + result).setCallback(
+					     new com.google.gwt.core.client.Callback<Void, Exception>() {
+							@Override
+							public void onSuccess(Void result) {
+								isLoaded = true;
+								jsniUtils.consoleLog("Loaded Google Maps Places API");
+								initPlacesAutocomplete();
+							}
+							
+							@Override
+							public void onFailure(Exception reason) {
+								jsniUtils.consoleError(reason.getMessage());
+							}
+						}).inject();
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					jsniUtils.consoleError(caught.getMessage());
+				}
+			});
+		} else {
+			initPlacesAutocomplete();
+		}
+	}
+	
+	public void initPlacesAutocomplete() {
+		view.initPlacesAutocomplete();
 	}
 
 	@Override

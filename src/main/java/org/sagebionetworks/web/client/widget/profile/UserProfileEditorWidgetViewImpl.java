@@ -1,18 +1,20 @@
 package org.sagebionetworks.web.client.widget.profile;
 
-import org.gwtbootstrap3.client.ui.Alert;
-import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.gwtbootstrap3.client.ui.html.Div;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -54,12 +56,17 @@ public class UserProfileEditorWidgetViewImpl implements
 	HelpBlock linkHelpBlock;
 	@UiField
 	TextArea bio;
-	
+	@UiField
+	Div geocodeSearchContainer;
+	com.google.gwt.user.client.ui.TextBox geocodeTextBox;
 	private Widget widget;
 	
 	@Inject
 	public UserProfileEditorWidgetViewImpl(Binder binder){
 		widget = binder.createAndBindUi(this);
+		geocodeTextBox = com.google.gwt.user.client.ui.TextBox.wrap(Document.get().getElementById("geocode"));
+		geocodeSearchContainer.clear();
+		geocodeSearchContainer.add(geocodeTextBox); 
 	}
 
 	@Override
@@ -208,5 +215,28 @@ public class UserProfileEditorWidgetViewImpl implements
 		link.addKeyDownHandler(keyDownHandler);
 		bio.addKeyDownHandler(keyDownHandler);
 	}
+
+	@Override
+	public void initPlacesAutocomplete() {
+		_initPlacesAutocomplete();
+	}
+	
+	private static native void _initPlacesAutocomplete() /*-{
+		var input = $doc.getElementById("geocode");
+		var options = {
+		  types: ['(cities)']
+		};
+		debugger;
+		var autocomplete = new google.maps.places.Autocomplete(input, options);
+		var searchBox = new google.maps.places.SearchBox(autocomplete);
+		searchBox.addListener('places_changed', function() {
+			var places = searchBox.getPlaces();
+			if (places.length == 0) {
+				return;
+			}
+			
+		});
+	}-*/;
+	
 
 }

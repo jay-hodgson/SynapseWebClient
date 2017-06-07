@@ -10,8 +10,12 @@ import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.sagebionetworks.repo.model.UserProfile;
+import org.sagebionetworks.web.client.RequestBuilderWrapper;
+import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.widget.profile.ProfileImageWidget;
 import org.sagebionetworks.web.client.widget.profile.UserProfileEditorWidgetImpl;
 import org.sagebionetworks.web.client.widget.profile.UserProfileEditorWidgetView;
@@ -27,13 +31,18 @@ public class UserProfileEditorWidgetImplTest {
 	UserProfileEditorWidgetImpl widget;
 	
 	UserProfile profile;
+	@Mock
+	RequestBuilderWrapper mockRequestBuilder;
+	@Mock
+	SynapseJSNIUtils mockJsniUtils;
 	
 	@Before
 	public void before(){
+		MockitoAnnotations.initMocks(this);
 		mockView = Mockito.mock(UserProfileEditorWidgetView.class);
 		mockImageWidget = Mockito.mock(ProfileImageWidget.class);
 		mockfileHandleUploadWidget = Mockito.mock(FileHandleUploadWidget.class);
-		widget = new UserProfileEditorWidgetImpl(mockView, mockImageWidget, mockfileHandleUploadWidget);
+		widget = new UserProfileEditorWidgetImpl(mockView, mockImageWidget, mockfileHandleUploadWidget, mockRequestBuilder, mockJsniUtils);
 		
 		profile = new UserProfile();
 		profile.setOwnerId("123");
