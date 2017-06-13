@@ -12,11 +12,11 @@
 	<properties>
 		<!-- Synapse Web Client -->
 		<!-- GWT needs at least java 1.5 -->
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 		<synapse.version>2017-06-07-2667-086b1ad</synapse.version>
-		<gwtVersion>2.8.0-beta1</gwtVersion>
+		<gwtVersion>2.8.1</gwtVersion>
 		<org.springframework.version>4.3.3.RELEASE</org.springframework.version>
 		<guiceVersion>3.0</guiceVersion>
 		<ginVersion>2.1.2</ginVersion>
@@ -201,12 +201,9 @@
 			        <compileReport>false</compileReport>
 			        <soycDetailed>true</soycDetailed>
 			        <encoding>${project.build.sourceEncoding}</encoding>
-			        <logLevel>INFO</logLevel>
+			        <logLevel>TRACE</logLevel>
 			        <sourceLevel>auto</sourceLevel>
-			        <extraJvmArgs>-Xmx2048m -Xms2048m -XX:PermSize=512m -XX:MaxPermSize=1024m</extraJvmArgs>
-			        
-			        <!-- set enableClosureCompiler to false to generate source maps and compile report -->
-			        <enableClosureCompiler>true</enableClosureCompiler>
+			        <extraJvmArgs>-Xmx512m -Xms512m</extraJvmArgs>
 			        
 					<!--           <fragmentCount>12</fragmentCount> -->					
 				</configuration>
