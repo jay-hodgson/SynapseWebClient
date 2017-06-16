@@ -45,7 +45,7 @@
 			<t:TableData width="310px" addStyleNames="visible-xl overflow-x-hidden">
 				<g:SimplePanel ui:field="modifiedByField"/>
 			</t:TableData>
-			<t:TableData width="165px" addStyleNames="visible-md visible-lg overflow-x-hidden">
+			<t:TableData width="210px" addStyleNames="visible-md visible-lg overflow-x-hidden">
 				<g:Label ui:field="modifiedOnField"/>
 			</t:TableData>
 			<t:TableData width="100px" addStyleNames="visible-lg overflow-x-hidden text-align-right">

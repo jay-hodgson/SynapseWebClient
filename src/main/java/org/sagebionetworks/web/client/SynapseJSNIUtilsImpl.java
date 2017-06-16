@@ -101,8 +101,8 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 		return $wnd.moment(s).calendar();
 	}-*/;
 	
-	private static DateTimeFormat smallDateFormat = DateTimeFormat.getFormat("MM/dd/yyyy hh:mm:ssaa");
-	private static DateTimeFormat longDateFormat = DateTimeFormat.getFormat("EEEE, MMMM d, yyyy h:mm a");
+	private static DateTimeFormat smallDateFormat = DateTimeFormat.getFormat("MM/dd/yyyy hh:mm:ssaa ZZZ");
+	private static DateTimeFormat longDateFormat = DateTimeFormat.getFormat("EEEE, MMMM d, yyyy h:mm a ZZZ");
 	private static DateTimeFormat iso8601Format =  DateTimeFormat.getFormat(PredefinedFormat.ISO_8601);
 	
 	@Override

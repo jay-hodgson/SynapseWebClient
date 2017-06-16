@@ -9,7 +9,7 @@ import com.google.inject.Inject;
 
 public class DateCellRendererImpl implements DateCellRenderer {
 
-	public static final String FORMAT = "yyyy/MM/dd HH:mm:ss";
+	public static final String FORMAT = "yyyy/MM/dd HH:mm:ss ZZZ";
 	DateCellRendererView view;
 	private Long originalTime;
 	

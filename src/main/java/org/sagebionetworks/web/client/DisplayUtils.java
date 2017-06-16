@@ -519,7 +519,7 @@ public class DisplayUtils {
 	public static String convertDataToPrettyString(Date toFormat) {
 		if(toFormat == null) throw new IllegalArgumentException("Date cannot be null");
 		if (prettyFormat == null) {
-			prettyFormat = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
+			prettyFormat = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss ZZZ");
 		}
 		return prettyFormat.format(toFormat, GlobalApplicationStateImpl.currentTimezone);
 	}
