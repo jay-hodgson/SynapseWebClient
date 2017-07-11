@@ -1,6 +1,6 @@
 package org.sagebionetworks.web.client;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.sagebionetworks.evaluation.model.Evaluation;
@@ -20,11 +20,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface ChallengeClientAsync {
 
-	void getEvaluations(List<String> evaluationIds,
+	void getEvaluations(ArrayList<String> evaluationIds,
 			AsyncCallback<PaginatedResults<Evaluation>> callback);
 	void getAvailableEvaluations(AsyncCallback<PaginatedResults<Evaluation>> callback) throws RestServiceException;
 	void getAvailableEvaluations(Set<String> targetEvaluationIds, AsyncCallback<PaginatedResults<Evaluation>> callback) throws RestServiceException;
-	void getSharableEvaluations(String entityId, AsyncCallback<List<Evaluation>> asyncCallback);
+	void getSharableEvaluations(String entityId, AsyncCallback<ArrayList<Evaluation>> asyncCallback);
 	/**
 	 * Create a new Submission object.  Callback returning the updated version of the Submission object
 	 * @param submissionJson
@@ -33,7 +33,7 @@ public interface ChallengeClientAsync {
 	 */
 	void createIndividualSubmission(Submission submission, String etag, String hostPageBaseURL, AsyncCallback<Submission> callback) throws RestServiceException;
 	void createTeamSubmission(Submission submission, String etag, String memberStateHash, String hostPageBaseURL, AsyncCallback<Submission> callback) throws RestServiceException;
-	void getSubmissionTeams(String userId, String challengeId, AsyncCallback<List<Team>> submissionTeams);
+	void getSubmissionTeams(String userId, String challengeId, AsyncCallback<ArrayList<Team>> submissionTeams);
 	
 	void registerChallengeTeam(ChallengeTeam challengeTeam, AsyncCallback<ChallengeTeam> callback);
 	void unregisterChallengeTeam(String challengeTeamId, AsyncCallback<Void> callback);
@@ -42,7 +42,7 @@ public interface ChallengeClientAsync {
 	void getChallengeParticipants(boolean affiliated, String challengeId, Integer limit, Integer offset, AsyncCallback<UserProfilePagedResults> callback);
 	void getChallengeForProject(String projectId, AsyncCallback<Challenge> callback);
 	void getChallenges(String userId, Integer limit, Integer offset, AsyncCallback<ChallengePagedResults> callback);
-	void getRegistratableTeams(String userId, String challengeId, AsyncCallback<List<Team>> callback);
+	void getRegistratableTeams(String userId, String challengeId, AsyncCallback<ArrayList<Team>> callback);
 	
 	void getUserEvaluationPermissions(String evalId, AsyncCallback<String> callback); 
 	void getEvaluationAcl(String evalId, AsyncCallback<String> callback);

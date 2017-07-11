@@ -1,5 +1,6 @@
 package org.sagebionetworks.web.client.widget.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.extras.bootbox.client.callback.ConfirmCallback;
@@ -75,9 +76,9 @@ public class RegisterTeamDialog implements RegisterTeamDialogView.Presenter {
 	}
 
 	public void getRegistratableTeams() {
-		challengeClient.getRegistratableTeams(authenticationController.getCurrentUserPrincipalId(), challengeId, new AsyncCallback<List<Team>>() {
+		challengeClient.getRegistratableTeams(authenticationController.getCurrentUserPrincipalId(), challengeId, new AsyncCallback<ArrayList<Team>>() {
 			@Override
-			public void onSuccess(List<Team> result) {
+			public void onSuccess(ArrayList<Team> result) {
 				teams = result;
 				//if there is a team, then select the first team by default.  otherwise, show no teams visible ui
 				view.setNoTeamsFoundVisible(teams.isEmpty());

@@ -2,7 +2,6 @@ package org.sagebionetworks.web.client.widget.evaluation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.sagebionetworks.evaluation.model.Evaluation;
@@ -55,12 +54,12 @@ public class EvaluationSubmitter implements Presenter {
 	private Entity submissionEntity;
 	private String submissionEntityId, submissionName;
 	private Long submissionEntityVersion;
-	List<Team> teams;
+	ArrayList<Team> teams;
 	private Evaluation evaluation;
 	private Challenge challenge;
 	private Team selectedTeam;
 	private String selectedTeamMemberStateHash;
-	private List<Long> selectedTeamEligibleMembers;
+	private ArrayList<Long> selectedTeamEligibleMembers;
 	private SynapseAlert challengeListSynAlert;
 	private SynapseAlert teamSelectSynAlert;
 	private SynapseAlert contributorSynAlert;
@@ -172,7 +171,7 @@ public class EvaluationSubmitter implements Presenter {
 		AsyncCallback<PaginatedResults<Evaluation>> callback = new AsyncCallback<PaginatedResults<Evaluation>>() {
 			@Override
 			public void onSuccess(PaginatedResults<Evaluation> results) {
-				List<Evaluation> evaluations = results.getResults();
+				ArrayList<Evaluation> evaluations = (ArrayList)results.getResults();
 				if (evaluations == null || evaluations.size() == 0) {
 					//no available evaluations, pop up an info dialog
 					view.showErrorMessage(DisplayConstants.NOT_PARTICIPATING_IN_ANY_EVALUATIONS);
@@ -262,11 +261,11 @@ public class EvaluationSubmitter implements Presenter {
 		view.showRegisterTeamDialog(challenge.getId());
 	}
 	
-	private AsyncCallback<List<Team>> getTeamsCallback() {
+	private AsyncCallback<ArrayList<Team>> getTeamsCallback() {
 		teamSelectSynAlert.clear();
-		AsyncCallback<List<Team>> callback = new AsyncCallback<List<Team>>() {
+		AsyncCallback<ArrayList<Team>> callback = new AsyncCallback<ArrayList<Team>>() {
 			@Override
-			public void onSuccess(List<Team> results) {
+			public void onSuccess(ArrayList<Team> results) {
 				view.clearTeams();
 				teams = results;
 				if (!teams.isEmpty()) {
@@ -479,7 +478,7 @@ public class EvaluationSubmitter implements Presenter {
 		return selectedTeamMemberStateHash;
 	}
 	
-	public List<Long> getSelectedTeamEligibleMembers() {
+	public ArrayList<Long> getSelectedTeamEligibleMembers() {
 		return selectedTeamEligibleMembers;
 	}
 	public boolean getIsIndividualSubmission() {

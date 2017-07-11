@@ -1,7 +1,7 @@
 
 package org.sagebionetworks.web.client;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.sagebionetworks.evaluation.model.Evaluation;
@@ -29,13 +29,13 @@ public interface ChallengeClient extends XsrfProtectedService {
 	 * @return
 	 * @throws RestServiceException
 	 */
-	public PaginatedResults<Evaluation> getEvaluations(List<String> evaluationIds) throws RestServiceException;
+	public PaginatedResults<Evaluation> getEvaluations(ArrayList<String> evaluationIds) throws RestServiceException;
 	
 	PaginatedResults<Evaluation> getAvailableEvaluations() throws RestServiceException;
 	PaginatedResults<Evaluation> getAvailableEvaluations(
 			Set<String> targetEvaluationIds) throws RestServiceException;
 	
-	List<Evaluation> getSharableEvaluations(String entityId) throws RestServiceException;
+	ArrayList<Evaluation> getSharableEvaluations(String entityId) throws RestServiceException;
 	
 	public Submission createIndividualSubmission(Submission submission, String etag, String hostPageBaseURL) throws RestServiceException;
 	public Submission createTeamSubmission(Submission submission, String etag, String memberStateHash, String hostPageBaseURL) throws RestServiceException;
@@ -46,7 +46,7 @@ public interface ChallengeClient extends XsrfProtectedService {
 	
 	public Boolean hasSubmitted()	throws RestServiceException;
 	
-	List<Team> getSubmissionTeams(String userId, String challengeId) throws RestServiceException;
+	ArrayList<Team> getSubmissionTeams(String userId, String challengeId) throws RestServiceException;
 	ChallengeTeam registerChallengeTeam(ChallengeTeam challengeTeam) throws RestServiceException;
 	void unregisterChallengeTeam(String challengeTeamId) throws RestServiceException;
 	ChallengeTeam updateRegisteredChallengeTeam(ChallengeTeam challengeTeam) throws RestServiceException;
@@ -54,7 +54,7 @@ public interface ChallengeClient extends XsrfProtectedService {
 	UserProfilePagedResults getChallengeParticipants(boolean affiliated, String challengeId, Integer limit, Integer offset) throws RestServiceException;
 	Challenge getChallengeForProject(String projectId) throws RestServiceException;
 	ChallengePagedResults getChallenges(String userId, Integer limit, Integer offset) throws RestServiceException;
-	List<Team> getRegistratableTeams(String userId, String challengeId) throws RestServiceException;
+	ArrayList<Team> getRegistratableTeams(String userId, String challengeId) throws RestServiceException;
 	Set<String> getChallengeEvaluationIds(String challengeId) throws RestServiceException;
 	TeamSubmissionEligibility getTeamSubmissionEligibility(String evaluationId, String teamId) throws RestServiceException;
 	void updateEvaluation(Evaluation evaluation) throws RestServiceException;

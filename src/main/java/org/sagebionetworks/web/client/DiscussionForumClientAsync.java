@@ -1,6 +1,6 @@
 package org.sagebionetworks.web.client;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.sagebionetworks.repo.model.PaginatedIds;
 import org.sagebionetworks.repo.model.Project;
@@ -16,7 +16,6 @@ import org.sagebionetworks.repo.model.discussion.Forum;
 import org.sagebionetworks.repo.model.discussion.UpdateReplyMessage;
 import org.sagebionetworks.repo.model.discussion.UpdateThreadMessage;
 import org.sagebionetworks.repo.model.discussion.UpdateThreadTitle;
-import org.sagebionetworks.repo.model.subscription.SubscriberCount;
 import org.sagebionetworks.repo.model.subscription.SubscriberPagedResults;
 import org.sagebionetworks.repo.model.subscription.Topic;
 import org.sagebionetworks.web.shared.PaginatedResults;
@@ -82,7 +81,7 @@ public interface DiscussionForumClientAsync{
 			DiscussionThreadOrder order, Boolean ascending, DiscussionFilter filter,
 			AsyncCallback<PaginatedResults<DiscussionThreadBundle>> callback);
 
-	void getEntityThreadCount(List<String> idList, AsyncCallback<EntityThreadCounts> callback);
+	void getEntityThreadCount(ArrayList<String> idList, AsyncCallback<EntityThreadCounts> callback);
 
 	void restoreThread(String threadId, AsyncCallback<Void> callback);
 

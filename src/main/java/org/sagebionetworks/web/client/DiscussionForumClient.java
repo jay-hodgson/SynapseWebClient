@@ -1,6 +1,6 @@
 package org.sagebionetworks.web.client;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.sagebionetworks.repo.model.PaginatedIds;
 import org.sagebionetworks.repo.model.Project;
@@ -84,7 +84,7 @@ public interface DiscussionForumClient extends XsrfProtectedService {
 			Long limit, Long offset, DiscussionThreadOrder order, Boolean ascending,
 			DiscussionFilter filter) throws RestServiceException;
 
-	EntityThreadCounts getEntityThreadCount(List<String> idList) throws RestServiceException;
+	EntityThreadCounts getEntityThreadCount(ArrayList<String> idList) throws RestServiceException;
 
 	void restoreThread(String threadId) throws RestServiceException;
 

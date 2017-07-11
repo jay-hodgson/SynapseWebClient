@@ -1,6 +1,6 @@
 package org.sagebionetworks.web.server.servlet;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.repo.model.PaginatedIds;
@@ -275,7 +275,7 @@ public class DiscussionForumClientImpl extends SynapseClientBase implements
 	}
 
 	@Override
-	public EntityThreadCounts getEntityThreadCount(List<String> idList) throws RestServiceException {
+	public EntityThreadCounts getEntityThreadCount(ArrayList<String> idList) throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
 			return synapseClient.getEntityThreadCount(idList);

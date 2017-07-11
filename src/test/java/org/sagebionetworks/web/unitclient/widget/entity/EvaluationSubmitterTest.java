@@ -61,6 +61,7 @@ import org.sagebionetworks.web.shared.exceptions.ForbiddenException;
 import org.sagebionetworks.web.shared.exceptions.NotFoundException;
 import org.sagebionetworks.web.shared.exceptions.RestServiceException;
 import org.sagebionetworks.web.test.helper.AsyncMockStubber;
+import org.sagebionetworks.web.unitclient.utils.ArrayListUtil;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -300,7 +301,7 @@ public class EvaluationSubmitterTest {
 		Team testTeam = new Team();
 		testTeam.setId("80");
 		testTeam.setName("test team");
-		List<Team> submissionTeams = Collections.singletonList(testTeam);
+		List<Team> submissionTeams = ArrayListUtil.singletonList(testTeam);
 		AsyncMockStubber.callSuccessWith(submissionTeams).when(mockChallengeClient).getSubmissionTeams(anyString(), anyString(), any(AsyncCallback.class));
 		
 		Evaluation testEvaluation = new Evaluation();
@@ -358,7 +359,7 @@ public class EvaluationSubmitterTest {
 		
 		Challenge testChallenge = getTestChallenge();
 		AsyncMockStubber.callSuccessWith(testChallenge).when(mockChallengeClient).getChallengeForProject(anyString(), any(AsyncCallback.class));
-		List<Team> submissionTeams = Collections.emptyList();
+		List<Team> submissionTeams = ArrayListUtil.EMPTY_LIST;
 		AsyncMockStubber.callSuccessWith(submissionTeams).when(mockChallengeClient).getSubmissionTeams(anyString(), anyString(), any(AsyncCallback.class));
 		
 		Evaluation testEvaluation = new Evaluation();
@@ -502,7 +503,7 @@ public class EvaluationSubmitterTest {
 		Team testTeam = new Team();
 		testTeam.setId("80");
 		testTeam.setName("test team");
-		List<Team> submissionTeams = Collections.singletonList(testTeam);
+		List<Team> submissionTeams = ArrayListUtil.singletonList(testTeam);
 		AsyncMockStubber.callSuccessWith(submissionTeams).when(mockChallengeClient).getSubmissionTeams(anyString(), anyString(), any(AsyncCallback.class));
 		
 		Evaluation testEvaluation = new Evaluation();

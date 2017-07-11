@@ -1,6 +1,6 @@
 package org.sagebionetworks.web.client.widget.evaluation;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.sagebionetworks.evaluation.model.Evaluation;
 import org.sagebionetworks.web.client.ChallengeClientAsync;
@@ -49,9 +49,9 @@ public class AdministerEvaluationsList implements SynapseWidgetPresenter, Admini
 		this.entityId = entityId;
 		view.clearRows();
 		synAlert.clear();
-		challengeClient.getSharableEvaluations(entityId, new AsyncCallback<List<Evaluation>>() {
+		challengeClient.getSharableEvaluations(entityId, new AsyncCallback<ArrayList<Evaluation>>() {
 			@Override
-			public void onSuccess(List<Evaluation> evaluations) {
+			public void onSuccess(ArrayList<Evaluation> evaluations) {
 				for (Evaluation evaluation : evaluations) {
 					view.addRow(evaluation);
 				}

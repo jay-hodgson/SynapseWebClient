@@ -74,6 +74,7 @@ import org.sagebionetworks.web.shared.PaginatedResults;
 import org.sagebionetworks.web.shared.UserProfilePagedResults;
 import org.sagebionetworks.web.shared.exceptions.NotFoundException;
 import org.sagebionetworks.web.shared.exceptions.RestServiceException;
+import org.sagebionetworks.web.unitclient.utils.ArrayListUtil;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ChallengeClientImplTest {
@@ -216,7 +217,7 @@ public class ChallengeClientImplTest {
 	@Test
 	public void testGetTeamsSorted() throws SynapseException {
 		setupTeams("z team", "A team");
-		List<Team> returnedTeams = synapseClient.getTeams(Collections.singletonList("1234"), true, mockSynapse);
+		List<Team> returnedTeams = synapseClient.getTeams(ArrayListUtil.singletonList("1234"), true, mockSynapse);
 		
 		assertEquals(2, returnedTeams.size());
 		assertEquals("A team", returnedTeams.get(0).getName());
@@ -226,7 +227,7 @@ public class ChallengeClientImplTest {
 	@Test
 	public void testGetTeamsUnSorted() throws SynapseException {
 		setupTeams("z team", "A team");
-		List<Team> returnedTeams = synapseClient.getTeams(Collections.singletonList("1234"), false, mockSynapse);
+		List<Team> returnedTeams = synapseClient.getTeams(ArrayListUtil.singletonList("1234"), false, mockSynapse);
 		
 		assertEquals(2, returnedTeams.size());
 		assertEquals("z team", returnedTeams.get(0).getName());
@@ -388,7 +389,7 @@ public class ChallengeClientImplTest {
 		when(mockSynapse.listTeams(anyList())).thenReturn(teams);
 		
 		PaginatedIds teamIds = new PaginatedIds();
-		teamIds.setResults(Collections.singletonList("22"));
+		teamIds.setResults(ArrayListUtil.singletonList("22"));
 		when(mockSynapse.listRegistratableTeams(anyString(), anyLong(), anyLong())).thenReturn(teamIds);
 		List<Team> results = synapseClient.getRegistratableTeams("userid", "challengeId");
 		
@@ -414,7 +415,7 @@ public class ChallengeClientImplTest {
 	@Test
 	public void testGetEvaluations() throws SynapseException, RestServiceException, MalformedURLException, JSONObjectAdapterException {
 		when(mockSynapse.getEvaluation(anyString())).thenReturn(new Evaluation());
-		List<String> evaluationIds = new ArrayList<String>();
+		ArrayList<String> evaluationIds = new ArrayList<String>();
 		evaluationIds.add("1");
 		evaluationIds.add("2");
 		PaginatedResults<Evaluation> evaluations = synapseClient.getEvaluations(evaluationIds);
@@ -561,15 +562,15 @@ public class ChallengeClientImplTest {
 	
 	public void setupChallengeParticipants() throws SynapseException{	
 		PaginatedIds participantIds = new PaginatedIds();
-		participantIds.setResults(Collections.singletonList("777"));
+		participantIds.setResults(ArrayListUtil.singletonList("777"));
 		participantIds.setTotalNumberOfResults(1L);
 		when(mockSynapse.listChallengeParticipants(anyString(), anyBoolean(), anyLong(), anyLong())).thenReturn(participantIds);
-		when(mockSynapse.listUserProfiles(anyList())).thenReturn(Collections.singletonList(mockUserProfile));
+		when(mockSynapse.listUserProfiles(anyList())).thenReturn(ArrayListUtil.singletonList(mockUserProfile));
 	}
 	
 	public org.sagebionetworks.repo.model.ChallengePagedResults getTestChallengePagedResults() {
 		org.sagebionetworks.repo.model.ChallengePagedResults results = new org.sagebionetworks.repo.model.ChallengePagedResults();
-		results.setResults(Collections.singletonList(testChallenge));
+		results.setResults(ArrayListUtil.singletonList(testChallenge));
 		results.setTotalNumberOfResults(1L);
 		return results;
 	}
@@ -580,7 +581,7 @@ public class ChallengeClientImplTest {
 		EntityHeader header = new EntityHeader();
 		header.setId(testChallengeProject);
 		header.setName(TEST_CHALLENGE_PROJECT_NAME);
-		headers.setResults(Collections.singletonList(header));
+		headers.setResults(ArrayListUtil.singletonList(header));
 		headers.setTotalNumberOfResults(1L);
 		when(mockSynapse.getEntityHeaderBatch(anyList())).thenReturn(headers);
 	}

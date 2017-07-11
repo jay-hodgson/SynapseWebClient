@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -69,11 +68,11 @@ public class ChallengeClientImpl extends SynapseClientBase implements
 	 * @see org.sagebionetworks.web.client.ChallengeClient#getEvaluations(java.util.List)
 	 */
 	@Override
-	public PaginatedResults<Evaluation> getEvaluations(List<String> evaluationIds)
+	public PaginatedResults<Evaluation> getEvaluations(ArrayList<String> evaluationIds)
 			throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
-			List<Evaluation> evalList = new ArrayList<Evaluation>();
+			ArrayList<Evaluation> evalList = new ArrayList<Evaluation>();
 			for (String evalId : evaluationIds) {
 				evalList.add(synapseClient.getEvaluation(evalId));
 			}
@@ -104,7 +103,7 @@ public class ChallengeClientImpl extends SynapseClientBase implements
 			throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
-			List<String> targetEvaluationIdsList = new ArrayList<String>();
+			ArrayList<String> targetEvaluationIdsList = new ArrayList<String>();
 			targetEvaluationIdsList.addAll(targetEvaluationIds);
 			return convertPaginated(synapseClient
 					.getAvailableEvaluationsPaginated(
@@ -121,7 +120,7 @@ public class ChallengeClientImpl extends SynapseClientBase implements
 	 * caller can change permissions
 	 */
 	@Override
-	public List<Evaluation> getSharableEvaluations(String entityId)
+	public ArrayList<Evaluation> getSharableEvaluations(String entityId)
 			throws RestServiceException {
 		try {
 			
@@ -135,13 +134,13 @@ public class ChallengeClientImpl extends SynapseClientBase implements
 		}
 	}
 	
-	public static List<Evaluation> getShareableEvaluations(String entityId, SynapseClient synapseClient) throws SynapseException {
+	public static ArrayList<Evaluation> getShareableEvaluations(String entityId, SynapseClient synapseClient) throws SynapseException {
 		// look up the available evaluations
 		org.sagebionetworks.reflection.model.PaginatedResults<Evaluation> allEvaluations = synapseClient
 				.getEvaluationByContentSource(entityId,
 						EVALUATION_PAGINATION_OFFSET,
 						EVALUATION_PAGINATION_LIMIT);
-		List<Evaluation> mySharableEvalauations = new ArrayList<Evaluation>();
+		ArrayList<Evaluation> mySharableEvalauations = new ArrayList<Evaluation>();
 		
 		for (Evaluation eval : allEvaluations.getResults()) {
 			// evaluation is associated to entity id. can I change
@@ -246,23 +245,23 @@ public class ChallengeClientImpl extends SynapseClientBase implements
 	}
 
 	@Override
-	public List<Team> getSubmissionTeams(String userId, String challengeId) throws RestServiceException {
+	public ArrayList<Team> getSubmissionTeams(String userId, String challengeId) throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
 			PaginatedIds results = synapseClient.listSubmissionTeams(challengeId, userId, GROUPS_PAGINATION_LIMIT, GROUPS_PAGINATION_OFFSET);
-			return getTeams(results.getResults(), false, synapseClient);
+			return getTeams((ArrayList)results.getResults(), false, synapseClient);
 		} catch (SynapseException e) {
 			throw ExceptionUtil.convertSynapseException(e);
 		}
 	}
 	
-	public List<Team> getTeams(List<String> teamIds, boolean sortAlphabetically, org.sagebionetworks.client.SynapseClient synapseClient) throws SynapseException {
+	public ArrayList<Team> getTeams(ArrayList<String> teamIds, boolean sortAlphabetically, org.sagebionetworks.client.SynapseClient synapseClient) throws SynapseException {
 		//get teams in bulk
-		List<Long> teamLongIds = new ArrayList<Long>();
+		ArrayList<Long> teamLongIds = new ArrayList<Long>();
 		for (String teamId : teamIds) {
 			teamLongIds.add(Long.parseLong(teamId));
 		}
-		List<Team> teams = synapseClient.listTeams(teamLongIds);
+		ArrayList<Team> teams = (ArrayList)synapseClient.listTeams(teamLongIds);
 
 		if (sortAlphabetically) {
 			//sort by name
@@ -314,9 +313,9 @@ public class ChallengeClientImpl extends SynapseClientBase implements
 		try {
 			org.sagebionetworks.repo.model.ChallengeTeamPagedResults pagedResults = synapseClient.listChallengeTeams(challengeId, limit.longValue(), offset.longValue());
 			Long totalCount = pagedResults.getTotalNumberOfResults();
-			List<ChallengeTeamBundle> challengeTeamList = new ArrayList<ChallengeTeamBundle>();
+			ArrayList<ChallengeTeamBundle> challengeTeamList = new ArrayList<ChallengeTeamBundle>();
 			
-			List<Long> teamIds = new ArrayList<Long>();
+			ArrayList<Long> teamIds = new ArrayList<Long>();
 			//initialize to all isAdmin to false
 			for (ChallengeTeam challengeTeam : pagedResults.getResults()) {
 				ChallengeTeamBundle teamBundle = new ChallengeTeamBundle(challengeTeam, false);
@@ -349,7 +348,7 @@ public class ChallengeClientImpl extends SynapseClientBase implements
 			PaginatedIds paginatedIds = synapseClient.listChallengeParticipants(challengeId, affiliated, limit.longValue(), offset.longValue());
 			//get all user profiles in a single batch
 			UserProfilePagedResults userProfiles = new UserProfilePagedResults();
-			List<Long> userIds = new ArrayList<Long>();
+			ArrayList<Long> userIds = new ArrayList<Long>();
 			for (String userId : paginatedIds.getResults()) {
 				userIds.add(Long.parseLong(userId));
 			}
@@ -407,18 +406,18 @@ public class ChallengeClientImpl extends SynapseClientBase implements
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
 			org.sagebionetworks.repo.model.ChallengePagedResults pagedResults = synapseClient.listChallengesForParticipant(userId, limit.longValue(), offset.longValue());
-			List<Challenge> challenges = pagedResults.getResults();
-			List<ChallengeBundle> results = new ArrayList<ChallengeBundle>(pagedResults.getResults().size());
+			ArrayList<Challenge> challenges = (ArrayList) pagedResults.getResults();
+			ArrayList<ChallengeBundle> results = new ArrayList<ChallengeBundle>(pagedResults.getResults().size());
 			if (pagedResults.getResults().size() > 0) {
 				//gather all project ids
-				List<Reference> references = new ArrayList<Reference>();
+				ArrayList<Reference> references = new ArrayList<Reference>();
 				for (Challenge challenge : challenges) {
 					Reference ref = new Reference();
 					ref.setTargetId(challenge.getProjectId());
 					references.add(ref);
 				}
 				org.sagebionetworks.reflection.model.PaginatedResults<EntityHeader> headers = synapseClient.getEntityHeaderBatch(references);
-				List<EntityHeader> projectHeaders = headers.getResults();
+				ArrayList<EntityHeader> projectHeaders = (ArrayList)headers.getResults();
 				
 				Map<String, String> projectNameLookup = new HashMap<String, String>();
 				for (EntityHeader projectHeader : projectHeaders) {
@@ -437,7 +436,7 @@ public class ChallengeClientImpl extends SynapseClientBase implements
 	}
 	
 	@Override
-	public List<Team> getRegistratableTeams(String userId, String challengeId) throws RestServiceException {
+	public ArrayList<Team> getRegistratableTeams(String userId, String challengeId) throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
 			//check to see if current user is registered for the challenge.  if not, send back error.
@@ -447,7 +446,7 @@ public class ChallengeClientImpl extends SynapseClientBase implements
 				throw new NotFoundException("User is not registered for the Challenge.");
 			}
 			PaginatedIds results = synapseClient.listRegistratableTeams(challengeId, GROUPS_PAGINATION_LIMIT, GROUPS_PAGINATION_OFFSET);
-			return getTeams(results.getResults(), false, synapseClient);
+			return getTeams((ArrayList)results.getResults(), false, synapseClient);
 		} catch (SynapseException e) {
 			throw ExceptionUtil.convertSynapseException(e);
 		}
