@@ -48,9 +48,9 @@ public class UserProfileAsyncHandlerImpl implements UserProfileAsyncHandler {
 			final Map<String, List<AsyncCallback<UserProfile>>> reference2CallbackCopy = new HashMap<String, List<AsyncCallback<UserProfile>>>();
 			reference2CallbackCopy.putAll(reference2Callback);
 			reference2Callback.clear();
-			List<String> userIds = new ArrayList<String>();
+			ArrayList<String> userIds = new ArrayList<String>();
 			userIds.addAll(reference2CallbackCopy.keySet());
-			synapseClient.listUserProfiles(userIds, new AsyncCallback<List<UserProfile>>() {
+			synapseClient.listUserProfiles(userIds, new AsyncCallback<ArrayList<UserProfile>>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					// go through all requested objects, and inform them of the error
@@ -68,7 +68,7 @@ public class UserProfileAsyncHandlerImpl implements UserProfileAsyncHandler {
 					}
 				}
 				
-				public void onSuccess(List<UserProfile> results) {
+				public void onSuccess(ArrayList<UserProfile> results) {
 					// go through all results, and inform the proper callback of the success
 					for (UserProfile result : results) {
 						List<AsyncCallback<UserProfile>> callbacks = reference2CallbackCopy.remove(result.getOwnerId());

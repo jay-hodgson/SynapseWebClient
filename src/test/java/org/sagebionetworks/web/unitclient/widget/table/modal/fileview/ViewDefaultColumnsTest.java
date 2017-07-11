@@ -22,6 +22,7 @@ import org.sagebionetworks.web.client.PopupUtilsView;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.widget.table.modal.fileview.ViewDefaultColumns;
 import org.sagebionetworks.web.test.helper.AsyncMockStubber;
+import org.sagebionetworks.web.unitclient.utils.ArrayListUtil;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -48,8 +49,8 @@ public class ViewDefaultColumnsTest {
 		columnModel = new ColumnModel();
 		columnModel.setId("not null");
 		adapterFactory = new AdapterFactoryImpl();
-		columns = Collections.singletonList(columnModel);
-		projectColumns = Collections.singletonList(columnModel);
+		columns = ArrayListUtil.singletonList(columnModel);
+		projectColumns = ArrayListUtil.singletonList(columnModel);
 		AsyncMockStubber.callSuccessWith(columns).when(mockSynapseClient).getDefaultColumnsForView(eq(ViewType.file), any(AsyncCallback.class));
 		AsyncMockStubber.callSuccessWith(projectColumns).when(mockSynapseClient).getDefaultColumnsForView(eq(ViewType.project), any(AsyncCallback.class));
 		fileViewDefaultColumns = new ViewDefaultColumns(mockSynapseClient, adapterFactory, mockPopupUtils);

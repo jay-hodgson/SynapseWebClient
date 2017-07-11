@@ -17,7 +17,6 @@ import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.widget.asynch.AsynchronousProgressHandler;
 import org.sagebionetworks.web.client.widget.asynch.JobTrackingWidget;
 import org.sagebionetworks.web.client.widget.table.KeyboardNavigationHandler;
-import org.sagebionetworks.web.client.widget.table.v2.results.QueryResultEditorWidget;
 import org.sagebionetworks.web.client.widget.table.v2.schema.ColumnModelTableRow;
 import org.sagebionetworks.web.client.widget.table.v2.schema.ColumnModelTableRowEditorWidget;
 import org.sagebionetworks.web.client.widget.table.v2.schema.ColumnModelUtils;
@@ -45,7 +44,7 @@ public class UploadCSVFinishPageImpl implements UploadCSVFinishPage {
 	String parentId;
 	UploadToTableRequest uploadtoTableRequest;
 	ModalPresenter presenter;
-	List<ColumnModelTableRow> editors;
+	ArrayList<ColumnModelTableRow> editors;
 
 	@Inject
 	public UploadCSVFinishPageImpl(UploadCSVFinishPageView view,
@@ -104,10 +103,10 @@ public class UploadCSVFinishPageImpl implements UploadCSVFinishPage {
 		try {
 			presenter.setLoading(true);
 
-			List<ColumnModel> schema = getCurrentSchema();
+			ArrayList<ColumnModel> schema = getCurrentSchema();
 			// Create the columns
 			synapseClient.createTableColumns(schema,
-					new AsyncCallback<List<ColumnModel>>() {
+					new AsyncCallback<ArrayList<ColumnModel>>() {
 
 						@Override
 						public void onFailure(Throwable caught) {
@@ -115,7 +114,7 @@ public class UploadCSVFinishPageImpl implements UploadCSVFinishPage {
 						}
 
 						@Override
-						public void onSuccess(List<ColumnModel> schema) {
+						public void onSuccess(ArrayList<ColumnModel> schema) {
 							createTable(schema);
 						}
 					});
@@ -244,7 +243,7 @@ public class UploadCSVFinishPageImpl implements UploadCSVFinishPage {
 	/**
 	 * Extract the current schema.
 	 */
-	public List<ColumnModel> getCurrentSchema() {
+	public ArrayList<ColumnModel> getCurrentSchema() {
 		return ColumnModelUtils.extractColumnModels(editors);
 	}
 

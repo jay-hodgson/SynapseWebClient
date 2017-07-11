@@ -9,7 +9,6 @@ import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.place.Trash;
 import org.sagebionetworks.web.client.view.TrashView;
-import org.sagebionetworks.web.client.widget.LoadMoreWidgetContainer;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
 import org.sagebionetworks.web.client.widget.search.PaginationEntry;
 import org.sagebionetworks.web.client.widget.search.PaginationUtil;
@@ -118,8 +117,8 @@ public class TrashPresenter extends AbstractActivity implements TrashView.Presen
 	public void purgeEntities(Set<TrashedEntity> trashedEntities) {
 		synAlert.clear();
 		// Get ids and names for purging and displaying purged entities.
-		final Set<String> entityIds = new HashSet<String>();
-		final Set<String> entityNames = new HashSet<String>();
+		final HashSet<String> entityIds = new HashSet<String>();
+		final HashSet<String> entityNames = new HashSet<String>();
 		for (TrashedEntity trashedEntity : trashedEntities) {
 			entityIds.add(trashedEntity.getEntityId());
 			entityNames.add(trashedEntity.getEntityName());

@@ -18,6 +18,7 @@ import static org.sagebionetworks.web.client.widget.entity.act.ApproveUserAccess
 import static org.sagebionetworks.web.client.widget.entity.act.ApproveUserAccessModal.REVOKED_USER;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -299,7 +300,7 @@ public class ApproveUserAccessModalTest {
 		
 		verify(mockSynapseClient).createAccessApproval(any(AccessApproval.class), aaCaptor.capture());
 		aaCaptor.getValue().onSuccess(mockAccessApproval);
-		verify(mockSynapseClient).sendMessage(anySetOf(String.class), anyString(), anyString(), anyString(), sCaptor.capture());
+		verify(mockSynapseClient).sendMessage(any(HashSet.class), anyString(), anyString(), anyString(), sCaptor.capture());
 	}
 	
 	@Test
@@ -319,7 +320,7 @@ public class ApproveUserAccessModalTest {
 		verify(mockSynapseClient).createAccessApproval(any(AccessApproval.class), aaCaptor.capture());
 		aaCaptor.getValue().onSuccess(mockAccessApproval);
 		
-		verify(mockSynapseClient).sendMessage(anySetOf(String.class), anyString(), anyString(), anyString(), sCaptor.capture());
+		verify(mockSynapseClient).sendMessage(any(HashSet.class), anyString(), anyString(), anyString(), sCaptor.capture());
 		sCaptor.getValue().onFailure(ex);
 		
 		verify(mockView).setApproveProcessing(false);
@@ -343,7 +344,7 @@ public class ApproveUserAccessModalTest {
 		verify(mockSynapseClient).createAccessApproval(any(AccessApproval.class), aaCaptor.capture());
 		aaCaptor.getValue().onSuccess(mockAccessApproval);
 		
-		verify(mockSynapseClient).sendMessage(anySetOf(String.class), anyString(), anyString(), anyString(), sCaptor.capture());
+		verify(mockSynapseClient).sendMessage(any(HashSet.class), anyString(), anyString(), anyString(), sCaptor.capture());
 		sCaptor.getValue().onSuccess(anyString());
 		
 		verify(mockView).setApproveProcessing(false);

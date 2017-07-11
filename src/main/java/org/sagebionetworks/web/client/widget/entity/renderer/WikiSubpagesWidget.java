@@ -3,6 +3,7 @@ package org.sagebionetworks.web.client.widget.entity.renderer;
 import static org.sagebionetworks.repo.model.EntityBundle.ENTITY;
 import static org.sagebionetworks.repo.model.EntityBundle.PERMISSIONS;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.sagebionetworks.repo.model.EntityBundle;
@@ -15,7 +16,6 @@ import org.sagebionetworks.web.client.place.Wiki;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.utils.CallbackP;
-import org.sagebionetworks.web.shared.PaginatedResults;
 import org.sagebionetworks.web.shared.WikiPageKey;
 import org.sagebionetworks.web.shared.exceptions.NotFoundException;
 
@@ -104,9 +104,9 @@ public class WikiSubpagesWidget implements WikiSubpagesView.Presenter, IsWidget 
 	public void refreshTableOfContents() {
 		view.clear();
 		
-		synapseClient.getV2WikiHeaderTree(wikiKey.getOwnerObjectId(), wikiKey.getOwnerObjectType(), new AsyncCallback<List<V2WikiHeader>>() {
+		synapseClient.getV2WikiHeaderTree(wikiKey.getOwnerObjectId(), wikiKey.getOwnerObjectType(), new AsyncCallback<ArrayList<V2WikiHeader>>() {
 			@Override
-			public void onSuccess(final List<V2WikiHeader> wikiHeaders) {
+			public void onSuccess(final ArrayList<V2WikiHeader> wikiHeaders) {
 				
 				synapseClient.getV2WikiOrderHint(wikiKey, new AsyncCallback<V2WikiOrderHint>() {
 					@Override

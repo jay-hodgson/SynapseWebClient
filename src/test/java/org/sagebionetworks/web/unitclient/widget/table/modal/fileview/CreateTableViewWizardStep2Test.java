@@ -99,7 +99,7 @@ public class CreateTableViewWizardStep2Test {
 		parentId = "syn123";
 		when(mockEditor.validate()).thenReturn(true);
 		when(mockTableSchemaChangeRequest.getChanges()).thenReturn(Collections.singletonList(mockTableUpdateRequest));
-		AsyncMockStubber.callSuccessWith(mockTableSchemaChangeRequest).when(mockSynapseClient).getTableUpdateTransactionRequest(anyString(), anyList(), anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(mockTableSchemaChangeRequest).when(mockSynapseClient).getTableUpdateTransactionRequest(anyString(), any(ArrayList.class), any(ArrayList.class), any(AsyncCallback.class));
 		when(mockFileViewDefaultColumns.getDefaultFileViewColumns(anyBoolean())).thenReturn(mockDefaultColumnModels);
 		when(mockFileViewDefaultColumns.getDefaultProjectViewColumns(anyBoolean())).thenReturn(mockDefaultProjectColumnModels);
 		when(viewEntity.getScopeIds()).thenReturn(mockViewScopeIds);
@@ -253,7 +253,7 @@ public class CreateTableViewWizardStep2Test {
 		widget.configure(tableEntity, TableType.table);
 		String error = "error message";
 		Exception ex = new Exception(error);
-		AsyncMockStubber.callFailureWith(ex).when(mockSynapseClient).getTableUpdateTransactionRequest(anyString(), anyList(), anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callFailureWith(ex).when(mockSynapseClient).getTableUpdateTransactionRequest(anyString(), any(ArrayList.class), any(ArrayList.class), any(AsyncCallback.class));
 		widget.onPrimary();
 		verify(mockWizardPresenter).setLoading(true);
 		verify(mockEditor).validate();

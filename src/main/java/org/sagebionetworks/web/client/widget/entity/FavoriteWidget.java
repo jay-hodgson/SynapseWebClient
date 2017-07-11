@@ -1,5 +1,6 @@
 package org.sagebionetworks.web.client.widget.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.sagebionetworks.repo.model.EntityHeader;
@@ -129,9 +130,9 @@ public class FavoriteWidget implements Presenter, IsWidget {
 	}
 
 	private void updateStoredFavorites(final AsyncCallback<Void> callback) {
-		synapseClient.getFavorites(new AsyncCallback<List<EntityHeader>>() {
+		synapseClient.getFavorites(new AsyncCallback<ArrayList<EntityHeader>>() {
 			@Override
-			public void onSuccess(List<EntityHeader> favorites) {
+			public void onSuccess(ArrayList<EntityHeader> favorites) {
 				globalApplicationState.setFavorites(favorites);
 				callback.onSuccess(null);
 			}

@@ -62,7 +62,7 @@ public class ColumnModelsEditorWidgetTest {
 	@Mock
 	ViewDefaultColumns mockFileViewDefaultColumns;
 	ColumnModelsEditorWidget widget;
-	List<ColumnModel> schema;
+	ArrayList<ColumnModel> schema;
 	@Mock
 	ColumnModelTableRowEditorWidget mockColumnModelTableRowEditorWidget1;
 	@Mock
@@ -71,7 +71,7 @@ public class ColumnModelsEditorWidgetTest {
 	ImportTableViewColumnsButton mockAddTableViewColumnsButton;
 	
 	ColumnModel nonEditableColumn;
-	List<ColumnModel> nonEditableColumns;
+	ArrayList<ColumnModel> nonEditableColumns;
 	@Before
 	public void before(){
 		MockitoAnnotations.initMocks(this);

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,6 +50,7 @@ import org.sagebionetworks.web.client.widget.table.v2.TableEntityWidgetView;
 import org.sagebionetworks.web.client.widget.table.v2.results.QueryResultsListener;
 import org.sagebionetworks.web.client.widget.table.v2.results.TableQueryResultWidget;
 import org.sagebionetworks.web.test.helper.AsyncMockStubber;
+import org.sagebionetworks.web.unitclient.utils.ArrayListUtil;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -108,7 +110,7 @@ public class TableEntityWidgetTest {
 		tableBundle.setColumnModels(columns);
 		widget = new TableEntityWidget(mockView, mockQueryResultsWidget, mockQueryInputWidget, mockDownloadTableQueryModalWidget, mockUploadTableModalWidget, mockPreflightController, mockCopyTextModal, mockSynapseClient);
 		
-		AsyncMockStubber.callSuccessWith(facetBasedSql).when(mockSynapseClient).generateSqlWithFacets(anyString(), anyList(), anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(facetBasedSql).when(mockSynapseClient).generateSqlWithFacets(anyString(), any(ArrayList.class), any(ArrayList.class), any(AsyncCallback.class));
 		// The test bundle
 		entityBundle = new EntityBundle();
 		entityBundle.setEntity(tableEntity);
@@ -508,7 +510,7 @@ public class TableEntityWidgetTest {
 		FacetColumnRequest facetColumnRequest = new FacetColumnValuesRequest();
 		facetColumnRequest.setColumnName("col1");
 		((FacetColumnValuesRequest)facetColumnRequest).setFacetValues(Collections.singleton("a"));
-		startQuery.setSelectedFacets(Collections.singletonList(facetColumnRequest));
+		startQuery.setSelectedFacets(ArrayListUtil.singletonList(facetColumnRequest));
 		when(mockQueryChangeHandler.getQueryString()).thenReturn(startQuery);
 		widget.configure(entityBundle, canEdit, mockQueryChangeHandler, mockActionMenu);
 		

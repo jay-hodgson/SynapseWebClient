@@ -1,7 +1,6 @@
 package org.sagebionetworks.web.client.widget.table.modal.fileview;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.sagebionetworks.repo.model.EntityHeader;
@@ -47,7 +46,7 @@ public class EntityContainerListWidget implements EntityContainerListWidgetView.
 		};
 	}
 	
-	public void configure(List<String> entityContainerIds, boolean canEdit, TableType tableType) {
+	public void configure(ArrayList<String> entityContainerIds, boolean canEdit, TableType tableType) {
 		view.clear();
 		entityIds.clear();
 		this.canEdit = canEdit;
@@ -90,7 +89,9 @@ public class EntityContainerListWidget implements EntityContainerListWidgetView.
 	 * @param id
 	 */
 	public void onAddProject(String id) {
-		synapseClient.getEntityHeaderBatch(Collections.singletonList(id), new AsyncCallback<ArrayList<EntityHeader>>() {
+		ArrayList<String> idList = new ArrayList<>();
+		idList.add(id);
+		synapseClient.getEntityHeaderBatch(idList, new AsyncCallback<ArrayList<EntityHeader>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				finder.showError(caught.getMessage());

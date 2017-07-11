@@ -6,6 +6,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.widget.Button;
 import org.sagebionetworks.web.client.widget.accessrequirements.ShowEmailsButton;
 import org.sagebionetworks.web.test.helper.AsyncMockStubber;
+import org.sagebionetworks.web.unitclient.utils.ArrayListUtil;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -31,7 +33,7 @@ public class ShowEmailsButtonTest {
 	PopupUtilsView mockPopupUtils;
 	@Mock
 	SynapseClientAsync mockSynapseClient;
-	List<UserProfile> userProfiles;
+	ArrayList<UserProfile> userProfiles;
 	@Mock
 	UserProfile mockUserProfile;
 	public static final String USER_ID = "77776";
@@ -44,14 +46,14 @@ public class ShowEmailsButtonTest {
 				mockButton,
 				mockSynapseClient,
 				mockPopupUtils);
-		userProfiles = Collections.singletonList(mockUserProfile);
-		AsyncMockStubber.callSuccessWith(userProfiles).when(mockSynapseClient).listUserProfiles(anyList(), any(AsyncCallback.class));
+		userProfiles = ArrayListUtil.singletonList(mockUserProfile);
+		AsyncMockStubber.callSuccessWith(userProfiles).when(mockSynapseClient).listUserProfiles(any(ArrayList.class), any(AsyncCallback.class));
 		when(mockUserProfile.getUserName()).thenReturn(USER_NAME);
 	}
 	
 	@Test
 	public void testConfigure() {
-		List<String> userIds = Collections.singletonList(USER_ID);
+		ArrayList<String> userIds = ArrayListUtil.singletonList(USER_ID);
 		widget.configure(userIds);
 		widget.onShowEmails();
 		
@@ -62,9 +64,9 @@ public class ShowEmailsButtonTest {
 	@Test
 	public void testShowEmailsFailure() {
 		String errorMessage = "something is wrong";
-		AsyncMockStubber.callFailureWith(new Exception(errorMessage)).when(mockSynapseClient).listUserProfiles(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callFailureWith(new Exception(errorMessage)).when(mockSynapseClient).listUserProfiles(any(ArrayList.class), any(AsyncCallback.class));
 		
-		widget.configure(Collections.singletonList(USER_ID));
+		widget.configure(ArrayListUtil.singletonList(USER_ID));
 		widget.onShowEmails();
 		
 		verify(mockPopupUtils).showErrorMessage(errorMessage);

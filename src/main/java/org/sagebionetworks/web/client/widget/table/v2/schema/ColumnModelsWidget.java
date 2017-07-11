@@ -1,5 +1,6 @@
 package org.sagebionetworks.web.client.widget.table.v2.schema;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.sagebionetworks.repo.model.Entity;
@@ -165,7 +166,7 @@ public class ColumnModelsWidget implements ColumnModelsViewBase.Presenter, Colum
 		if(!this.isEditable){
 			throw new IllegalStateException("Cannot call onEditColumns() for a read-only widget");
 		}
-		editor.configure(tableType, bundle.getTableBundle().getColumnModels());
+		editor.configure(tableType, (ArrayList)bundle.getTableBundle().getColumnModels());
 		// Pass this to the base
 		baseView.showEditor();
 	}
@@ -181,8 +182,8 @@ public class ColumnModelsWidget implements ColumnModelsViewBase.Presenter, Colum
 		}
 		// Get the models from the view and save them
 		baseView.setLoading();
-		List<ColumnModel> newSchema = editor.getEditedColumnModels();
-		synapseClient.getTableUpdateTransactionRequest(bundle.getEntity().getId(), bundle.getTableBundle().getColumnModels(), newSchema, new AsyncCallback<TableUpdateTransactionRequest>(){
+		ArrayList<ColumnModel> newSchema = editor.getEditedColumnModels();
+		synapseClient.getTableUpdateTransactionRequest(bundle.getEntity().getId(), (ArrayList)bundle.getTableBundle().getColumnModels(), newSchema, new AsyncCallback<TableUpdateTransactionRequest>(){
 
 			@Override
 			public void onFailure(Throwable caught) {

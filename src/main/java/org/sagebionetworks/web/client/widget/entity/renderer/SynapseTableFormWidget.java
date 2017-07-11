@@ -97,9 +97,9 @@ public class SynapseTableFormWidget implements SynapseTableFormWidgetView.Presen
 			};
 		});
 		//get the table schema and init row widget!
-		synapseClient.getColumnModelsForTableEntity(tableId, new AsyncCallback<List<ColumnModel>>() {
+		synapseClient.getColumnModelsForTableEntity(tableId, new AsyncCallback<ArrayList<ColumnModel>>() {
 			@Override
-			public void onSuccess(List<ColumnModel> result) {
+			public void onSuccess(ArrayList<ColumnModel> result) {
 				headers = result;
 				rowWidget.configure(tableId, headers);
 				view.setFormUIVisible(true);

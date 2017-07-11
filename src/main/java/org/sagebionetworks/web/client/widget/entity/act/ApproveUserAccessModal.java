@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.sagebionetworks.repo.model.ACTAccessRequirement;
 import org.sagebionetworks.repo.model.AccessApproval;
@@ -103,13 +102,13 @@ public class ApproveUserAccessModal implements ApproveUserAccessModalView.Presen
 		RestrictableObjectDescriptor subject = new RestrictableObjectDescriptor();
 		subject.setId(bundle.getEntity().getId());
 		subject.setType(RestrictableObjectType.ENTITY);
-		dataAccessClient.getAccessRequirements(subject, 50L, 0L, new AsyncCallback<List<AccessRequirement>>() {
+		dataAccessClient.getAccessRequirements(subject, 50L, 0L, new AsyncCallback<ArrayList<AccessRequirement>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				synAlert.handleException(caught);
 			}
 			@Override
-			public void onSuccess(List<AccessRequirement> result) {
+			public void onSuccess(ArrayList<AccessRequirement> result) {
 				List<ACTAccessRequirement> ars = new ArrayList<>();
 				for (AccessRequirement ar : result) {
 					if (ar instanceof ACTAccessRequirement) {
@@ -270,7 +269,7 @@ public class ApproveUserAccessModal implements ApproveUserAccessModalView.Presen
 	}
 	
 	private void sendEmail(AccessApproval result) {
-		Set<String> recipients = new HashSet<String>();
+		HashSet<String> recipients = new HashSet<String>();
 		recipients.add(userId);
 		synapseClient.sendMessage(recipients, EMAIL_SUBJECT, message, null, new AsyncCallback<String>() {
 

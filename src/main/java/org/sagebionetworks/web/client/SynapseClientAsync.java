@@ -4,8 +4,7 @@ package org.sagebionetworks.web.client;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.HashSet;
 
 import org.sagebionetworks.repo.model.AccessApproval;
 import org.sagebionetworks.repo.model.AccessControlList;
@@ -115,7 +114,7 @@ public interface SynapseClientAsync {
 	void getEntityHeaderBatch(ReferenceList referenceList,
 			AsyncCallback<PaginatedResults<EntityHeader>> callback);
 
-	void getEntityHeaderBatch(List<String> entityIds, AsyncCallback<ArrayList<EntityHeader>> callback);
+	void getEntityHeaderBatch(ArrayList<String> entityIds, AsyncCallback<ArrayList<EntityHeader>> callback);
 	
 	void deleteEntityById(String entityId, AsyncCallback<Void> callback);
 	
@@ -125,8 +124,8 @@ public interface SynapseClientAsync {
 
 	void getUserProfile(String userId, AsyncCallback<UserProfile> callback);
 	
-	void listUserProfiles(List<String> userIds,
-			AsyncCallback<List<UserProfile>> callback);
+	void listUserProfiles(ArrayList<String> userIds,
+			AsyncCallback<ArrayList<UserProfile>> callback);
 	
 	void getTeam(String teamId, AsyncCallback<Team> callback);
 	
@@ -159,7 +158,7 @@ public interface SynapseClientAsync {
 	void createOrUpdateAccessRequirement(AccessRequirement arEW,
 			AsyncCallback<AccessRequirement> callback);
 
-	public void getTeamAccessRequirements(String teamId, AsyncCallback<List<AccessRequirement>> callback);
+	public void getTeamAccessRequirements(String teamId, AsyncCallback<ArrayList<AccessRequirement>> callback);
 	
 	void createAccessApproval(AccessApproval aaEW,
 			AsyncCallback<AccessApproval> callback);
@@ -184,7 +183,7 @@ public interface SynapseClientAsync {
 			Long versionToUpdate, AsyncCallback<V2WikiPage> callback);
     public void deleteV2WikiPage(WikiPageKey key, AsyncCallback<Void> callback);
     void getV2WikiHeaderTree(String ownerId, String ownerType,
-			AsyncCallback<List<V2WikiHeader>> callback);
+			AsyncCallback<ArrayList<V2WikiHeader>> callback);
     public void getV2WikiOrderHint(WikiPageKey key, AsyncCallback<V2WikiOrderHint> callback);
     public void updateV2WikiOrderHint(V2WikiOrderHint toUpdate, AsyncCallback<V2WikiOrderHint> callback);
     void getV2WikiAttachmentHandles(WikiPageKey key,
@@ -204,7 +203,7 @@ public interface SynapseClientAsync {
 
 	void removeFavorite(String entityId, AsyncCallback<Void> callback);
 
-	void getFavorites(AsyncCallback<List<EntityHeader>> callback);
+	void getFavorites(AsyncCallback<ArrayList<EntityHeader>> callback);
 	
 	/**
 	 * TEAMS
@@ -219,10 +218,10 @@ public interface SynapseClientAsync {
 	void getTeamBundle(String userId, String teamId, boolean isLoggedIn, AsyncCallback<TeamBundle> callback);
 	void getOpenRequestCount(String currentUserId, String teamId, AsyncCallback<Long> callback);
 	void getTeamsForUser(String userId, boolean includeRequestCount,
-			AsyncCallback<List<TeamRequestBundle>> asyncCallback);
+			AsyncCallback<ArrayList<TeamRequestBundle>> asyncCallback);
 	void getOpenInvitations(String userId, AsyncCallback<ArrayList<OpenUserInvitationBundle>> callback);
 	void getOpenTeamInvitations(String teamId, Integer limit, Integer offset, AsyncCallback<ArrayList<OpenTeamInvitationBundle>> callback);
-	void getOpenRequests(String teamId, AsyncCallback<List<MembershipRequestBundle>> callback);
+	void getOpenRequests(String teamId, AsyncCallback<ArrayList<MembershipRequestBundle>> callback);
 	void deleteMembershipInvitation(String invitationId, AsyncCallback<Void> callback);
 	void updateTeam(Team team, AccessControlList teamAcl, AsyncCallback<Team> callback);
 	void deleteTeamMember(String currentUserId, String targetUserId, String teamId, AsyncCallback<Void> callback);
@@ -262,11 +261,11 @@ public interface SynapseClientAsync {
 	
 	void getAPIKey(AsyncCallback<String> callback);
 
-	void getColumnModelsForTableEntity(String tableEntityId, AsyncCallback<List<ColumnModel>> asyncCallback);
+	void getColumnModelsForTableEntity(String tableEntityId, AsyncCallback<ArrayList<ColumnModel>> asyncCallback);
 
 	void createColumnModel(String columnModelJson, AsyncCallback<String> callback);
 	
-	void sendMessage(Set<String> recipients, String subject, String message, String hostPageBaseURL, AsyncCallback<String> callback);
+	void sendMessage(HashSet<String> recipients, String subject, String message, String hostPageBaseURL, AsyncCallback<String> callback);
 	void sendMessageToEntityOwner(String entityId, String subject, String messageBody, String hostPageBaseURL, AsyncCallback<String> callback);
 	
 	void isAliasAvailable(String alias, String aliasType, AsyncCallback<Boolean> callback);
@@ -283,7 +282,7 @@ public interface SynapseClientAsync {
 	 * @param newSchema
 	 * @param callback
 	 */
-	void getTableUpdateTransactionRequest(String tableId, List<ColumnModel> oldSchema, List<ColumnModel> newSchema,
+	void getTableUpdateTransactionRequest(String tableId, ArrayList<ColumnModel> oldSchema, ArrayList<ColumnModel> newSchema,
 			AsyncCallback<TableUpdateTransactionRequest> callback);
 	
 	/**
@@ -305,7 +304,7 @@ public interface SynapseClientAsync {
 	 * @param sql
 	 * @param callback
 	 */
-	void getSortFromTableQuery(String sql, AsyncCallback<List<SortItem>> callback);
+	void getSortFromTableQuery(String sql, AsyncCallback<ArrayList<SortItem>> callback);
 
 	void purgeTrashForUser(AsyncCallback<Void> callback);
 
@@ -314,7 +313,7 @@ public interface SynapseClientAsync {
 	void viewTrashForUser(long offset, long limit,
 			AsyncCallback<PaginatedResults<TrashedEntity>> callback);
 
-	void purgeMultipleTrashedEntitiesForUser(Set<String> entityIds, AsyncCallback<Void> callback);
+	void purgeMultipleTrashedEntitiesForUser(HashSet<String> entityIds, AsyncCallback<Void> callback);
 
 	void startAsynchJob(AsynchType type, AsynchronousRequestBody body, AsyncCallback<String> callback);
 
@@ -328,8 +327,8 @@ public interface SynapseClientAsync {
 
 	void createFileHandleURL(String fileHandleId, AsyncCallback<String> callback);
 
-	void createTableColumns(List<ColumnModel> value,
-			AsyncCallback<List<ColumnModel>> asyncCallback);
+	void createTableColumns(ArrayList<ColumnModel> value,
+			AsyncCallback<ArrayList<ColumnModel>> asyncCallback);
 	
 	/**
 	 * Return the upload destinations associated with this parent entity (container)
@@ -337,7 +336,7 @@ public interface SynapseClientAsync {
 	 * @return
 	 * @throws RestServiceException
 	 */
-	void getUploadDestinations(String parentEntityId, AsyncCallback<List<UploadDestination>> callback);
+	void getUploadDestinations(String parentEntityId, AsyncCallback<ArrayList<UploadDestination>> callback);
 
 	/**
 	 * Return all projects that the current user can access, sorted by access time
@@ -374,7 +373,7 @@ public interface SynapseClientAsync {
 
 	void getStorageLocationSetting(String parentEntityId, AsyncCallback<StorageLocationSetting> callback);
 
-	void getMyLocationSettingBanners(AsyncCallback<List<String>> callback);
+	void getMyLocationSettingBanners(AsyncCallback<ArrayList<String>> callback);
 
 	void hexDecodeLogEntry(String encodedLogEntry,
 			AsyncCallback<LogEntry> callback);
@@ -389,7 +388,7 @@ public interface SynapseClientAsync {
 
 	void getEtag(String objectId, ObjectType objectType, AsyncCallback<Etag> callback);
 
-	void getDefaultColumnsForView(ViewType type, AsyncCallback<List<ColumnModel>> callback);
+	void getDefaultColumnsForView(ViewType type, AsyncCallback<ArrayList<ColumnModel>> callback);
 
 	void getFileHandleAndUrlBatch(BatchFileRequest request, AsyncCallback<BatchFileResult> asyncCallback);
 	
@@ -397,7 +396,7 @@ public interface SynapseClientAsync {
 	
 	void deleteAccessApprovals(String accessRequirement, String accessorId, AsyncCallback<Void> asyncCallback);
 
-	void generateSqlWithFacets(String basicSql, List<FacetColumnRequest> selectedFacets, List<ColumnModel> schema,
+	void generateSqlWithFacets(String basicSql, ArrayList<FacetColumnRequest> selectedFacets, ArrayList<ColumnModel> schema,
 			AsyncCallback<String> callback);
 
 	void getPossibleColumnModelsForViewScope(ViewScope scope, String nextPageToken,

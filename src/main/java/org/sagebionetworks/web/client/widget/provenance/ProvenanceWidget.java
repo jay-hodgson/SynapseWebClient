@@ -75,7 +75,7 @@ public class ProvenanceWidget implements ProvenanceWidgetView.Presenter, WidgetR
 	Stack<ProcessItem> toProcess;
 	ProcessCallback doneCallback;
 	Set<Reference> noExpandNode;
-	List<String> lookupVersion;
+	ArrayList<String> lookupVersion;
 	ProvGraph currentGraph;
 	ClientCache clientCache;
 	DateTimeUtils dateTimeUtils;

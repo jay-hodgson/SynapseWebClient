@@ -41,7 +41,7 @@ public class EntityHeaderAsyncHandlerImplTest {
 		MockitoAnnotations.initMocks(this);
 		entityHeaderAsyncHandler = new EntityHeaderAsyncHandlerImpl(mockSynapseClient, mockGwt);
 		entityHeaderList = new ArrayList<EntityHeader>();
-		AsyncMockStubber.callSuccessWith(entityHeaderList).when(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(entityHeaderList).when(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		when(mockEntityHeader.getId()).thenReturn(entityId);
 	}
 	
@@ -61,7 +61,7 @@ public class EntityHeaderAsyncHandlerImplTest {
 		entityHeaderList.add(mockEntityHeader);
 		
 		entityHeaderAsyncHandler.executeRequests();
-		verify(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		verify(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		verify(mockCallback).onSuccess(mockEntityHeader);
 	}
 	
@@ -69,7 +69,7 @@ public class EntityHeaderAsyncHandlerImplTest {
 	public void testFailure() {
 		//simulate exception response
 		Exception ex = new Exception("problem loading batch of entity headers");
-		AsyncMockStubber.callFailureWith(ex).when(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callFailureWith(ex).when(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		entityHeaderAsyncHandler.getEntityHeader(entityId, mockCallback);
 		entityHeaderAsyncHandler.executeRequests();
 		
@@ -84,7 +84,7 @@ public class EntityHeaderAsyncHandlerImplTest {
 		entityHeaderList.add(mockEntityHeader);
 		
 		entityHeaderAsyncHandler.executeRequests();
-		verify(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		verify(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		verify(mockCallback).onFailure(any(Throwable.class));
 	}
 

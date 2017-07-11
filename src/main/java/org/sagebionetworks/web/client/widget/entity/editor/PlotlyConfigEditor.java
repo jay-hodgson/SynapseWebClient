@@ -283,9 +283,9 @@ public class PlotlyConfigEditor implements PlotlyConfigView.Presenter, WidgetEdi
 		});
 		
 		// get the columns
-		synapseClient.getColumnModelsForTableEntity(synId, new AsyncCallback<List<ColumnModel>>() {
+		synapseClient.getColumnModelsForTableEntity(synId, new AsyncCallback<ArrayList<ColumnModel>>() {
 			@Override
-			public void onSuccess(List<ColumnModel> columnModels) {
+			public void onSuccess(ArrayList<ColumnModel> columnModels) {
 				allAvailableColumnNames = new ArrayList<String>();
 				for (ColumnModel cm : columnModels) {
 					allAvailableColumnNames.add(cm.getName());

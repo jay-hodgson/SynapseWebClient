@@ -1,6 +1,7 @@
 package org.sagebionetworks.web.client;
 
-import java.util.List;
+
+import java.util.ArrayList;
 
 import org.sagebionetworks.repo.model.AccessRequirement;
 import org.sagebionetworks.repo.model.BatchAccessApprovalInfoRequest;
@@ -33,7 +34,7 @@ public interface DataAccessClient extends XsrfProtectedService {
 	AccessRequirement getAccessRequirement(Long requirementId) throws RestServiceException;
 	SubmissionPage getDataAccessSubmissions(Long accessRequirementId, String nextPageToken, SubmissionState stateFilter,
 			SubmissionOrder order, boolean isAsc) throws RestServiceException;
-	List<AccessRequirement> getAccessRequirements(RestrictableObjectDescriptor subject, Long limit, Long offset) throws RestServiceException;
+	ArrayList<AccessRequirement> getAccessRequirements(RestrictableObjectDescriptor subject, Long limit, Long offset) throws RestServiceException;
 	AccessRequirementStatus getAccessRequirementStatus(String accessRequirementId) throws RestServiceException;
 	void cancelDataAccessSubmission(String submissionId) throws RestServiceException;
 	RestrictionInformationResponse getRestrictionInformation(String subjectId, RestrictableObjectType type) throws RestServiceException;

@@ -2,6 +2,8 @@ package org.sagebionetworks.web.client.widget.table.v2;
 
 import static org.sagebionetworks.web.client.widget.table.v2.schema.ColumnModelsWidget.getTableType;
 
+import java.util.ArrayList;
+
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.sagebionetworks.repo.model.Entity;
@@ -304,7 +306,7 @@ public class TableEntityWidget implements IsWidget,
 		if (currentQuery.getSelectedFacets() == null || currentQuery.getSelectedFacets().isEmpty()) {
 			callback.onSuccess(currentQuery.getSql());
 		} else {
-			synapseClient.generateSqlWithFacets(currentQuery.getSql(), currentQuery.getSelectedFacets(), tableBundle.getColumnModels(), callback);	
+			synapseClient.generateSqlWithFacets(currentQuery.getSql(), (ArrayList)currentQuery.getSelectedFacets(), (ArrayList)tableBundle.getColumnModels(), callback);	
 		}
 	}
 	

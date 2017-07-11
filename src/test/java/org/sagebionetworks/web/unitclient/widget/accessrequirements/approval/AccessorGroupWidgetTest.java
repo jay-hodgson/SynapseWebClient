@@ -28,6 +28,7 @@ import org.sagebionetworks.web.client.widget.accessrequirements.approval.Accesso
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
 import org.sagebionetworks.web.client.widget.user.UserBadge;
 import org.sagebionetworks.web.test.helper.AsyncMockStubber;
+import org.sagebionetworks.web.unitclient.utils.ArrayListUtil;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -76,7 +77,7 @@ public class AccessorGroupWidgetTest {
 				mockShowEmailsButton);
 		when(mockGinInjector.getUserBadgeWidget()).thenReturn(mockUserBadge);
 		when(mockAccessorGroup.getSubmitterId()).thenReturn(SUBMITTER_USER_ID);
-		accessorIds = Collections.singletonList(ACCESSOR_USER_ID);
+		accessorIds = ArrayListUtil.singletonList(ACCESSOR_USER_ID);
 		when(mockAccessorGroup.getAccessorIds()).thenReturn(accessorIds);
 		when(mockAccessorGroup.getAccessRequirementId()).thenReturn(ACCESS_REQUIREMENT_ID);
 		when(mockAccessorGroup.getExpiredOn()).thenReturn(AROUND_NOW);

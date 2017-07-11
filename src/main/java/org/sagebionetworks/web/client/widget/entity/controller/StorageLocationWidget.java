@@ -1,6 +1,6 @@
 package org.sagebionetworks.web.client.widget.entity.controller;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.sagebionetworks.repo.model.Entity;
 import org.sagebionetworks.repo.model.EntityBundle;
@@ -53,13 +53,13 @@ public class StorageLocationWidget implements StorageLocationWidgetView.Presente
 	}
 	
 	public void getMyLocationSettingBanners() {
-		synapseClient.getMyLocationSettingBanners(new AsyncCallback<List<String>>() {
+		synapseClient.getMyLocationSettingBanners(new AsyncCallback<ArrayList<String>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				hide();
 				view.showErrorMessage(caught.getMessage());
 			}
-			public void onSuccess(List<String> banners) {
+			public void onSuccess(ArrayList<String> banners) {
 				view.setBannerDropdownVisible(!banners.isEmpty());
 				view.setBannerSuggestions(banners);
 				getStorageLocationSetting();

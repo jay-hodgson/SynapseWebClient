@@ -51,6 +51,7 @@ import org.sagebionetworks.web.client.widget.table.v2.results.TableQueryResultVi
 import org.sagebionetworks.web.client.widget.table.v2.results.TableQueryResultWidget;
 import org.sagebionetworks.web.shared.asynch.AsynchType;
 import org.sagebionetworks.web.test.helper.AsyncMockStubber;
+import org.sagebionetworks.web.unitclient.utils.ArrayListUtil;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -67,7 +68,7 @@ public class TableQueryResultWidgetTest {
 	Query query;
 	QueryResultBundle bundle;
 	PartialRowSet delta;
-	List<SortItem> sortList;
+	ArrayList<SortItem> sortList;
 	Row row;
 	RowSet rowSet;
 	QueryResult results;
@@ -115,8 +116,8 @@ public class TableQueryResultWidgetTest {
 		select = new SelectColumn();
 		select.setId("123");
 		rowSet = new RowSet();
-		rowSet.setRows(Arrays.asList(row));
-		rowSet.setHeaders(Arrays.asList(select));
+		rowSet.setRows(ArrayListUtil.asList(row));
+		rowSet.setHeaders(ArrayListUtil.asList(select));
 		results = new QueryResult();
 		results.setQueryResults(rowSet);
 		bundle = new QueryResultBundle();
@@ -129,7 +130,7 @@ public class TableQueryResultWidgetTest {
 		sort.setColumn("a");
 		sort.setDirection(SortDirection.DESC);
 		sortList.add(sort);
-		AsyncMockStubber.callSuccessWith(Arrays.asList(sort)).when(mockSynapseClient).getSortFromTableQuery(any(String.class),  any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(ArrayListUtil.asList(sort)).when(mockSynapseClient).getSortFromTableQuery(any(String.class),  any(AsyncCallback.class));
 		
 		// delta
 		delta = new PartialRowSet();

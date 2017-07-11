@@ -234,9 +234,9 @@ public class JoinTeamWidget implements JoinTeamWidgetView.Presenter, WidgetRende
 		currentAccessRequirement = 0;
 		//initialize the access requirements
 		accessRequirements = new ArrayList<AccessRequirement>();
-		synapseClient.getTeamAccessRequirements(teamId, new AsyncCallback<List<AccessRequirement>>() {
+		synapseClient.getTeamAccessRequirements(teamId, new AsyncCallback<ArrayList<AccessRequirement>>() {
 			@Override
-			public void onSuccess(List<AccessRequirement> results) {
+			public void onSuccess(ArrayList<AccessRequirement> results) {
 				//are there access restrictions?
 				accessRequirements = results;
 				view.setButtonsEnabled(true);

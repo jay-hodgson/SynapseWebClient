@@ -9,9 +9,9 @@ import org.sagebionetworks.repo.model.AccessRequirement;
 
 public class AccessRequirementUtils {
 
-	public static List<AccessRequirement> filterAccessRequirements(
-			List<AccessRequirement> unfilteredList, ACCESS_TYPE filter) {
-		List<AccessRequirement> filteredAccessRequirements = new ArrayList<AccessRequirement>();
+	public static ArrayList<AccessRequirement> filterAccessRequirements(
+			ArrayList<AccessRequirement> unfilteredList, ACCESS_TYPE filter) {
+		ArrayList<AccessRequirement> filteredAccessRequirements = new ArrayList<AccessRequirement>();
 		if (unfilteredList != null) {
 			for (AccessRequirement accessRequirement : unfilteredList) {
 				if (filter.equals(accessRequirement.getAccessType())) {

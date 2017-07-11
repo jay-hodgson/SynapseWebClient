@@ -1,11 +1,11 @@
 package org.sagebionetworks.web.client.widget.entity.browse;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.sagebionetworks.repo.model.EntityHeader;
-import org.sagebionetworks.schema.adapter.AdapterFactory;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 
@@ -15,9 +15,9 @@ public class EntityBrowserUtils {
 	public static void loadFavorites(SynapseClientAsync synapseClient,
 			final GlobalApplicationState globalApplicationState,
 			final AsyncCallback<List<EntityHeader>> callback) {
-		synapseClient.getFavorites(new AsyncCallback<List<EntityHeader>>() {
+		synapseClient.getFavorites(new AsyncCallback<ArrayList<EntityHeader>>() {
 			@Override
-			public void onSuccess(List<EntityHeader> favorites) {
+			public void onSuccess(ArrayList<EntityHeader> favorites) {
 				//show whatever projects that we found (maybe zero)
 				globalApplicationState.setFavorites(favorites);
 				callback.onSuccess(favorites);

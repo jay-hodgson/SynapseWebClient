@@ -1,5 +1,6 @@
 package org.sagebionetworks.web.client.widget.accessrequirements.approval;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.sagebionetworks.repo.model.dataaccess.AccessorGroup;
@@ -67,7 +68,7 @@ public class AccessorGroupWidget implements AccessorGroupView.Presenter, IsWidge
 		} else {
 			view.setExpiresOn("");
 		}
-		showEmailsButton.configure(accessorGroup.getAccessorIds());
+		showEmailsButton.configure((ArrayList<String>)accessorGroup.getAccessorIds());
 		view.setSubmittedBy(badge);
 	}
 	

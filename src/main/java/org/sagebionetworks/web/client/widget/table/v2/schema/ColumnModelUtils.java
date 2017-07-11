@@ -68,8 +68,8 @@ public class ColumnModelUtils {
 	 * @param rows
 	 * @return
 	 */
-	public static List<ColumnModel> extractColumnModels(List<ColumnModelTableRow> rows) {
-		List<ColumnModel> list = new LinkedList<ColumnModel>();
+	public static ArrayList<ColumnModel> extractColumnModels(ArrayList<ColumnModelTableRow> rows) {
+		ArrayList<ColumnModel> list = new ArrayList<ColumnModel>();
 		for(ColumnModelTableRow row: rows){
 			list.add(extractColumnModel(row));
 		}

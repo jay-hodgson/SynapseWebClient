@@ -1,5 +1,6 @@
 package org.sagebionetworks.web.client.widget.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.sagebionetworks.repo.model.Entity;
@@ -120,8 +121,8 @@ public class EntityMetadata implements Presenter {
 		 view.setUploadDestinationPanelVisible(false);
 		 if (en instanceof Folder || en instanceof Project) {
 			 String containerEntityId = en.getId();
-			 synapseClient.getUploadDestinations(containerEntityId, new AsyncCallback<List<UploadDestination>>() {
-				public void onSuccess(List<UploadDestination> uploadDestinations) {
+			 synapseClient.getUploadDestinations(containerEntityId, new AsyncCallback<ArrayList<UploadDestination>>() {
+				public void onSuccess(ArrayList<UploadDestination> uploadDestinations) {
 					if (uploadDestinations == null || uploadDestinations.isEmpty() || uploadDestinations.get(0) instanceof S3UploadDestination) {
 						view.setUploadDestinationText("Synapse Storage");
 					} else if (uploadDestinations.get(0) instanceof ExternalUploadDestination){

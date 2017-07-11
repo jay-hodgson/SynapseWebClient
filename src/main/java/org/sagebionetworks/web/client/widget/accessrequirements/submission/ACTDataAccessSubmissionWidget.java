@@ -138,7 +138,7 @@ public class ACTDataAccessSubmissionWidget implements ACTDataAccessSubmissionWid
 	}
 	
 	public void configureShowEmailsButton(List<AccessorChange> accessorChanges) {
-		List<String> userIds = new ArrayList<>();
+		ArrayList<String> userIds = new ArrayList<>();
 		if (accessorChanges != null) {
 			for (AccessorChange accessorChange : accessorChanges) {
 				userIds.add(accessorChange.getUserId());

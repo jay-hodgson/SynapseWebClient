@@ -598,9 +598,9 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 		teamSynAlert.clear();
 		myTeamsWidget.clear();
 		myTeamsWidget.showLoading();
-		synapseClient.getTeamsForUser(userId, includeRequestCount, new AsyncCallback<List<TeamRequestBundle>>() {
+		synapseClient.getTeamsForUser(userId, includeRequestCount, new AsyncCallback<ArrayList<TeamRequestBundle>>() {
 			@Override
-			public void onSuccess(List<TeamRequestBundle> teamsRequestBundles) {
+			public void onSuccess(ArrayList<TeamRequestBundle> teamsRequestBundles) {
 				myTeamsWidget.clear();
 				if (teamsRequestBundles != null && teamsRequestBundles.size() > 0) {
 					int totalRequestCount = 0;
@@ -1064,9 +1064,9 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 	}
 	
 	public void initUserFavorites(final Callback callback) {
-		synapseClient.getFavorites(new AsyncCallback<List<EntityHeader>>() {
+		synapseClient.getFavorites(new AsyncCallback<ArrayList<EntityHeader>>() {
 			@Override
-			public void onSuccess(List<EntityHeader> favorites) {
+			public void onSuccess(ArrayList<EntityHeader> favorites) {
 				globalApplicationState.setFavorites(favorites);
 				callback.invoke();
 			}

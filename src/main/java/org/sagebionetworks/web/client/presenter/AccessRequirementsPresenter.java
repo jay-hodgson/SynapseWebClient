@@ -138,13 +138,13 @@ public class AccessRequirementsPresenter extends AbstractActivity implements Pre
 	public void loadMore() {
 		synAlert.clear();
 		// TODO: call should also return the user state (approved, pending, ...) for each access requirement
-		dataAccessClient.getAccessRequirements(subject, LIMIT, currentOffset, new AsyncCallback<List<AccessRequirement>>() {
+		dataAccessClient.getAccessRequirements(subject, LIMIT, currentOffset, new AsyncCallback<ArrayList<AccessRequirement>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				synAlert.handleException(caught);
 			}
 			
-			public void onSuccess(List<AccessRequirement> accessRequirements) {
+			public void onSuccess(ArrayList<AccessRequirement> accessRequirements) {
 				noResultsDiv.setVisible(currentOffset == 0 && accessRequirements.isEmpty());
 				currentOffset += LIMIT;
 				boolean isNewAr = false;

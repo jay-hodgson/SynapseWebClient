@@ -35,14 +35,14 @@ public class ViewDefaultColumns {
 	}
 
 	public void init() {
-		synapseClient.getDefaultColumnsForView(ViewType.file, new AsyncCallback<List<ColumnModel>>() {
+		synapseClient.getDefaultColumnsForView(ViewType.file, new AsyncCallback<ArrayList<ColumnModel>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				popupUtils.showErrorMessage(caught.getMessage());
 			}
 
 			@Override
-			public void onSuccess(List<ColumnModel> columns) {
+			public void onSuccess(ArrayList<ColumnModel> columns) {
 				defaultFileViewColumns = columns;
 				defaultFileViewColumnsWithoutIds = new ArrayList<ColumnModel>(defaultFileViewColumns.size());
 				try {
@@ -56,14 +56,14 @@ public class ViewDefaultColumns {
 				}
 			}
 		});
-		synapseClient.getDefaultColumnsForView(ViewType.project, new AsyncCallback<List<ColumnModel>>() {
+		synapseClient.getDefaultColumnsForView(ViewType.project, new AsyncCallback<ArrayList<ColumnModel>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				popupUtils.showErrorMessage(caught.getMessage());
 			}
 
 			@Override
-			public void onSuccess(List<ColumnModel> columns) {
+			public void onSuccess(ArrayList<ColumnModel> columns) {
 				defaultProjectViewColumns = columns;
 				defaultProjectViewColumnsWithoutIds = new ArrayList<ColumnModel>(defaultProjectViewColumns.size());
 				try {

@@ -103,7 +103,7 @@ public class UploadCSVFinalPageImplTest {
 		String error = "an error";
 		AsyncMockStubber.callFailureWith(new IllegalArgumentException(error))
 				.when(mockSynapseClient)
-				.createTableColumns(any(List.class), any(AsyncCallback.class));
+				.createTableColumns(any(ArrayList.class), any(AsyncCallback.class));
 		List<ColumnModel> columns = new ArrayList<ColumnModel>();
 		page.setModalPresenter(mockPresenter);
 		reset(mockView);
@@ -121,7 +121,7 @@ public class UploadCSVFinalPageImplTest {
 		TableEntity table = new TableEntity();
 		List<ColumnModel> columns = new ArrayList<ColumnModel>();
 		AsyncMockStubber.callSuccessWith(columns).when(mockSynapseClient)
-				.createTableColumns(any(List.class), any(AsyncCallback.class));
+				.createTableColumns(any(ArrayList.class), any(AsyncCallback.class));
 		AsyncMockStubber
 				.callSuccessWith(table)
 				.when(mockSynapseClient)

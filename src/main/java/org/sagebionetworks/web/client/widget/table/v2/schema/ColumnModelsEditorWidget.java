@@ -34,8 +34,8 @@ public class ColumnModelsEditorWidget implements ColumnModelsView.Presenter, Col
 	
 	PortalGinInjector ginInjector;
 	ColumnModelsView editor;
-	List<ColumnModel> startingModels;
-	List<ColumnModelTableRow> editorRows;
+	ArrayList<ColumnModel> startingModels;
+	ArrayList<ColumnModelTableRow> editorRows;
 	String tableId;
 	KeyboardNavigationHandler keyboardNavigationHandler;
 	Callback onAddDefaultViewColumnsCallback, onAddAnnotationColumnsCallback;
@@ -60,7 +60,7 @@ public class ColumnModelsEditorWidget implements ColumnModelsView.Presenter, Col
 		this.editor = ginInjector.createNewColumnModelsView();
 		this.fileViewDefaultColumns = fileViewDefaultColumns;
 		this.editor.setPresenter(this);
-		this.editorRows = new LinkedList<ColumnModelTableRow>();
+		this.editorRows = new ArrayList<ColumnModelTableRow>();
 		this.adapterFactory = adapterFactory;
 		this.addTableViewColumnsButton = ginInjector.getImportTableViewColumnsButton();
 		editor.addButton(addTableViewColumnsButton);
@@ -73,7 +73,7 @@ public class ColumnModelsEditorWidget implements ColumnModelsView.Presenter, Col
 		});
 	}
 	
-	public void configure(TableType tableType, List<ColumnModel> startingModels) {
+	public void configure(TableType tableType, ArrayList<ColumnModel> startingModels) {
 		this.changingSelection = false;
 		this.startingModels = startingModels;
 		this.tableType = tableType;
@@ -82,7 +82,7 @@ public class ColumnModelsEditorWidget implements ColumnModelsView.Presenter, Col
 	}
 	
 	@Override
-	public List<ColumnModel> getEditedColumnModels() {
+	public ArrayList<ColumnModel> getEditedColumnModels() {
 		return ColumnModelUtils.extractColumnModels(this.editorRows);
 	}
 

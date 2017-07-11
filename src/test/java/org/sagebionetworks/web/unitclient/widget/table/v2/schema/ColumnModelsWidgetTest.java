@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -135,7 +136,7 @@ public class ColumnModelsWidgetTest {
 		widget = new ColumnModelsWidget(mockBaseView, mockGinInjector, mockSynapseClient, mockEditor, mockJobTrackingWidget, mockFileViewDefaultColumns);
 		when(mockEditor.validate()).thenReturn(true);
 		when(mockTableSchemaChangeRequest.getChanges()).thenReturn(Collections.singletonList(mockTableUpdateRequest));
-		AsyncMockStubber.callSuccessWith(mockTableSchemaChangeRequest).when(mockSynapseClient).getTableUpdateTransactionRequest(anyString(), anyList(), anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(mockTableSchemaChangeRequest).when(mockSynapseClient).getTableUpdateTransactionRequest(anyString(), any(ArrayList.class), any(ArrayList.class), any(AsyncCallback.class));
 		
 		when(mockView.getScopeIds()).thenReturn(mockViewScopeIds);
 		when(mockColumnModelPage1.getNextPageToken()).thenReturn(NEXT_PAGE_TOKEN);
@@ -243,7 +244,7 @@ public class ColumnModelsWidgetTest {
 	@Test
 	public void testOnEditColumns(){
 		boolean isEditable = true;
-		List<ColumnModel> schema = TableModelTestUtils.createOneOfEachType(true);
+		ArrayList<ColumnModel> schema = TableModelTestUtils.createOneOfEachType(true);
 		tableBundle.setColumnModels(schema);
 		widget.configure(mockBundle, isEditable, mockUpdateHandler);
 		// show the editor
@@ -340,7 +341,7 @@ public class ColumnModelsWidgetTest {
 		// Show the dialog
 		widget.onEditColumns();
 		String errorMessage = "Something went wrong";
-		AsyncMockStubber.callFailureWith(new RestServiceException(errorMessage)).when(mockSynapseClient).getTableUpdateTransactionRequest(anyString(), anyList(),  anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callFailureWith(new RestServiceException(errorMessage)).when(mockSynapseClient).getTableUpdateTransactionRequest(anyString(), any(ArrayList.class), any(ArrayList.class), any(AsyncCallback.class));
 		// Now call save
 		widget.onSave();
 		verify(mockBaseView, times(1)).setLoading();

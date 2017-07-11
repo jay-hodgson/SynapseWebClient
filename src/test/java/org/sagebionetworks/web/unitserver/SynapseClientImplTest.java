@@ -31,10 +31,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -44,7 +42,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -180,6 +177,7 @@ import org.sagebionetworks.web.shared.exceptions.UnauthorizedException;
 import org.sagebionetworks.web.shared.exceptions.UnknownErrorException;
 import org.sagebionetworks.web.shared.users.AclUtils;
 import org.sagebionetworks.web.shared.users.PermissionLevel;
+import org.sagebionetworks.web.unitclient.utils.ArrayListUtil;
 
 import com.google.appengine.repackaged.com.google.common.base.Objects;
 import com.google.common.cache.Cache;
@@ -558,6 +556,7 @@ public class SynapseClientImplTest {
 		entityChildrenPage = new ArrayList<EntityHeader>();
 		when(mockEntityChildrenResponse.getPage()).thenReturn(entityChildrenPage);
 		when(mockSynapse.getEntityChildren(any(EntityChildrenRequest.class))).thenReturn(mockEntityChildrenResponse);
+		when(mockSynapse.listUserProfiles(anyList())).thenReturn(ArrayListUtil.EMPTY_LIST);
 	}
 
 	private AccessRequirement createAccessRequirement(ACCESS_TYPE type) {
@@ -872,7 +871,7 @@ public class SynapseClientImplTest {
 		when(headerTreePage1.getResults()).thenReturn(page1Results);
 		//second page has a single page
 		V2WikiHeader singleHeader = Mockito.mock(V2WikiHeader.class);
-		when(headerTreePage2.getResults()).thenReturn(Collections.singletonList(singleHeader));
+		when(headerTreePage2.getResults()).thenReturn(ArrayListUtil.singletonList(singleHeader));
 		List<V2WikiHeader> results = synapseClient.getV2WikiHeaderTree("testId", ObjectType.ENTITY.toString());
 		//1 full page of results, and 1 result on second page
 		assertEquals(SynapseClientImpl.LIMIT_50 + 1, results.size());
@@ -993,7 +992,7 @@ public class SynapseClientImplTest {
 		when(mockHeader.getOwnerId()).thenReturn(trustedUserId);
 		TeamMember mockTeamMember = mock(TeamMember.class);
 		when(mockTeamMember.getMember()).thenReturn(mockHeader);
-		teamMembersPage1.setResults(Collections.singletonList(mockTeamMember));
+		teamMembersPage1.setResults(ArrayListUtil.singletonList(mockTeamMember));
 		PaginatedResults<TeamMember> teamMembersPage2 = new PaginatedResults<TeamMember>();
 		teamMembersPage2.setResults(new ArrayList());
 		when(mockSynapse.getTeamMembers(anyString(), anyString(), anyInt(), anyInt()))
@@ -1502,7 +1501,7 @@ public class SynapseClientImplTest {
 			RestServiceException, JSONObjectAdapterException {
 		ArgumentCaptor<MessageToUser> arg = ArgumentCaptor
 				.forClass(MessageToUser.class);
-		Set<String> recipients = new HashSet<String>();
+		HashSet<String> recipients = new HashSet<String>();
 		recipients.add("333");
 		String subject = "The Mathematics of Quantum Neutrino Fields";
 		String messageBody = "Atoms are not to be trusted, they make up everything";
@@ -1634,8 +1633,8 @@ public class SynapseClientImplTest {
 
 	@Test
 	public void testFilterAccessRequirements() throws Exception {
-		List<AccessRequirement> unfilteredAccessRequirements = new ArrayList<AccessRequirement>();
-		List<AccessRequirement> filteredAccessRequirements;
+		ArrayList<AccessRequirement> unfilteredAccessRequirements = new ArrayList<AccessRequirement>();
+		ArrayList<AccessRequirement> filteredAccessRequirements;
 		// filter empty list should not result in failure
 		filteredAccessRequirements = AccessRequirementUtils
 				.filterAccessRequirements(unfilteredAccessRequirements,
@@ -1706,7 +1705,7 @@ public class SynapseClientImplTest {
 		when(page1.getResults()).thenReturn(page1Results);
 		// second page has a single result
 		AccessRequirement singleAccessRequirement = Mockito.mock(AccessRequirement.class);
-		when(page2.getResults()).thenReturn(Collections.singletonList(singleAccessRequirement));
+		when(page2.getResults()).thenReturn(ArrayListUtil.singletonList(singleAccessRequirement));
 		boolean unmetOnly = true;
 		org.sagebionetworks.web.shared.PaginatedResults<AccessRequirement> results = synapseClient.getEntityAccessRequirements(entityId, unmetOnly, null);
 		//1 full page of results
@@ -2106,7 +2105,7 @@ public class SynapseClientImplTest {
 		setupGetMyLocationSettings();
 		
 		UploadDestinationListSetting projectSetting = new UploadDestinationListSetting();
-		projectSetting.setLocations(Collections.EMPTY_LIST);
+		projectSetting.setLocations(ArrayListUtil.EMPTY_LIST);
 		when(mockSynapse.getProjectSetting(entityId, ProjectSettingsType.upload)).thenReturn(projectSetting);
 		
 		//test the case when it finds a duplicate storage location.
@@ -2130,7 +2129,7 @@ public class SynapseClientImplTest {
 		setupGetMyLocationSettings();
 		
 		UploadDestinationListSetting projectSetting = new UploadDestinationListSetting();
-		projectSetting.setLocations(Collections.EMPTY_LIST);
+		projectSetting.setLocations(ArrayListUtil.EMPTY_LIST);
 		when(mockSynapse.getProjectSetting(entityId, ProjectSettingsType.upload)).thenReturn(projectSetting);
 		
 		synapseClient.createStorageLocationSetting(entityId, null);
@@ -2201,7 +2200,7 @@ public class SynapseClientImplTest {
 		when(mockSynapse.getEntityBundle(anyString(), anyInt())).thenReturn(eb);
 		when(mockSynapse.getEntityBundle(anyString(), anyLong(), anyInt())).thenReturn(eb);
 		PaginatedResults<VersionInfo> versionInfoPaginatedResults = new PaginatedResults<VersionInfo>();
-		List<VersionInfo> versionInfoList = new LinkedList<VersionInfo>();
+		List<VersionInfo> versionInfoList = new ArrayList<VersionInfo>();
 		VersionInfo versionInfo = new VersionInfo();
 		versionInfo.setVersionNumber(latestVersionNumber);
 		versionInfoList.add(versionInfo);
@@ -2278,11 +2277,11 @@ public class SynapseClientImplTest {
 		String tableId = "syn93939";
 		
 		// test reordering, with no other changes
-		List<ColumnModel> oldColumnModels = new ArrayList<>();
+		ArrayList<ColumnModel> oldColumnModels = new ArrayList<>();
 		oldColumnModels.add(mockOldColumnModel1);
 		oldColumnModels.add(mockOldColumnModel2);
 		
-		List<ColumnModel> newColumnModels = new ArrayList<>();
+		ArrayList<ColumnModel> newColumnModels = new ArrayList<>();
 		newColumnModels.add(mockOldColumnModel2);
 		newColumnModels.add(mockOldColumnModel1);
 		
@@ -2301,9 +2300,9 @@ public class SynapseClientImplTest {
 	@Test
 	public void testGetTableUpdateTransactionRequestNewColumn()  throws RestServiceException, SynapseException {
 		String tableId = "syn93939";
-		List<ColumnModel> oldColumnModels = new ArrayList<ColumnModel>();
-		when(mockSynapse.createColumnModels(anyList())).thenReturn(Collections.singletonList(mockNewColumnModelAfterCreate));
-		List<ColumnModel> newColumnModels = Collections.singletonList(mockNewColumnModel);
+		ArrayList<ColumnModel> oldColumnModels = new ArrayList<ColumnModel>();
+		when(mockSynapse.createColumnModels(anyList())).thenReturn(ArrayListUtil.singletonList(mockNewColumnModelAfterCreate));
+		ArrayList<ColumnModel> newColumnModels = ArrayListUtil.singletonList(mockNewColumnModel);
 		TableUpdateTransactionRequest request = synapseClient.getTableUpdateTransactionRequest(tableId, oldColumnModels, newColumnModels);
 		verify(mockSynapse).createColumnModels(anyList());
 		assertEquals(tableId, request.getEntityId());
@@ -2347,9 +2346,9 @@ public class SynapseClientImplTest {
 		colAAfterSave = getColumnModel("4", ColumnType.INTEGER);
 		colDAfterSave = getColumnModel("5", ColumnType.STRING);
 		
-		List<ColumnModel> oldSchema = Arrays.asList(colA, colB, colC);
-		List<ColumnModel> proposedNewSchema = Arrays.asList(colAModified, colC, colD);
-		List<ColumnModel> newSchemaAfterUpdate = Arrays.asList(colAAfterSave, colC, colDAfterSave);
+		ArrayList<ColumnModel> oldSchema = ArrayListUtil.asList(colA, colB, colC);
+		ArrayList<ColumnModel> proposedNewSchema = ArrayListUtil.asList(colAModified, colC, colD);
+		ArrayList<ColumnModel> newSchemaAfterUpdate = ArrayListUtil.asList(colAAfterSave, colC, colDAfterSave);
 		when(mockSynapse.createColumnModels(anyList())).thenReturn(newSchemaAfterUpdate);
 		
 		TableUpdateTransactionRequest request = synapseClient.getTableUpdateTransactionRequest(tableId, oldSchema, proposedNewSchema);
@@ -2380,7 +2379,7 @@ public class SynapseClientImplTest {
 		colA = getColumnModel("1", ColumnType.STRING);
 		colB = getColumnModel("2", ColumnType.STRING);
 		
-		List<ColumnModel> defaultColumns = Arrays.asList(colA, colB);
+		List<ColumnModel> defaultColumns = ArrayListUtil.asList(colA, colB);
 		when(mockSynapse.getDefaultColumnsForView(any(ViewType.class))).thenReturn(defaultColumns);
 		List<ColumnModel> returnedColumns = synapseClient.getDefaultColumnsForView(ViewType.file);
 		
@@ -2444,9 +2443,11 @@ public class SynapseClientImplTest {
 		when(mockNewColumnModel.getName()).thenReturn(columnName);
 		when(mockNewColumnModel.getFacetType()).thenReturn(FacetType.enumeration);
 		when(mockNewColumnModel.getColumnType()).thenReturn(ColumnType.STRING);
-		((FacetColumnValuesRequest)request).setFacetValues(Collections.singleton(facetValue));
-		List<FacetColumnRequest> selectedFacets = Collections.singletonList(request);
-		List<ColumnModel> schema = Collections.singletonList(mockNewColumnModel);
+		HashSet set = new HashSet();
+		set.add(facetValue);
+		((FacetColumnValuesRequest)request).setFacetValues(set);
+		ArrayList<FacetColumnRequest> selectedFacets = ArrayListUtil.singletonList(request);
+		ArrayList<ColumnModel> schema = ArrayListUtil.singletonList(mockNewColumnModel);
 		String newSql = synapseClient.generateSqlWithFacets(sql, selectedFacets, schema);
 		assertEquals("SELECT * FROM syn123 WHERE ( ( col1 = 'a' ) )", newSql);
 	}
@@ -2480,7 +2481,7 @@ public class SynapseClientImplTest {
 		e.setId(EVAL_ID_1);
 		e.setContentSource("syn123");
 		testResults.setTotalNumberOfResults(1);
-		testResults.setResults(Collections.singletonList(e));
+		testResults.setResults(ArrayListUtil.singletonList(e));
 		
 		when(mockSynapse.getEvaluationByContentSource(anyString(),anyInt(),anyInt())).thenReturn(testResults);
 		
@@ -2492,7 +2493,7 @@ public class SynapseClientImplTest {
 		assertTrue(synapseClient.isChallenge("syn123"));
 		
 		testResults = new org.sagebionetworks.reflection.model.PaginatedResults<Evaluation>();
-		testResults.setResults(Collections.EMPTY_LIST);
+		testResults.setResults(ArrayListUtil.EMPTY_LIST);
 		when(mockSynapse.getEvaluationByContentSource(anyString(),anyInt(),anyInt())).thenReturn(testResults);
 		
 		//and verify that no evaluations are returned for a different entity id

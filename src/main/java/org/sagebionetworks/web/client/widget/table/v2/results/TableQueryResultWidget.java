@@ -218,10 +218,10 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 	 */
 	private void setQueryResults(final QueryResultBundle bundle){
 		// Get the sort info
-		this.synapseClient.getSortFromTableQuery(this.startingQuery.getSql(), new AsyncCallback<List<SortItem>>() {
+		this.synapseClient.getSortFromTableQuery(this.startingQuery.getSql(), new AsyncCallback<ArrayList<SortItem>>() {
 			
 			@Override
-			public void onSuccess(List<SortItem> sortItems) {
+			public void onSuccess(ArrayList<SortItem> sortItems) {
 				setQueryResultsAndSort(bundle, sortItems);
 			}
 			

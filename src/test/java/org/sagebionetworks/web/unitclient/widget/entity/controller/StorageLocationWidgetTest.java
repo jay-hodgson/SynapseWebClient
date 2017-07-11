@@ -36,6 +36,7 @@ import org.sagebionetworks.web.client.widget.entity.controller.StorageLocationWi
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
 import org.sagebionetworks.web.client.widget.entity.controller.URLProvEntryView;
 import org.sagebionetworks.web.test.helper.AsyncMockStubber;
+import org.sagebionetworks.web.unitclient.utils.ArrayListUtil;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -63,7 +64,7 @@ public class StorageLocationWidgetTest {
 		folder = new Folder();
 		folder.setId("syn420");
 		when(mockBundle.getEntity()).thenReturn(folder);
-		locationSettingBanners = Arrays.asList(new String[]{"Banner 1", "Banner 2"});
+		locationSettingBanners = ArrayListUtil.asList(new String[]{"Banner 1", "Banner 2"});
 		mockEntityUpdatedHandler = mock(EntityUpdatedHandler.class);
 		widget.configure(mockBundle, mockEntityUpdatedHandler);
 	}
@@ -86,7 +87,7 @@ public class StorageLocationWidgetTest {
 	
 	@Test
 	public void testGetMyLocationSettingBannersEmpty() {
-		locationSettingBanners = Collections.EMPTY_LIST;
+		locationSettingBanners = ArrayListUtil.EMPTY_LIST;
 		AsyncMockStubber.callSuccessWith(locationSettingBanners).when(mockSynapseClient).getMyLocationSettingBanners(any(AsyncCallback.class));
 		widget.getMyLocationSettingBanners();
 		verify(mockView).setBannerDropdownVisible(false);

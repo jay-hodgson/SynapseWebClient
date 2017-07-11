@@ -107,7 +107,7 @@ public class TrashPresenterTest {
 	@Test
 	public void testPurgeEntities() {
 		AsyncMockStubber.callSuccessWith(null).when(mockSynapse).purgeMultipleTrashedEntitiesForUser(
-				anySet(), any(AsyncCallback.class));
+				any(HashSet.class), any(AsyncCallback.class));
 		presenter.purgeEntities(new HashSet<TrashedEntity>(trashList.getResults()));
 		verify(mockView).showInfo(anyString(), anyString());
 	}
@@ -116,7 +116,7 @@ public class TrashPresenterTest {
 	public void testPurgeEntitiesFailure() {
 		Exception caught = new Exception("this is an exception");
 		AsyncMockStubber.callFailureWith(caught).when(mockSynapse).purgeMultipleTrashedEntitiesForUser(
-				anySet(), any(AsyncCallback.class));
+				any(HashSet.class), any(AsyncCallback.class));
 		presenter.purgeEntities(new HashSet<TrashedEntity>(trashList.getResults()));
 		verify(mockSynAlert).showError(anyString());	
 	}

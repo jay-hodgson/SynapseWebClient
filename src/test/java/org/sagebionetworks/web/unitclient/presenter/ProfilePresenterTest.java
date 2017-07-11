@@ -256,7 +256,7 @@ public class ProfilePresenterTest {
 		ArrayList<EntityHeader> testBatchResultsList = new ArrayList<EntityHeader>();
 		testBatchResultsList.addAll(testBatchResults.getResults());
 		
-		AsyncMockStubber.callSuccessWith(testBatchResultsList).when(mockSynapseClient).getEntityHeaderBatch(anyList(),any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(testBatchResultsList).when(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class),any(AsyncCallback.class));
 		when(mockGlobalApplicationState.isEditing()).thenReturn(false);
 		setupTestChallengePagedResults();
 		

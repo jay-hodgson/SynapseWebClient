@@ -1,6 +1,6 @@
 package org.sagebionetworks.web.client.presenter;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.sagebionetworks.repo.model.AccessRequirement;
 import org.sagebionetworks.repo.model.JoinTeamSignedToken;
@@ -108,9 +108,9 @@ public class SignedTokenPresenter extends AbstractActivity implements SignedToke
 		String teamId = token.getTeamId();
 		view.setLoadingVisible(true);
 		// look for access requirements
-		synapseClient.getTeamAccessRequirements(teamId, new AsyncCallback<List<AccessRequirement>>() {
+		synapseClient.getTeamAccessRequirements(teamId, new AsyncCallback<ArrayList<AccessRequirement>>() {
 			@Override
-			public void onSuccess(List<AccessRequirement> accessRequirements) {
+			public void onSuccess(ArrayList<AccessRequirement> accessRequirements) {
 				if (accessRequirements.size() > 0) {
 					// does not support single click join, go to the team page.
 					view.setLoadingVisible(false);

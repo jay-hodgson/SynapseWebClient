@@ -1,6 +1,6 @@
 package org.sagebionetworks.web.client.widget.header;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.sagebionetworks.repo.model.EntityHeader;
 import org.sagebionetworks.repo.model.UserSessionData;
@@ -16,7 +16,6 @@ import org.sagebionetworks.web.client.place.users.RegisterAccount;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.widget.entity.FavoriteWidget;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -153,9 +152,9 @@ public class Header implements HeaderView.Presenter, IsWidget {
 	public void onFavoriteClick() {
 		if(authenticationController.isLoggedIn()) {
 			view.showFavoritesLoading();
-			synapseClient.getFavorites(new AsyncCallback<List<EntityHeader>>() {
+			synapseClient.getFavorites(new AsyncCallback<ArrayList<EntityHeader>>() {
 				@Override
-				public void onSuccess(List<EntityHeader> favorites) {
+				public void onSuccess(ArrayList<EntityHeader> favorites) {
 					view.clearFavorite();
 					globalApplicationState.setFavorites(favorites);
 					if (favorites == null || favorites.size() == 0) {

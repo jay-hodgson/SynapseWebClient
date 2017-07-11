@@ -2,7 +2,7 @@ package org.sagebionetworks.web.client.widget.entity.download;
 
 import static org.sagebionetworks.repo.model.util.ModelConstants.VALID_ENTITY_NAME_REGEX;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.sagebionetworks.repo.model.Entity;
 import org.sagebionetworks.repo.model.attachment.UploadResult;
@@ -210,8 +210,8 @@ public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter,
 		} else {
 			//we have a parent entity, check to see where we are suppose to upload the file(s)
 			String uploadDestinationsEntityId = parentEntityId != null ? parentEntityId : entity.getId();
-			synapseClient.getUploadDestinations(uploadDestinationsEntityId, new AsyncCallback<List<UploadDestination>>() {
-				public void onSuccess(List<UploadDestination> uploadDestinations) {
+			synapseClient.getUploadDestinations(uploadDestinationsEntityId, new AsyncCallback<ArrayList<UploadDestination>>() {
+				public void onSuccess(ArrayList<UploadDestination> uploadDestinations) {
 
 					if (uploadDestinations == null || uploadDestinations.isEmpty()) {
 						currentUploadType = UploadType.S3;

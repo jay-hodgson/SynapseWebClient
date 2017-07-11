@@ -48,7 +48,7 @@ public class EntityHeaderAsyncHandlerImpl implements EntityHeaderAsyncHandler {
 			final Map<String, List<AsyncCallback<EntityHeader>>> reference2CallbackCopy = new HashMap<String, List<AsyncCallback<EntityHeader>>>();
 			reference2CallbackCopy.putAll(reference2Callback);
 			reference2Callback.clear();
-			List<String> entityIdsList = new ArrayList<String>();
+			ArrayList<String> entityIdsList = new ArrayList<String>();
 			entityIdsList.addAll(reference2CallbackCopy.keySet());
 			synapseClient.getEntityHeaderBatch(entityIdsList,new AsyncCallback<ArrayList<EntityHeader>>() {
 				@Override

@@ -1,7 +1,7 @@
 package org.sagebionetworks.web.client.widget.accessrequirements;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -21,7 +21,7 @@ public class ShowEmailsButton implements IsWidget {
 	public static final String EMAILS_BUTTON_TEXT = "Email";
 	Button button;
 	SynapseClientAsync synapseClient;
-	List<String> userIds;
+	ArrayList<String> userIds;
 	PopupUtilsView popupUtils;
 	
 	@Inject
@@ -45,15 +45,15 @@ public class ShowEmailsButton implements IsWidget {
 		});
 	}	
 	
-	public void configure(List<String> userIds) {
+	public void configure(ArrayList<String> userIds) {
 		this.userIds = userIds;
 	}
 	
 	public void onShowEmails() {
 		//get the profiles, to get the usernames
-		synapseClient.listUserProfiles(userIds, new AsyncCallback<List<UserProfile>>() {
+		synapseClient.listUserProfiles(userIds, new AsyncCallback<ArrayList<UserProfile>>() {
 			@Override
-			public void onSuccess(List<UserProfile> userProfiles) {
+			public void onSuccess(ArrayList<UserProfile> userProfiles) {
 				StringBuilder sb = new StringBuilder();
 				for (Iterator it = userProfiles.iterator(); it.hasNext();) {
 					UserProfile profile = (UserProfile) it.next();

@@ -1,6 +1,6 @@
 package org.sagebionetworks.web.client;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.sagebionetworks.repo.model.AccessRequirement;
 import org.sagebionetworks.repo.model.BatchAccessApprovalInfoRequest;
@@ -35,7 +35,7 @@ public interface DataAccessClientAsync {
 			SubmissionOrder order, boolean isAsc, AsyncCallback<SubmissionPage> callback);
 
 	void getAccessRequirements(RestrictableObjectDescriptor subject, Long limit, Long offset,
-			AsyncCallback<List<AccessRequirement>> callback);
+			AsyncCallback<ArrayList<AccessRequirement>> callback);
 	void getAccessRequirementStatus(String accessRequirementId, AsyncCallback<AccessRequirementStatus> callback);
 	void cancelDataAccessSubmission(String submissionId, AsyncCallback<Void> asyncCallback);
 	void getRestrictionInformation(String subjectId, RestrictableObjectType type, AsyncCallback<RestrictionInformationResponse> callback);

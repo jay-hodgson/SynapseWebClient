@@ -12,8 +12,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -230,10 +228,10 @@ public class SynapseClientImpl extends SynapseClientBase implements
 				try {
 					org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 					long currentOffset = 0;
-					List<TeamMember> teamMembers = null;
+					ArrayList<TeamMember> teamMembers = null;
 					do {
 						org.sagebionetworks.reflection.model.PaginatedResults<TeamMember> teamMembersPaginatedResults = synapseClient.getTeamMembers(htmlTeamId, null, LIMIT_50, currentOffset);
-						teamMembers = teamMembersPaginatedResults.getResults();
+						teamMembers = (ArrayList)teamMembersPaginatedResults.getResults();
 						for (TeamMember teamMember : teamMembers) {
 							userIdSet.add(teamMember.getMember().getOwnerId());
 						}
@@ -371,14 +369,9 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	/*
 	 * Private Methods
 	 */
-	
-	private JSONObject query(String query) throws SynapseException {
-		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
-		return synapseClient.query(query);
-	}
 
 	public static String createJSONStringFromArray(
-			List<? extends JSONEntity> list) throws JSONObjectAdapterException {
+			ArrayList<? extends JSONEntity> list) throws JSONObjectAdapterException {
 		JSONArrayAdapter aa = new JSONArrayAdapterImpl();
 		for (int i = 0; i < list.size(); i++) {
 			JSONObjectAdapter oa = new JSONObjectAdapterImpl();
@@ -544,10 +537,10 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 
 	@Override
-	public ArrayList<EntityHeader> getEntityHeaderBatch(List<String> entityIds)
+	public ArrayList<EntityHeader> getEntityHeaderBatch(ArrayList<String> entityIds)
 			throws RestServiceException {
 		try {
-			List<Reference> list = new ArrayList<Reference>();
+			ArrayList<Reference> list = new ArrayList<Reference>();
 			for (String entityId : entityIds) {
 				Reference ref = new Reference();
 				ref.setTargetId(entityId);
@@ -630,7 +623,7 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 
 	@Override
-	public void purgeMultipleTrashedEntitiesForUser(Set<String> entityIds) throws RestServiceException {
+	public void purgeMultipleTrashedEntitiesForUser(HashSet<String> entityIds) throws RestServiceException {
 		try {
 			org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 			for (String entityId : entityIds) {
@@ -863,16 +856,16 @@ public class SynapseClientImpl extends SynapseClientBase implements
 		}
 	}
 
-	private List<AccessRequirement> getAllAccessRequirements(boolean unmetOnly, RestrictableObjectDescriptor subjectId, ACCESS_TYPE accessType, org.sagebionetworks.client.SynapseClient synapseClient) throws SynapseException {
-		List<AccessRequirement> allAccessRequirements = new ArrayList<AccessRequirement>();
+	private ArrayList<AccessRequirement> getAllAccessRequirements(boolean unmetOnly, RestrictableObjectDescriptor subjectId, ACCESS_TYPE accessType, org.sagebionetworks.client.SynapseClient synapseClient) throws SynapseException {
+		ArrayList<AccessRequirement> allAccessRequirements = new ArrayList<AccessRequirement>();
 		long offset = ZERO_OFFSET;
 		boolean isDone = false;
 		while (!isDone) {
-			List<AccessRequirement> accessRequirments;
+			ArrayList<AccessRequirement> accessRequirments;
 			if (unmetOnly) {
-				accessRequirments = synapseClient.getUnmetAccessRequirements(subjectId, accessType, LIMIT_50, offset).getResults();
+				accessRequirments = (ArrayList)synapseClient.getUnmetAccessRequirements(subjectId, accessType, LIMIT_50, offset).getResults();
 			} else {
-				accessRequirments = synapseClient.getAccessRequirements(subjectId, LIMIT_50, offset).getResults();
+				accessRequirments = (ArrayList) synapseClient.getAccessRequirements(subjectId, LIMIT_50, offset).getResults();
 			}
 			isDone = accessRequirments.size() < LIMIT_50;
 			allAccessRequirements.addAll(accessRequirments);
@@ -881,12 +874,12 @@ public class SynapseClientImpl extends SynapseClientBase implements
 		return allAccessRequirements;
 	}
 	
-	private List<V2WikiHeader> getAllWikiHeaderTree(String ownerId,	ObjectType ownerType, org.sagebionetworks.client.SynapseClient synapseClient) throws SynapseException {
-		List<V2WikiHeader> allHeaders = new ArrayList<V2WikiHeader>();
+	private ArrayList<V2WikiHeader> getAllWikiHeaderTree(String ownerId,	ObjectType ownerType, org.sagebionetworks.client.SynapseClient synapseClient) throws SynapseException {
+		ArrayList<V2WikiHeader> allHeaders = new ArrayList<V2WikiHeader>();
 		long offset = ZERO_OFFSET;
 		boolean isDone = false;
 		while (!isDone) {
-			List<V2WikiHeader> headers = synapseClient.getV2WikiHeaderTree(ownerId, ownerType, LIMIT_50, offset).getResults();
+			ArrayList<V2WikiHeader> headers = (ArrayList)synapseClient.getV2WikiHeaderTree(ownerId, ownerType, LIMIT_50, offset).getResults();
 			isDone = headers.size() < LIMIT_50;
 			allHeaders.addAll(headers);
 			offset += LIMIT_50;
@@ -895,19 +888,19 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 
 	@Override
-	public List<AccessRequirement> getTeamAccessRequirements(String teamId)
+	public ArrayList<AccessRequirement> getTeamAccessRequirements(String teamId)
 			throws RestServiceException {
 		return getTeamAccessRequirements(teamId, false);
 	}
 
-	private List<AccessRequirement> getTeamAccessRequirements(String teamId, boolean unmetOnly)
+	private ArrayList<AccessRequirement> getTeamAccessRequirements(String teamId, boolean unmetOnly)
 			throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
 			RestrictableObjectDescriptor subjectId = new RestrictableObjectDescriptor();
 			subjectId.setId(teamId);
 			subjectId.setType(RestrictableObjectType.TEAM);
-			List<AccessRequirement> accessRequirements = getAllAccessRequirements(unmetOnly, subjectId, ACCESS_TYPE.PARTICIPATE, synapseClient);
+			ArrayList<AccessRequirement> accessRequirements = getAllAccessRequirements(unmetOnly, subjectId, ACCESS_TYPE.PARTICIPATE, synapseClient);
 				
 			return accessRequirements;
 		} catch (SynapseException e) {
@@ -923,7 +916,7 @@ public class SynapseClientImpl extends SynapseClientBase implements
 			RestrictableObjectDescriptor subjectId = new RestrictableObjectDescriptor();
 			subjectId.setId(entityId);
 			subjectId.setType(RestrictableObjectType.ENTITY);
-			List<AccessRequirement> accessRequirements = getAllAccessRequirements(unmetOnly, subjectId, targetAccessType, synapseClient);
+			ArrayList<AccessRequirement> accessRequirements = getAllAccessRequirements(unmetOnly, subjectId, targetAccessType, synapseClient);
 			
 			// filter to the targetAccessType
 			if (targetAccessType != null) {
@@ -1226,7 +1219,7 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 
 	@Override
-	public List<V2WikiHeader> getV2WikiHeaderTree(String ownerId, String ownerType)
+	public ArrayList<V2WikiHeader> getV2WikiHeaderTree(String ownerId, String ownerType)
 			throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
@@ -1421,13 +1414,13 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 
 	@Override
-	public List<EntityHeader> getFavorites()
+	public ArrayList<EntityHeader> getFavorites()
 			throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
 			org.sagebionetworks.reflection.model.PaginatedResults<EntityHeader> favorites = synapseClient
 					.getFavorites(MAX_LIMIT, ZERO_OFFSET);
-			List<EntityHeader> headers = favorites.getResults();
+			ArrayList<EntityHeader> headers = (ArrayList)favorites.getResults();
 			//sort by name
 			Collections.sort(headers, new Comparator<EntityHeader>() {
 		        @Override
@@ -1480,15 +1473,15 @@ public class SynapseClientImpl extends SynapseClientBase implements
 		try {
 			org.sagebionetworks.reflection.model.PaginatedResults<TeamMember> members = synapseClient
 					.getTeamMembers(teamId, fragment, limit, offset);
-			List<TeamMember> teamMembers = members.getResults();
+			ArrayList<TeamMember> teamMembers = (ArrayList)members.getResults();
 			
 			//gather user ids to ask for all user profiles in bulk
-			List<Long> userIds = new ArrayList<Long>();
+			ArrayList<Long> userIds = new ArrayList<Long>();
 			for (TeamMember member : members.getResults()) {
 				userIds.add(Long.parseLong(member.getMember().getOwnerId()));
 			}
-			List<UserProfile> profiles = synapseClient.listUserProfiles(userIds);
-			List<TeamMemberBundle> teamMemberBundles = new ArrayList<TeamMemberBundle>();
+			ArrayList<UserProfile> profiles = (ArrayList)synapseClient.listUserProfiles(userIds);
+			ArrayList<TeamMemberBundle> teamMemberBundles = new ArrayList<TeamMemberBundle>();
 			for (int i = 0; i < userIds.size(); i++) {
 				teamMemberBundles.add(new TeamMemberBundle(profiles.get(i), teamMembers.get(i).getIsAdmin(), teamMembers.get(i).getTeamId()));
 			}
@@ -1502,34 +1495,34 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 	
 	@Override
-	public List<UserProfile> listUserProfiles(List<String> userIds) throws RestServiceException {
+	public ArrayList<UserProfile> listUserProfiles(ArrayList<String> userIds) throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
-			List<Long> userIdsLong = new LinkedList<Long>();
+			ArrayList<Long> userIdsLong = new ArrayList<Long>();
 			for (String idString :userIds) {
 				userIdsLong.add(Long.parseLong(idString));
 			}
-			return synapseClient.listUserProfiles(userIdsLong);
+			return (ArrayList)synapseClient.listUserProfiles(userIdsLong);
 		} catch (SynapseException e) {
 			throw ExceptionUtil.convertSynapseException(e);
 		}
 	}
 	
 	@Override
-	public List<TeamRequestBundle> getTeamsForUser(String userId, boolean includeOpenRequests)
+	public ArrayList<TeamRequestBundle> getTeamsForUser(String userId, boolean includeOpenRequests)
 			throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
 			org.sagebionetworks.reflection.model.PaginatedResults<Team> teams = synapseClient.getTeamsForUser(
 					userId, MAX_LIMIT, ZERO_OFFSET);
-			List<Team> teamList = teams.getResults();
+			ArrayList<Team> teamList = (ArrayList)teams.getResults();
 			Collections.sort(teamList, new Comparator<Team>() {
 		        @Override
 		        public int compare(Team o1, Team o2) {
 		        	return o1.getName().compareToIgnoreCase(o2.getName());
 		        }
 			});
-			List<TeamRequestBundle> bundle = new ArrayList<TeamRequestBundle>(teamList.size());
+			ArrayList<TeamRequestBundle> bundle = new ArrayList<TeamRequestBundle>(teamList.size());
 			for (Team team: teamList) {
 				if (includeOpenRequests) {
 					Long openRequestCount = getOpenRequestCount(userId, team.getId());
@@ -1751,7 +1744,7 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 
 	@Override
-	public List<MembershipRequestBundle> getOpenRequests(String teamId)
+	public ArrayList<MembershipRequestBundle> getOpenRequests(String teamId)
 			throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
@@ -2168,21 +2161,21 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 
 	@Override
-	public List<ColumnModel> getColumnModelsForTableEntity(String tableEntityId)
+	public ArrayList<ColumnModel> getColumnModelsForTableEntity(String tableEntityId)
 			throws RestServiceException {
 		try {
 			org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
-			return synapseClient
+			return (ArrayList)synapseClient
 					.getColumnModelsForTableEntity(tableEntityId);
 		} catch (SynapseException e) {
 			throw ExceptionUtil.convertSynapseException(e);
 		}
 	}
 	@Override
-	public List<ColumnModel> getDefaultColumnsForView(ViewType type) throws RestServiceException {
+	public ArrayList<ColumnModel> getDefaultColumnsForView(ViewType type) throws RestServiceException {
 		try {
 			org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
-			List<ColumnModel> defaultColumns = synapseClient.getDefaultColumnsForView(type);
+			ArrayList<ColumnModel> defaultColumns = (ArrayList)synapseClient.getDefaultColumnsForView(type);
 			return defaultColumns;
 		} catch (SynapseException e) {
 			throw ExceptionUtil.convertSynapseException(e);
@@ -2191,7 +2184,7 @@ public class SynapseClientImpl extends SynapseClientBase implements
 
 	@Override
 	public String sendMessage(
-			Set<String> recipients, 
+			HashSet<String> recipients, 
 			String subject,
 			String messageBody,
 			String hostPageBaseURL) throws RestServiceException {
@@ -2354,7 +2347,7 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 
 	@Override
-	public TableUpdateTransactionRequest getTableUpdateTransactionRequest(String tableId, List<ColumnModel> oldSchema, List<ColumnModel> proposedSchema)
+	public TableUpdateTransactionRequest getTableUpdateTransactionRequest(String tableId, ArrayList<ColumnModel> oldSchema, ArrayList<ColumnModel> proposedSchema)
 			throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
@@ -2364,7 +2357,7 @@ public class SynapseClientImpl extends SynapseClientBase implements
 				oldColumnModelId2Model.put(columnModel.getId(), columnModel);
 			}
 			
-			List<ColumnModel> newSchema = new ArrayList<ColumnModel>();
+			ArrayList<ColumnModel> newSchema = new ArrayList<ColumnModel>();
 			for (ColumnModel m : proposedSchema) {
 				// copy column model
 				ColumnModel copy = new ColumnModel();
@@ -2381,9 +2374,9 @@ public class SynapseClientImpl extends SynapseClientBase implements
 				}
 				newSchema.add(copy);
 			}
-			newSchema = synapseClient.createColumnModels(newSchema);
+			newSchema = (ArrayList)synapseClient.createColumnModels(newSchema);
 			
-			List<ColumnChange> changes = new ArrayList<ColumnChange>();
+			ArrayList<ColumnChange> changes = new ArrayList<ColumnChange>();
 			// now that all columns have been created, figure out the column changes (create, update, and no-op)
 			// keep track of column ids to figure out what columns were deleted.
 			Set<String> columnIds = new HashSet<String>();
@@ -2406,11 +2399,11 @@ public class SynapseClientImpl extends SynapseClientBase implements
 			
 			TableUpdateTransactionRequest request = new TableUpdateTransactionRequest();
 			request.setEntityId(tableId);
-			List<TableUpdateRequest> requestChangeList = new ArrayList<TableUpdateRequest>();
+			ArrayList<TableUpdateRequest> requestChangeList = new ArrayList<TableUpdateRequest>();
 			TableSchemaChangeRequest newTableSchemaChangeRequest = new TableSchemaChangeRequest();
 			newTableSchemaChangeRequest.setEntityId(tableId);
 			newTableSchemaChangeRequest.setChanges(changes);
-			List<String> orderedColumnIds = new ArrayList<>();
+			ArrayList<String> orderedColumnIds = new ArrayList<>();
 			for (ColumnModel cm : newSchema) {
 				orderedColumnIds.add(cm.getId());
 			}
@@ -2451,10 +2444,10 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 	
 	@Override
-	public List<SortItem> getSortFromTableQuery(String sql)
+	public ArrayList<SortItem> getSortFromTableQuery(String sql)
 			throws RestServiceException {
 		try {
-			return TableSqlProcessor.getSortingInfo(sql);
+			return (ArrayList)TableSqlProcessor.getSortingInfo(sql);
 		} catch (ParseException e) {
 			throw new TableQueryParseException(e.getMessage());
 		}
@@ -2522,20 +2515,20 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 
 	@Override
-	public List<ColumnModel> createTableColumns(List<ColumnModel> models) throws RestServiceException {
+	public ArrayList<ColumnModel> createTableColumns(ArrayList<ColumnModel> models) throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try{
-			return synapseClient.createColumnModels(models);
+			return (ArrayList)synapseClient.createColumnModels(models);
 		}catch (SynapseException e) {
 			throw ExceptionUtil.convertSynapseException(e);
 		} 
 	}
 
 	@Override
-	public List<UploadDestination> getUploadDestinations(String parentEntityId) throws RestServiceException {
+	public ArrayList<UploadDestination> getUploadDestinations(String parentEntityId) throws RestServiceException {
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try{
-			return synapseClient.getUploadDestinations(parentEntityId);
+			return (ArrayList)synapseClient.getUploadDestinations(parentEntityId);
 		}catch (SynapseException e) {
 			throw ExceptionUtil.convertSynapseException(e);
 		}
@@ -2545,8 +2538,8 @@ public class SynapseClientImpl extends SynapseClientBase implements
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
 			org.sagebionetworks.reflection.model.PaginatedResults<ProjectHeader> paginatedResults = synapseClient.getMyProjects(projectListType, sortBy, sortDir, limit, offset);
-			List<ProjectHeader> headers = (List<ProjectHeader>)paginatedResults.getResults();
-			List<String> lastModifiedByList = new LinkedList<String>();
+			ArrayList<ProjectHeader> headers = (ArrayList<ProjectHeader>)paginatedResults.getResults();
+			ArrayList<String> lastModifiedByList = new ArrayList<String>();
 			for (ProjectHeader header: headers) {
 				if (header.getModifiedBy() != null)
 					lastModifiedByList.add(header.getModifiedBy().toString());
@@ -2564,8 +2557,8 @@ public class SynapseClientImpl extends SynapseClientBase implements
 			Long teamIdLong = Long.parseLong(teamId);
 			org.sagebionetworks.reflection.model.PaginatedResults<ProjectHeader> paginatedResults = synapseClient.getProjectsForTeam(teamIdLong, sortBy, sortDir, limit, offset);
 			
-			List<ProjectHeader> headers = (List<ProjectHeader>)paginatedResults.getResults();
-			List<String> lastModifiedByList = new LinkedList<String>();
+			ArrayList<ProjectHeader> headers = (ArrayList<ProjectHeader>)paginatedResults.getResults();
+			ArrayList<String> lastModifiedByList = new ArrayList<String>();
 			for (ProjectHeader header: headers) {
 				if (header.getModifiedBy() != null)
 					lastModifiedByList.add(header.getModifiedBy().toString());
@@ -2581,8 +2574,8 @@ public class SynapseClientImpl extends SynapseClientBase implements
 		try {
 			Long userIdLong = Long.parseLong(userId);
 			org.sagebionetworks.reflection.model.PaginatedResults<ProjectHeader> paginatedResults = synapseClient.getProjectsFromUser(userIdLong, sortBy, sortDir, limit, offset);
-			List<ProjectHeader> headers = (List<ProjectHeader>)paginatedResults.getResults();
-			List<String> lastModifiedByList = new LinkedList<String>();
+			ArrayList<ProjectHeader> headers = (ArrayList<ProjectHeader>)paginatedResults.getResults();
+			ArrayList<String> lastModifiedByList = new ArrayList<String>();
 			for (ProjectHeader header: headers) {
 				if (header.getModifiedBy() != null)
 					lastModifiedByList.add(header.getModifiedBy().toString());
@@ -2634,11 +2627,11 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 
 	@Override
-	public List<String> getMyLocationSettingBanners() throws RestServiceException{
+	public ArrayList<String> getMyLocationSettingBanners() throws RestServiceException{
 		try {
 			Set<String> banners = new HashSet<String>();
 			org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
-			List<StorageLocationSetting> existingStorageLocations = synapseClient.getMyStorageLocationSettings();
+			ArrayList<StorageLocationSetting> existingStorageLocations = (ArrayList)synapseClient.getMyStorageLocationSettings();
 			for (StorageLocationSetting storageLocationSetting : existingStorageLocations) {
 				if (storageLocationSetting.getBanner() != null) {
 					banners.add(storageLocationSetting.getBanner());
@@ -2672,7 +2665,7 @@ public class SynapseClientImpl extends SynapseClientBase implements
 		try {
 			org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 			//first, try to find a matching storage location setting for this user, and reuse
-			List<StorageLocationSetting> existingStorageLocations = synapseClient.getMyStorageLocationSettings();
+			ArrayList<StorageLocationSetting> existingStorageLocations = (ArrayList)synapseClient.getMyStorageLocationSettings();
 			Long locationId = null;
 			if (setting != null) {
 				for (StorageLocationSetting existingStorageLocationSetting : existingStorageLocations) {
@@ -2734,7 +2727,7 @@ public class SynapseClientImpl extends SynapseClientBase implements
 			BatchFileHandleCopyRequest batchRequest =  new BatchFileHandleCopyRequest();
 			batchRequest.setCopyRequests(Collections.singletonList(copyRequest));
 			BatchFileHandleCopyResult batchCopyResults = synapseClient.copyFileHandles(batchRequest);
-			List<FileHandleCopyResult> copyResults = batchCopyResults.getCopyResults();
+			ArrayList<FileHandleCopyResult> copyResults = (ArrayList)batchCopyResults.getCopyResults();
 			// sanity check
 			if (copyResults.size() != 1) {
 				throw new UnknownErrorException("Copy file handle resulted in unexpected response list size.");
@@ -2770,7 +2763,7 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	}
 	
 	@Override
-	public String generateSqlWithFacets(String basicSql, List<FacetColumnRequest> selectedFacets, List<ColumnModel> schema) throws RestServiceException {
+	public String generateSqlWithFacets(String basicSql, ArrayList<FacetColumnRequest> selectedFacets, ArrayList<ColumnModel> schema) throws RestServiceException {
 		try {
 			return TableSqlProcessor.generateSqlWithFacets(basicSql, selectedFacets, schema);
 		} catch (Exception e) {
@@ -2875,7 +2868,7 @@ public class SynapseClientImpl extends SynapseClientBase implements
 		request.setParentId(parentId);
 		request.setSortBy(SortBy.NAME);
 		request.setSortDirection(Direction.ASC);
-		List<EntityType> includeTypes = new ArrayList<EntityType>();
+		ArrayList<EntityType> includeTypes = new ArrayList<EntityType>();
 		for (int i = 0; i < types.length; i++) {
 			includeTypes.add(types[i]);
 		}

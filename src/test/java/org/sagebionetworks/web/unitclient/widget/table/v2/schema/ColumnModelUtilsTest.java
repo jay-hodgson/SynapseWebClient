@@ -3,6 +3,7 @@ package org.sagebionetworks.web.unitclient.widget.table.v2.schema;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,8 +68,8 @@ public class ColumnModelUtilsTest {
 	@Test
 	public void testColumnModelTableRowRoundTripAllTypes(){
 		// Start with a ColumnModel
-		List<ColumnModel> models = new LinkedList<ColumnModel>();
-		List<ColumnModelTableRow> rows = new LinkedList<ColumnModelTableRow>();
+		ArrayList<ColumnModel> models = new ArrayList<ColumnModel>();
+		ArrayList<ColumnModelTableRow> rows = new ArrayList<ColumnModelTableRow>();
 		for(ColumnType type: ColumnType.values()){
 			ColumnModel model = new ColumnModel();
 			model.setName("name");
@@ -83,7 +84,7 @@ public class ColumnModelUtilsTest {
 			ColumnModelUtils.applyColumnModelToRow(model, row);
 		}
 		// Extract as list
-		List<ColumnModel> clones = ColumnModelUtils.extractColumnModels(rows);
+		ArrayList<ColumnModel> clones = ColumnModelUtils.extractColumnModels(rows);
 		assertEquals(models, clones);
 	}
 	

@@ -29,6 +29,7 @@ import org.sagebionetworks.web.client.widget.table.modal.fileview.EntityContaine
 import org.sagebionetworks.web.client.widget.table.modal.fileview.EntityContainerListWidgetView;
 import org.sagebionetworks.web.client.widget.table.modal.fileview.TableType;
 import org.sagebionetworks.web.test.helper.AsyncMockStubber;
+import org.sagebionetworks.web.unitclient.utils.ArrayListUtil;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -67,10 +68,10 @@ public class EntityContainerListWidgetTest {
 	@Test
 	public void testConfigureHappyCase() {
 		// configure with pre-defined entity id list
-		AsyncMockStubber.callSuccessWith(entityHeaders).when(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(entityHeaders).when(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		boolean canEdit = true;
-		widget.configure(Collections.singletonList(headerId), canEdit, TableType.fileview);
-		verify(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		widget.configure(ArrayListUtil.singletonList(headerId), canEdit, TableType.fileview);
+		verify(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		verify(mockView).setAddButtonVisible(true);
 		verify(mockView).setNoContainers(false);
 		verify(mockSynapseAlert).clear();
@@ -88,16 +89,16 @@ public class EntityContainerListWidgetTest {
 	@Test
 	public void testMultipleConfigure() {
 		// SWC-3562: old ids should be cleared when widget is re-configured
-		AsyncMockStubber.callSuccessWith(entityHeaders).when(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(entityHeaders).when(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		boolean canEdit = true;
-		widget.configure(Collections.singletonList(headerId), canEdit, TableType.projectview);
+		widget.configure(ArrayListUtil.singletonList(headerId), canEdit, TableType.projectview);
 		assertTrue(widget.getEntityIds().contains(headerId));
 		assertEquals(1, widget.getEntityIds().size());
 		
 		boolean showVersions = false;
 		verify(mockEntityFinder).configureMulti(eq(EntityFilter.PROJECT), eq(showVersions), any(SelectedHandler.class));
 		
-		widget.configure(Collections.singletonList(headerId), canEdit, TableType.fileview);
+		widget.configure(ArrayListUtil.singletonList(headerId), canEdit, TableType.fileview);
 		assertTrue(widget.getEntityIds().contains(headerId));
 		assertEquals(1, widget.getEntityIds().size());
 	}
@@ -105,10 +106,10 @@ public class EntityContainerListWidgetTest {
 	@Test
 	public void testConfigureNoIdsNoEdit() {
 		entityHeaders.clear();
-		AsyncMockStubber.callSuccessWith(entityHeaders).when(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(entityHeaders).when(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		boolean canEdit = false;
-		widget.configure(Collections.EMPTY_LIST, canEdit, TableType.fileview);
-		verify(mockSynapseClient, never()).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		widget.configure(ArrayListUtil.EMPTY_LIST, canEdit, TableType.fileview);
+		verify(mockSynapseClient, never()).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		verify(mockView).setAddButtonVisible(false);
 		verify(mockView).setNoContainers(true);
 		verify(mockSynapseAlert).clear();
@@ -121,10 +122,10 @@ public class EntityContainerListWidgetTest {
 	@Test
 	public void testConfigureError() {
 		Exception ex = new Exception("error!"); 
-		AsyncMockStubber.callFailureWith(ex).when(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callFailureWith(ex).when(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		boolean canEdit = false;
-		widget.configure(Collections.singletonList(headerId), canEdit, TableType.fileview);
-		verify(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		widget.configure(ArrayListUtil.singletonList(headerId), canEdit, TableType.fileview);
+		verify(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		verify(mockSynapseAlert).clear();
 		verify(mockSynapseAlert).handleException(ex);
 		verify(mockView, never()).addEntity(anyString(), anyString(), anyBoolean());
@@ -140,7 +141,7 @@ public class EntityContainerListWidgetTest {
 	public void testOnAddProjectId() {
 		ArrayList<EntityHeader> returnList = new ArrayList<EntityHeader>();
 		returnList.add(mockEntityHeader);
-		AsyncMockStubber.callSuccessWith(returnList).when(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(returnList).when(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		widget.onAddProject(headerId);
 		
 		verify(mockView).setNoContainers(false);
@@ -154,7 +155,7 @@ public class EntityContainerListWidgetTest {
 	public void testOnAddProjectIdFailure() {
 		String error = "error during lookup!";
 		Exception ex = new Exception(error); 
-		AsyncMockStubber.callFailureWith(ex).when(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callFailureWith(ex).when(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		widget.onAddProject(headerId);
 		
 		verify(mockEntityFinder).showError(error);
@@ -162,7 +163,7 @@ public class EntityContainerListWidgetTest {
 	
 	@Test
 	public void testSetValueInvalidResponse(){
-		AsyncMockStubber.callSuccessWith(new ArrayList<EntityHeader>()).when(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(new ArrayList<EntityHeader>()).when(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		widget.onAddProject(headerId);
 		
 		verify(mockEntityFinder).showError(DisplayConstants.ERROR_LOADING);

@@ -1,7 +1,6 @@
 package org.sagebionetworks.web.client.widget.table.modal.fileview;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.sagebionetworks.repo.model.asynch.AsynchronousResponseBody;
 import org.sagebionetworks.repo.model.table.ColumnModel;
@@ -144,7 +143,7 @@ public class CreateTableViewWizardStep2 implements ModalPage, IsWidget {
 			return;
 		}
 		// Get the models from the view and save them
-		List<ColumnModel> newSchema = editor.getEditedColumnModels();
+		ArrayList<ColumnModel> newSchema = editor.getEditedColumnModels();
 		synapseClient.getTableUpdateTransactionRequest(entity.getId(), new ArrayList<ColumnModel>(), newSchema, new AsyncCallback<TableUpdateTransactionRequest>(){
 			@Override
 			public void onFailure(Throwable caught) {

@@ -68,9 +68,9 @@ public class TutorialWizard implements TutorialWizardView.Presenter, WidgetRende
 	 */
 	public void configure(final String entityId, Callback callback) {
 		this.callback = callback;
-		synapseClient.getV2WikiHeaderTree(entityId, ObjectType.ENTITY.toString(), new AsyncCallback<List<V2WikiHeader>>() {
+		synapseClient.getV2WikiHeaderTree(entityId, ObjectType.ENTITY.toString(), new AsyncCallback<ArrayList<V2WikiHeader>>() {
 			@Override
-			public void onSuccess(List<V2WikiHeader> wikiHeaders) {
+			public void onSuccess(ArrayList<V2WikiHeader> wikiHeaders) {
 				
 				//sort them so that they are always in a predictable order for the wizard.
 				List<V2WikiHeader> sortedHeaders= new ArrayList<V2WikiHeader>();

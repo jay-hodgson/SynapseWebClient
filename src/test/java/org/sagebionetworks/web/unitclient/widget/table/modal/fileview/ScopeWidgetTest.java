@@ -5,6 +5,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -43,7 +44,7 @@ public class ScopeWidgetTest {
 	@Mock
 	EntityBundle mockBundle;
 	@Mock
-	List<String> mockScopeIds;
+	ArrayList<String> mockScopeIds;
 	@Mock
 	List<String> mockNewScopeIds;
 	ScopeWidget widget;

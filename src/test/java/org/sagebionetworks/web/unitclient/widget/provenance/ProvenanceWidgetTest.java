@@ -138,7 +138,7 @@ public class ProvenanceWidgetTest {
 		outputEntityList.add(header123);
 		AsyncMockStubber.callSuccessWith(outputEntity).when(mockSynapseClient).getEntity(eq(outputEntity.getId()), any(AsyncCallback.class));
 		AsyncMockStubber.callSuccessWith(act).when(mockSynapseClient).getActivityForEntityVersion(anyString(), anyLong(), any(AsyncCallback.class));
-		AsyncMockStubber.callSuccessWith(outputEntityList).when(mockSynapseClient).getEntityHeaderBatch(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(outputEntityList).when(mockSynapseClient).getEntityHeaderBatch(any(ArrayList.class), any(AsyncCallback.class));
 		AsyncMockStubber.callSuccessWith(referenceHeaders).when(mockSynapseClient).getEntityHeaderBatch(any(ReferenceList.class), any(AsyncCallback.class));		
 		AsyncMockStubber.callSuccessWith(generatedBy).when(mockSynapseClient).getEntitiesGeneratedBy(eq(act.getId()), anyInt(), anyInt(), any(AsyncCallback.class));
 		

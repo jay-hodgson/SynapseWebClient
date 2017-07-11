@@ -41,7 +41,7 @@ public class UserProfileAsyncHandlerImplTest {
 		MockitoAnnotations.initMocks(this);
 		userProfileAsyncHandler = new UserProfileAsyncHandlerImpl(mockSynapseClient, mockGwt);
 		resultList = new ArrayList<UserProfile>();
-		AsyncMockStubber.callSuccessWith(resultList).when(mockSynapseClient).listUserProfiles(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(resultList).when(mockSynapseClient).listUserProfiles(any(ArrayList.class), any(AsyncCallback.class));
 		when(mockUserProfile.getOwnerId()).thenReturn(userId);
 	}
 	
@@ -61,7 +61,7 @@ public class UserProfileAsyncHandlerImplTest {
 		resultList.add(mockUserProfile);
 		
 		userProfileAsyncHandler.executeRequests();
-		verify(mockSynapseClient).listUserProfiles(anyList(), any(AsyncCallback.class));
+		verify(mockSynapseClient).listUserProfiles(any(ArrayList.class), any(AsyncCallback.class));
 		verify(mockCallback).onSuccess(mockUserProfile);
 	}
 	
@@ -69,7 +69,7 @@ public class UserProfileAsyncHandlerImplTest {
 	public void testFailure() {
 		//simulate exception response
 		Exception ex = new Exception("problem loading batch");
-		AsyncMockStubber.callFailureWith(ex).when(mockSynapseClient).listUserProfiles(anyList(), any(AsyncCallback.class));
+		AsyncMockStubber.callFailureWith(ex).when(mockSynapseClient).listUserProfiles(any(ArrayList.class), any(AsyncCallback.class));
 		userProfileAsyncHandler.getUserProfile(userId, mockCallback);
 		userProfileAsyncHandler.executeRequests();
 		
@@ -84,7 +84,7 @@ public class UserProfileAsyncHandlerImplTest {
 		resultList.add(mockUserProfile);
 		
 		userProfileAsyncHandler.executeRequests();
-		verify(mockSynapseClient).listUserProfiles(anyList(), any(AsyncCallback.class));
+		verify(mockSynapseClient).listUserProfiles(any(ArrayList.class), any(AsyncCallback.class));
 		verify(mockCallback).onFailure(any(Throwable.class));
 	}
 

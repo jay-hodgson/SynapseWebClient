@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.HashSet;
 
 import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.repo.model.AccessApproval;
@@ -99,13 +98,13 @@ public interface SynapseClient extends XsrfProtectedService {
 	
 	public void purgeTrashForUser() throws RestServiceException;
 
-	public void purgeMultipleTrashedEntitiesForUser(Set<String> entityIds) throws RestServiceException;
+	public void purgeMultipleTrashedEntitiesForUser(HashSet<String> entityIds) throws RestServiceException;
 	
 	public SearchResults search(SearchQuery searchQuery) throws RestServiceException; 
 	
 	public PaginatedResults<EntityHeader> getEntityHeaderBatch(ReferenceList referenceList) throws RestServiceException;
 	
-	public ArrayList<EntityHeader> getEntityHeaderBatch(List<String> entityIds) throws RestServiceException;
+	public ArrayList<EntityHeader> getEntityHeaderBatch(ArrayList<String> entityIds) throws RestServiceException;
 	
 	/**
 	 * Update an entity.
@@ -189,7 +188,7 @@ public interface SynapseClient extends XsrfProtectedService {
 	 * @return
 	 * @throws RestServiceException 
 	 */
-	public List<UserProfile> listUserProfiles(List<String> userIds) throws RestServiceException;
+	public ArrayList<UserProfile> listUserProfiles(ArrayList<String> userIds) throws RestServiceException;
 	
 	/**
 	 * Return the specified team object in json string
@@ -243,7 +242,7 @@ public interface SynapseClient extends XsrfProtectedService {
 
 	AccessRequirement createOrUpdateAccessRequirement(AccessRequirement arEW) throws RestServiceException;
 	
-	List<AccessRequirement> getTeamAccessRequirements(String teamId) throws RestServiceException;
+	ArrayList<AccessRequirement> getTeamAccessRequirements(String teamId) throws RestServiceException;
 	
 	public Activity getActivityForEntity(String entityId) throws RestServiceException;
 	
@@ -262,7 +261,7 @@ public interface SynapseClient extends XsrfProtectedService {
     public V2WikiPage getV2WikiPage(WikiPageKey key) throws RestServiceException;
     public V2WikiPage restoreV2WikiPage(String ownerId, String ownerType, String wikiId, Long versionToUpdate) throws RestServiceException;
     public void deleteV2WikiPage(WikiPageKey key) throws RestServiceException;
-    public List<V2WikiHeader> getV2WikiHeaderTree(String ownerId, String ownerType) throws RestServiceException;
+    public ArrayList<V2WikiHeader> getV2WikiHeaderTree(String ownerId, String ownerType) throws RestServiceException;
 	public V2WikiOrderHint getV2WikiOrderHint(WikiPageKey key) throws RestServiceException;
 	public V2WikiOrderHint updateV2WikiOrderHint(V2WikiOrderHint toUpdate) throws RestServiceException;
     public FileHandleResults getV2WikiAttachmentHandles(WikiPageKey key) throws RestServiceException;
@@ -277,19 +276,19 @@ public interface SynapseClient extends XsrfProtectedService {
 	
 	public void removeFavorite(String entityId) throws RestServiceException;
 	
-	public List<EntityHeader> getFavorites() throws RestServiceException;
+	public ArrayList<EntityHeader> getFavorites() throws RestServiceException;
 	
 	public String createTeam(String teamName) throws RestServiceException;
 	public void deleteTeam(String teamId) throws RestServiceException;
 	public PaginatedResults<Team> getTeams(String userId, Integer limit, Integer offset) throws RestServiceException;
-	public List<TeamRequestBundle> getTeamsForUser(String userId,
+	public ArrayList<TeamRequestBundle> getTeamsForUser(String userId,
 			boolean includeOpenRequests) throws RestServiceException;
 	public PaginatedResults<Team> getTeamsBySearch(String searchTerm, Integer limit, Integer offset) throws RestServiceException;
 	public TeamBundle getTeamBundle(String userId, String teamId, boolean isLoggedIn) throws RestServiceException;
 	public Long getOpenRequestCount(String currentUserId, String teamId) throws RestServiceException;
 	public ArrayList<OpenUserInvitationBundle> getOpenInvitations(String userId) throws RestServiceException;
 	public ArrayList<OpenTeamInvitationBundle> getOpenTeamInvitations(String teamId, Integer limit, Integer offset) throws RestServiceException;
-	List<MembershipRequestBundle> getOpenRequests(String teamId) throws RestServiceException;
+	ArrayList<MembershipRequestBundle> getOpenRequests(String teamId) throws RestServiceException;
 	public void deleteMembershipInvitation(String invitationId) throws RestServiceException;
 	public void setIsTeamAdmin(String currentUserId, String targetUserId, String teamId, boolean isTeamAdmin) throws RestServiceException;
 	public void deleteTeamMember(String currentUserId, String targetUserId, String teamId) throws RestServiceException;
@@ -320,11 +319,11 @@ public interface SynapseClient extends XsrfProtectedService {
 	
 	public SignedTokenInterface hexDecodeAndDeserialize(String tokenTypeName, String signedTokenString) throws RestServiceException;
 	
-	public List<ColumnModel> getColumnModelsForTableEntity(String tableEntityId) throws RestServiceException;
+	public ArrayList<ColumnModel> getColumnModelsForTableEntity(String tableEntityId) throws RestServiceException;
 	
 	public String createColumnModel(String columnModelJson) throws RestServiceException;
 
-	public String sendMessage(Set<String> recipients, String subject, String message, String hostPageBaseURL) throws RestServiceException;
+	public String sendMessage(HashSet<String> recipients, String subject, String message, String hostPageBaseURL) throws RestServiceException;
 	
 	public String sendMessageToEntityOwner(String entityId, String subject, String messageBody, String hostPageBaseURL)
 			throws RestServiceException;
@@ -335,7 +334,7 @@ public interface SynapseClient extends XsrfProtectedService {
 
 	public String deleteApiKey() throws RestServiceException;
 	
-	public TableUpdateTransactionRequest getTableUpdateTransactionRequest(String tableId, List<ColumnModel> oldSchema, List<ColumnModel> newSchema)
+	public TableUpdateTransactionRequest getTableUpdateTransactionRequest(String tableId, ArrayList<ColumnModel> oldSchema, ArrayList<ColumnModel> newSchema)
 			throws RestServiceException;
 	
 	/**
@@ -357,7 +356,7 @@ public interface SynapseClient extends XsrfProtectedService {
 	 * @return
 	 * @throws RestServiceException
 	 */
-	public List<SortItem> getSortFromTableQuery(String sql) throws RestServiceException;
+	public ArrayList<SortItem> getSortFromTableQuery(String sql) throws RestServiceException;
 	
 	/**
 	 * Start a new Asynchronous job of a the given type with the provided request JSON.
@@ -407,7 +406,7 @@ public interface SynapseClient extends XsrfProtectedService {
 	 * @return
 	 * @throws RestServiceException 
 	 */
-	List<ColumnModel> createTableColumns(List<ColumnModel> value) throws RestServiceException;
+	ArrayList<ColumnModel> createTableColumns(ArrayList<ColumnModel> value) throws RestServiceException;
 	
 	/**
 	 * Return the upload destinations associated with this parent entity (container)
@@ -415,7 +414,7 @@ public interface SynapseClient extends XsrfProtectedService {
 	 * @return
 	 * @throws RestServiceException
 	 */
-	public List<UploadDestination> getUploadDestinations(String parentEntityId) throws RestServiceException;
+	public ArrayList<UploadDestination> getUploadDestinations(String parentEntityId) throws RestServiceException;
 	ProjectPagedResults getMyProjects(ProjectListType projectListType, int limit, int offset, ProjectListSortColumn sortBy, SortDirection sortDir) throws RestServiceException;
 	ProjectPagedResults getProjectsForTeam(String teamId, int limit, int offset, ProjectListSortColumn sortBy, SortDirection sortDir) throws RestServiceException;
 	ProjectPagedResults getUserProjects(String userId, int limit, int offset, ProjectListSortColumn sortBy, SortDirection sortDir) throws RestServiceException;
@@ -440,7 +439,7 @@ public interface SynapseClient extends XsrfProtectedService {
 
 	StorageLocationSetting getStorageLocationSetting(String parentEntityId) throws RestServiceException;
 
-	List<String> getMyLocationSettingBanners() throws RestServiceException;
+	ArrayList<String> getMyLocationSettingBanners() throws RestServiceException;
 
 	LogEntry hexDecodeLogEntry(String encodedLogEntry);
 
@@ -458,7 +457,7 @@ public interface SynapseClient extends XsrfProtectedService {
 
 	UserProfile getUserProfileFromUsername(String username) throws RestServiceException;
 
-	List<ColumnModel> getDefaultColumnsForView(ViewType type) throws RestServiceException;
+	ArrayList<ColumnModel> getDefaultColumnsForView(ViewType type) throws RestServiceException;
 
 	Entity updateFileEntity(FileEntity toUpdate, FileHandleCopyRequest copyRequest) throws RestServiceException;
 	
@@ -466,7 +465,7 @@ public interface SynapseClient extends XsrfProtectedService {
 	
 	void deleteAccessApprovals(String accessRequirement, String accessorId) throws RestServiceException;
 
-	String generateSqlWithFacets(String basicSql, List<org.sagebionetworks.repo.model.table.FacetColumnRequest> selectedFacets, List<ColumnModel> schema) throws RestServiceException;
+	String generateSqlWithFacets(String basicSql, ArrayList<org.sagebionetworks.repo.model.table.FacetColumnRequest> selectedFacets, ArrayList<ColumnModel> schema) throws RestServiceException;
 
 	ColumnModelPage getPossibleColumnModelsForViewScope(ViewScope scope, String nextPageToken)
 			throws RestServiceException;

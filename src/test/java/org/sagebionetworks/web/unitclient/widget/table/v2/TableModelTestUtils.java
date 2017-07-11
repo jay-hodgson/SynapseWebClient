@@ -45,8 +45,8 @@ public class TableModelTestUtils {
 		return createOneOfEachType(false);
 	}
 
-	public static List<ColumnModel> createOneOfEachType(boolean hasDefaults) {
-		List<ColumnModel> results = new LinkedList<ColumnModel>();
+	public static ArrayList<ColumnModel> createOneOfEachType(boolean hasDefaults) {
+		ArrayList<ColumnModel> results = new ArrayList<ColumnModel>();
 		for (int i = 0; i < ColumnType.values().length; i++) {
 			ColumnType type = ColumnType.values()[i];
 			ColumnModel cm = new ColumnModel();
