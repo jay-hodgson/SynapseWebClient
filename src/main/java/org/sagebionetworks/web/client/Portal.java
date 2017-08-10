@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
+ * TEST AUTOBUILD
  */
 public class Portal implements EntryPoint {
 	
