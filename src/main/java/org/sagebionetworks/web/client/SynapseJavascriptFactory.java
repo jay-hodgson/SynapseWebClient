@@ -10,6 +10,7 @@ import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.repo.model.UserGroupHeaderResponsePage;
 import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.repo.model.dao.WikiPageKey;
+import org.sagebionetworks.repo.model.v2.wiki.V2WikiPage;
 import org.sagebionetworks.repo.model.wiki.WikiPage;
 import org.sagebionetworks.schema.adapter.JSONArrayAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
@@ -24,7 +25,8 @@ public class SynapseJavascriptFactory {
 		WikiPageKey,
 		UserGroupHeaderResponsePage,
 		WikiPage,
-		ListWrapperUserProfile
+		ListWrapperUserProfile,
+		V2WikiPage
 	}
 
 	/**
@@ -47,6 +49,8 @@ public class SynapseJavascriptFactory {
 			return new UserGroupHeaderResponsePage(json);
 		case WikiPage :
 			return new WikiPage(json);
+		case V2WikiPage : 
+			return new V2WikiPage(json);
 		case ListWrapperUserProfile :
 			// json really represents a ListWrapper, but we can't reference ListWrapper here because it uses Class.forName() (breaks gwt compile)
 			List<UserProfile> list = new ArrayList<>();

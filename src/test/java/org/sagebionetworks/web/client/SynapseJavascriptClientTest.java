@@ -38,6 +38,7 @@ import org.sagebionetworks.repo.model.principal.TypeFilter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.schema.adapter.org.json.JSONObjectAdapterImpl;
+import org.sagebionetworks.web.client.resources.ResourceLoader;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.utils.Callback;
 
@@ -57,7 +58,8 @@ public class SynapseJavascriptClientTest {
 	GlobalApplicationState mockGlobalAppState;
 	@Mock
 	GWTWrapper mockGwt;
-	
+	@Mock
+	SynapseJSNIUtils mockSynapseJSNIUtils;
 	@Captor
 	ArgumentCaptor<RequestCallback> requestCallbackCaptor;
 	@Mock
@@ -66,6 +68,8 @@ public class SynapseJavascriptClientTest {
 	Request mockRequest;
 	@Mock
 	Response mockResponse;
+	@Mock
+	ResourceLoader mockResourceLoader;
 	@Captor
 	ArgumentCaptor<Throwable> throwableCaptor;
 	@Captor
@@ -83,7 +87,9 @@ public class SynapseJavascriptClientTest {
 				jsonObjectAdapter, 
 				mockGlobalAppState, 
 				mockGwt,
-				synapseJsFactory);
+				synapseJsFactory,
+				mockSynapseJSNIUtils,
+				mockResourceLoader);
 	}
 	
 	@Test
@@ -240,7 +246,7 @@ public class SynapseJavascriptClientTest {
 		
 		client.getVersionOfV2WikiPageAsV1(key, versionNumber, mockAsyncCallback);
 		//verify url and method
-		String url = REPO_ENDPOINT + "/" + ownerObjectType + "/" + ownerObjectId + WIKI + pageId + WIKI_VERSION_PARAMETER + versionNumber;
+		String url = REPO_ENDPOINT + "/" + ownerObjectType + "/" + ownerObjectId + WIKI2 + pageId + WIKI_VERSION_PARAMETER + versionNumber;
 		verify(mockRequestBuilder).configure(GET, url);
 	}
 	

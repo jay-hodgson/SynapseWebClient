@@ -1,7 +1,5 @@
 package org.sagebionetworks.web.client;
 
-import java.util.Date;
-
 import org.gwtbootstrap3.extras.notify.client.constants.NotifyType;
 import org.gwtbootstrap3.extras.notify.client.ui.Notify;
 import org.gwtbootstrap3.extras.notify.client.ui.NotifySettings;
@@ -21,8 +19,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.LinkElement;
 import com.google.gwt.dom.client.MetaElement;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Random;
@@ -727,4 +724,18 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 	private final static native String _copyToClipboard() /*-{
 		$doc.execCommand('copy');
 	}-*/;
+	
+	@Override
+	public String decompress(ArrayBuffer bufffer) {
+		return _decompress(bufffer);
+	}
+	
+	private final static native String _decompress(ArrayBuffer buffer) /*-{
+		debugger;
+	    // Pako inflate
+	    var data = $wnd.pako.inflate(new Uint8Array(this.buffer), {"to":"string"});
+	    // Convert gunzipped byteArray back to ascii string:
+	    return String.fromCharCode.apply(null, new Uint16Array(data));
+	}-*/;
+
 }
