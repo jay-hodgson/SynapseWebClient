@@ -8,15 +8,14 @@ import org.sagebionetworks.repo.model.file.FileHandleResults;
 import org.sagebionetworks.repo.model.file.PreviewFileHandle;
 import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.SynapseClientAsync;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.shared.WikiPageKey;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class WikiAttachments implements WikiAttachmentsView.Presenter,
-		SynapseWidgetPresenter {
+public class WikiAttachments implements WikiAttachmentsView.Presenter, IsWidget {
 
 	private WikiAttachmentsView view;
 	private SynapseClientAsync synapseClient;

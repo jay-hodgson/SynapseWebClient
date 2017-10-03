@@ -16,7 +16,6 @@ import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.events.EntityUpdatedEvent;
 import org.sagebionetworks.web.client.events.EntityUpdatedHandler;
 import org.sagebionetworks.web.client.utils.Callback;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.asynch.AsynchronousProgressHandler;
 import org.sagebionetworks.web.client.widget.asynch.JobTrackingWidget;
 import org.sagebionetworks.web.client.widget.table.modal.fileview.TableType;
@@ -25,6 +24,7 @@ import org.sagebionetworks.web.client.widget.table.v2.schema.ColumnModelsView.Vi
 import org.sagebionetworks.web.shared.asynch.AsynchType;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -34,7 +34,7 @@ import com.google.inject.Inject;
  * @author jmhill
  *
  */
-public class ColumnModelsWidget implements ColumnModelsViewBase.Presenter, ColumnModelsView.EditHandler, SynapseWidgetPresenter{
+public class ColumnModelsWidget implements ColumnModelsViewBase.Presenter, ColumnModelsView.EditHandler, IsWidget {
 	public static final String SEE_THE_ERROR_S_ABOVE = "See the error(s) above.";
 	PortalGinInjector ginInjector;
 	ColumnModelsViewBase baseView;

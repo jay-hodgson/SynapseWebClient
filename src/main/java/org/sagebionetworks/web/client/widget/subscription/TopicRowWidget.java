@@ -2,12 +2,12 @@ package org.sagebionetworks.web.client.widget.subscription;
 
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.sagebionetworks.repo.model.subscription.Subscription;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TopicRowWidget implements TopicRowWidgetView.Presenter, SynapseWidgetPresenter {
+public class TopicRowWidget implements TopicRowWidgetView.Presenter, IsWidget {
 	
 	private TopicRowWidgetView view;
 	TopicWidget topic;

@@ -15,13 +15,13 @@ import org.sagebionetworks.web.client.events.EntityUpdatedEvent;
 import org.sagebionetworks.web.client.events.EntityUpdatedHandler;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.utils.CallbackP;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class FilesBrowser implements FilesBrowserView.Presenter, SynapseWidgetPresenter {
+public class FilesBrowser implements FilesBrowserView.Presenter, IsWidget {
 	
 	private FilesBrowserView view;
 	private String configuredEntityId;

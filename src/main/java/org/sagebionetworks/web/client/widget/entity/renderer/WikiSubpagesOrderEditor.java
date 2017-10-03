@@ -7,7 +7,7 @@ import org.sagebionetworks.repo.model.v2.wiki.V2WikiHeader;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class WikiSubpagesOrderEditor implements WikiSubpagesOrderEditorView.Presenter {
+public class WikiSubpagesOrderEditor {
 	
 	private WikiSubpagesOrderEditorView view;
 	private WikiSubpageOrderEditorTree editorTree;

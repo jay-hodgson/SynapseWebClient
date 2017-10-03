@@ -10,15 +10,15 @@ import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.place.PeopleSearch;
 import org.sagebionetworks.web.client.place.Synapse;
 import org.sagebionetworks.web.client.presenter.SearchUtil;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.shared.SearchQueryUtils;
 
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class SearchBox implements SearchBoxView.Presenter, SynapseWidgetPresenter {
+public class SearchBox implements SearchBoxView.Presenter, IsWidget {
 	
 	private SearchBoxView view;
 	private GlobalApplicationState globalApplicationState;

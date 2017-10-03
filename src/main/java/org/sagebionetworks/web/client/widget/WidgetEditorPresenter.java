@@ -6,13 +6,15 @@ import java.util.Map;
 import org.sagebionetworks.web.client.widget.entity.dialog.DialogCallback;
 import org.sagebionetworks.web.shared.WikiPageKey;
 
+import com.google.gwt.user.client.ui.IsWidget;
+
 /**
  * To support, add your editor to the PortalGinModule, and add it to the know widgets in the widget registrar.
  * @see org.sagebionetworks.web.client.widget.entity.registration.WidgetRegistrarImpl
  * @author jayhodgson
  *
  */
-public interface WidgetEditorPresenter extends SynapseWidgetPresenter {
+public interface WidgetEditorPresenter extends IsWidget {
 	/**
 	 * This will be called to give you the parent entity ID, and the widget descriptor containing the params that you should edit.
 	 * @param widgetDescriptor

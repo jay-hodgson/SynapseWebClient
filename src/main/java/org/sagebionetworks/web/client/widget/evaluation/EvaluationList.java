@@ -3,13 +3,12 @@ package org.sagebionetworks.web.client.widget.evaluation;
 import java.util.List;
 
 import org.sagebionetworks.evaluation.model.Evaluation;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class EvaluationList implements EvaluationListView.Presenter,
-		SynapseWidgetPresenter {
+public class EvaluationList implements EvaluationListView.Presenter, IsWidget {
 
 	private EvaluationListView view;
 	List<Evaluation> evaluationList;

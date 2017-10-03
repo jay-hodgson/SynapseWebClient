@@ -9,14 +9,14 @@ import org.sagebionetworks.repo.model.v2.wiki.V2WikiHeader;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.utils.CallbackP;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.shared.WikiPageKey;
 
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class WikiSubpageNavigationTree implements WikiSubpageNavigationTreeView.Presenter, SynapseWidgetPresenter {
+public class WikiSubpageNavigationTree implements WikiSubpageNavigationTreeView.Presenter, IsWidget {
 
 	private WikiSubpageNavigationTreeView view;
 	private GlobalApplicationState globalApplicationState;

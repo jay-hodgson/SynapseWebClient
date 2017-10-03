@@ -6,13 +6,13 @@ import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.SynapseJavascriptClient;
 import org.sagebionetworks.web.client.utils.Callback;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class DiscussionThreadCountAlert implements RefreshAlertView.Presenter, SynapseWidgetPresenter {
+public class DiscussionThreadCountAlert implements RefreshAlertView.Presenter, IsWidget {
 	
 	private RefreshAlertView view;
 	SynapseJavascriptClient jsClient;

@@ -16,7 +16,6 @@ import org.sagebionetworks.web.client.SynapseJavascriptClient;
 import org.sagebionetworks.web.client.cache.SessionStorage;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.utils.CallbackP;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.entity.WikiHistoryWidget.ActionHandler;
 import org.sagebionetworks.web.client.widget.entity.controller.StuAlert;
 import org.sagebionetworks.web.client.widget.entity.renderer.WikiSubpagesWidget;
@@ -25,6 +24,7 @@ import org.sagebionetworks.web.shared.WikiPageKey;
 import org.sagebionetworks.web.shared.exceptions.NotFoundException;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -34,7 +34,7 @@ import com.google.inject.Inject;
  * @author Jay
  *
  */
-public class WikiPageWidget implements WikiPageWidgetView.Presenter, SynapseWidgetPresenter {
+public class WikiPageWidget implements WikiPageWidgetView.Presenter, IsWidget {
 
 	// utility
 	private SynapseClientAsync synapseClient;

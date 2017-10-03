@@ -23,7 +23,6 @@ import org.sagebionetworks.web.client.events.EntityUpdatedHandler;
 import org.sagebionetworks.web.client.place.AccessRequirementsPlace;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.utils.CallbackP;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.aws.AwsSdk;
 import org.sagebionetworks.web.client.widget.clienthelp.FileClientsHelp;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
@@ -35,10 +34,11 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class FileDownloadButton implements FileDownloadButtonView.Presenter, SynapseWidgetPresenter {
+public class FileDownloadButton implements FileDownloadButtonView.Presenter, IsWidget {
 	
 	public static final String ACCESS_REQUIREMENTS_LINK = "#!AccessRequirements:ID=";
 	public static final String LOGIN_PLACE_LINK = "#!LoginPlace:0";

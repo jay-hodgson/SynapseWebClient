@@ -6,13 +6,12 @@ import java.util.List;
 
 import org.sagebionetworks.web.client.PortalGinInjector;
 import org.sagebionetworks.web.client.utils.Callback;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class APITableColumnManager implements APITableColumnManagerView.Presenter,
-		SynapseWidgetPresenter {
+public class APITableColumnManager implements APITableColumnManagerView.Presenter, IsWidget {
 
 	private APITableColumnManagerView view;
 	private PortalGinInjector ginInjector;

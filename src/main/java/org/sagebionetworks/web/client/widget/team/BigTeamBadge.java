@@ -4,13 +4,13 @@ import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.web.client.SynapseJavascriptClient;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.widget.HasNotificationUI;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class BigTeamBadge implements BigTeamBadgeView.Presenter, SynapseWidgetPresenter, HasNotificationUI {
+public class BigTeamBadge implements BigTeamBadgeView.Presenter, IsWidget, HasNotificationUI {
 	
 	private BigTeamBadgeView view;
 	SynapseJavascriptClient jsClient;

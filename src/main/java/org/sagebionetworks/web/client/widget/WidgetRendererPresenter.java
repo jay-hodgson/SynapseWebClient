@@ -7,7 +7,7 @@ import org.sagebionetworks.web.shared.WikiPageKey;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface WidgetRendererPresenter extends SynapseWidgetPresenter, IsWidget {
+public interface WidgetRendererPresenter extends IsWidget {
 	/**
 	 * This will be called to give you the parent entity ID, and the widget descriptor containing the params that should guide your display
 	 * @param wikiKey

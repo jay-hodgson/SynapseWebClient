@@ -6,12 +6,12 @@ import org.sagebionetworks.web.client.events.CancelHandler;
 import org.sagebionetworks.web.client.events.EntityUpdatedEvent;
 import org.sagebionetworks.web.client.events.EntityUpdatedHandler;
 import org.sagebionetworks.web.client.utils.CallbackP;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class UploadDialogWidget implements UploadDialogWidgetView.Presenter, SynapseWidgetPresenter {
+public class UploadDialogWidget implements UploadDialogWidgetView.Presenter, IsWidget {
 	private UploadDialogWidgetView view;
 	private Uploader uploader;
 	@Inject

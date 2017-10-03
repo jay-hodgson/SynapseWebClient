@@ -26,7 +26,6 @@ public class WikiSubpagesOrderEditorViewImpl extends Composite implements WikiSu
 	@UiField
 	Button downButton;
 	
-	private Presenter presenter;
 	private WikiSubpageOrderEditorTree tree;
 	
 	@Inject
@@ -45,11 +44,6 @@ public class WikiSubpagesOrderEditorViewImpl extends Composite implements WikiSu
 		this.tree = subpageTree;
 		treePanel.setWidget(tree.asWidget());
 		subpageTree.setMovabilityCallback(getTreeItemMovabilityCallback());
-	}
-	
-	@Override
-	public void setPresenter(Presenter presenter) {
-		this.presenter = presenter;
 	}
 	
 	@Override

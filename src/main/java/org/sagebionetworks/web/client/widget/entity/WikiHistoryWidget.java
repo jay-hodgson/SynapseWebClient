@@ -14,18 +14,15 @@ import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.SynapseJavascriptClient;
 import org.sagebionetworks.web.client.security.AuthenticationController;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.shared.PaginatedResults;
 import org.sagebionetworks.web.shared.WikiPageKey;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class WikiHistoryWidget implements WikiHistoryWidgetView.Presenter,
-	SynapseWidgetPresenter, IsWidget {
+public class WikiHistoryWidget implements WikiHistoryWidgetView.Presenter, IsWidget {
 	public static final String NO_HISTORY_IS_FOUND_FOR_A_WIKI = "No history is found for a wiki";
 	private GlobalApplicationState globalApplicationState;
 	AuthenticationController authenticationController;

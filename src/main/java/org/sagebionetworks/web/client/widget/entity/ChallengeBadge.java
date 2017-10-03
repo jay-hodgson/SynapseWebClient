@@ -1,13 +1,13 @@
 package org.sagebionetworks.web.client.widget.entity;
 
 import org.sagebionetworks.web.client.DisplayUtils;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.shared.ChallengeBundle;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class ChallengeBadge implements ChallengeBadgeView.Presenter, SynapseWidgetPresenter {
+public class ChallengeBadge implements ChallengeBadgeView.Presenter, IsWidget {
 	
 	private ChallengeBadgeView view;
 	

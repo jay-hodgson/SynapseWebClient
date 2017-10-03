@@ -321,6 +321,20 @@ public class SynapseJavascriptClient {
 		}
 	}
 	
+	public void updateV2WikiPage(WikiPageKey key, V2WikiPage page, AsyncCallback<V2WikiPage> callback) {
+		String url = getRepoServiceUrl() + "/" +
+				key.getOwnerObjectType().toLowerCase() + "/" + 
+				key.getOwnerObjectId() + WIKI2 +
+				key.getWikiPageId();
+		try {
+			JSONObjectAdapter jsonAdapter = jsonObjectAdapter.createNew();
+			page.writeToJSONObject(jsonAdapter);
+			doPost(url, jsonAdapter.toJSONString(), OBJECT_TYPE.V2WikiPage, callback);
+		} catch (JSONObjectAdapterException e) {
+			callback.onFailure(e);
+		}
+	}
+	
 	public void getV2WikiPage(final WikiPageKey key, AsyncCallback<V2WikiPage> callback) {
 		getV2WikiPage(key, null, callback);
 	}

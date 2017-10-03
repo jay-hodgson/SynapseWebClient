@@ -31,7 +31,6 @@ import org.sagebionetworks.web.client.events.EntityUpdatedHandler;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.utils.CallbackP;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.entity.dialog.AddAttachmentHelper;
 import org.sagebionetworks.web.client.widget.upload.MultipartUploader;
 import org.sagebionetworks.web.client.widget.upload.MultipartUploaderImpl;
@@ -46,6 +45,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -56,7 +56,7 @@ import com.google.inject.Inject;
  * 
  * Case B will be the most common case.
  */
-public class Uploader implements UploaderView.Presenter, SynapseWidgetPresenter, ProgressingFileUploadHandler {
+public class Uploader implements UploaderView.Presenter, IsWidget, ProgressingFileUploadHandler {
 	
 	public static final long OLD_BROWSER_MAX_SIZE = (long)ClientProperties.MB * 5; //5MB
 	private UploaderView view;

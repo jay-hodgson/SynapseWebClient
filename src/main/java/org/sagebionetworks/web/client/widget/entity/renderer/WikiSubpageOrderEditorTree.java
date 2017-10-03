@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.sagebionetworks.repo.model.v2.wiki.V2WikiHeader;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.entity.renderer.WikiSubpagesOrderEditorViewImpl.TreeItemMovabilityCallback;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class WikiSubpageOrderEditorTree implements WikiSubpageOrderEditorTreeView.Presenter, SynapseWidgetPresenter {
+public class WikiSubpageOrderEditorTree implements WikiSubpageOrderEditorTreeView.Presenter, IsWidget {
 	
 	private WikiSubpageOrderEditorTreeView view;
 	
@@ -35,6 +35,7 @@ public class WikiSubpageOrderEditorTree implements WikiSubpageOrderEditorTreeVie
 	
 	public void configure(List<V2WikiHeader> wikiHeaders, String ownerObjectName) {
 		view.clear();
+		selectedNode = null;
 		
 		// Make nodes for each header. Populate id2node map and header2node map.
 		for (V2WikiHeader header : wikiHeaders) {

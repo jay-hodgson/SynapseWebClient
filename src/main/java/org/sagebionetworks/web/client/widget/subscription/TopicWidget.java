@@ -7,15 +7,14 @@ import org.sagebionetworks.repo.model.subscription.SubscriptionObjectType;
 import org.sagebionetworks.web.client.DiscussionForumClientAsync;
 import org.sagebionetworks.web.client.SynapseJavascriptClient;
 import org.sagebionetworks.web.client.utils.TopicUtils;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TopicWidget implements TopicWidgetView.Presenter, SynapseWidgetPresenter {
+public class TopicWidget implements TopicWidgetView.Presenter, IsWidget {
 	
 	public static final String DATA_ACCESS_SUBMISSION_TOPIC_TEXT = "Notifications";
 	private TopicWidgetView view;

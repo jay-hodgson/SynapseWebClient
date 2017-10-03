@@ -2,13 +2,13 @@ package org.sagebionetworks.web.client.widget.entity.download;
 
 import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.repo.model.quiz.PassingRecord;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.entity.download.CertificateWidgetView.Presenter;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class CertificateWidget implements Presenter, SynapseWidgetPresenter {
+public class CertificateWidget implements Presenter, IsWidget {
 	private CertificateWidgetView view;
 	
 	@Inject

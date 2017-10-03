@@ -6,13 +6,13 @@ import static org.sagebionetworks.repo.model.EntityBundle.PERMISSIONS;
 import org.sagebionetworks.repo.model.EntityBundle;
 import org.sagebionetworks.web.client.SynapseJavascriptClient;
 import org.sagebionetworks.web.client.utils.Callback;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class SharingAndDataUseConditionWidget implements SharingAndDataUseConditionWidgetView.Presenter, SynapseWidgetPresenter {
+public class SharingAndDataUseConditionWidget implements SharingAndDataUseConditionWidgetView.Presenter, IsWidget {
 	
 	private SharingAndDataUseConditionWidgetView view;
 	SynapseJavascriptClient jsClient;

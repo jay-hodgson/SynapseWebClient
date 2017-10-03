@@ -3,15 +3,15 @@ package org.sagebionetworks.web.client.view.users;
 import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.UserAccountServiceAsync;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
 import org.sagebionetworks.web.shared.exceptions.ConflictException;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class RegisterWidget implements RegisterWidgetView.Presenter, SynapseWidgetPresenter {
+public class RegisterWidget implements RegisterWidgetView.Presenter, IsWidget {
 	
 	private RegisterWidgetView view;
 	private UserAccountServiceAsync userService;

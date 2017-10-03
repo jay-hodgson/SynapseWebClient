@@ -9,15 +9,15 @@ import org.sagebionetworks.repo.model.ProjectHeader;
 import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GWTWrapper;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.provenance.ProvViewUtil;
 import org.sagebionetworks.web.shared.KeyValueDisplay;
 
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class ProjectBadge implements ProjectBadgeView.Presenter, SynapseWidgetPresenter {
+public class ProjectBadge implements ProjectBadgeView.Presenter, IsWidget {
 	
 	private ProjectBadgeView view;
 	private ProjectHeader header;

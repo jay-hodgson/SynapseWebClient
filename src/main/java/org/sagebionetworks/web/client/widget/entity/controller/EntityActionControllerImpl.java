@@ -57,6 +57,7 @@ import org.sagebionetworks.web.client.widget.entity.download.UploadDialogWidget;
 import org.sagebionetworks.web.client.widget.entity.menu.v2.Action;
 import org.sagebionetworks.web.client.widget.entity.menu.v2.ActionMenuWidget;
 import org.sagebionetworks.web.client.widget.entity.menu.v2.ActionMenuWidget.ActionListener;
+import org.sagebionetworks.web.client.widget.entity.renderer.WikiSubpageFinder;
 import org.sagebionetworks.web.client.widget.evaluation.EvaluationEditorModal;
 import org.sagebionetworks.web.client.widget.evaluation.EvaluationSubmitter;
 import org.sagebionetworks.web.client.widget.sharing.AccessControlListModalWidget;
@@ -130,6 +131,14 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 	PortalGinInjector ginInjector;
 	IsACTMemberAsyncHandler isACTMemberAsyncHandler;
 	boolean isShowingVersion = false;
+	
+	WikiSubpageFinder subpageFinder;
+	CallbackP<V2WikiHeader> wikiSelectedCallback = new CallbackP<V2WikiHeader>() {
+		@Override
+		public void invoke(V2WikiHeader wikiHeader) {
+			onSelectWikiParent(wikiHeader);
+		}
+	};
 	
 	@Inject
 	public EntityActionControllerImpl(EntityActionControllerView view,
@@ -517,9 +526,9 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 			actionMenu.setActionVisible(Action.CHANGE_WIKI_SUBPAGE_PARENT, false);
 			actionMenu.setActionEnabled(Action.CHANGE_WIKI_SUBPAGE_PARENT, false);
 		} else {
-			boolean isRootWiki = entityBundle.getRootWikiId().equals(wikiPageId);
-			actionMenu.setActionVisible(Action.CHANGE_WIKI_SUBPAGE_PARENT, !isRootWiki);
-			actionMenu.setActionEnabled(Action.CHANGE_WIKI_SUBPAGE_PARENT, !isRootWiki);
+			boolean canChangeSubpage = permissions.getCanEdit() && !entityBundle.getRootWikiId().equals(wikiPageId);
+			actionMenu.setActionVisible(Action.CHANGE_WIKI_SUBPAGE_PARENT, canChangeSubpage);
+			actionMenu.setActionEnabled(Action.CHANGE_WIKI_SUBPAGE_PARENT, canChangeSubpage);
 			actionMenu.setActionListener(Action.CHANGE_WIKI_SUBPAGE_PARENT, this);
 		}
 	}
@@ -1060,7 +1069,62 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 	}
 	
 	private void postCheckChangeWikiSubpageParent() {
-		//TODO: show wiki subpage tree, where you can select a wiki page (that will become the new parent)
+		//show wiki subpage finder (where you can select a wiki page that will become the new parent)
+		if (subpageFinder == null) {
+			subpageFinder = ginInjector.getWikiSubpageFinder();
+			view.addWidget(subpageFinder);
+		}
+		//step 1, get the full wiki tree for this entity
+		getSynapseClient().getV2WikiHeaderTree(this.entityBundle.getEntity().getId(), ObjectType.ENTITY.name(), new AsyncCallback<List<V2WikiHeader>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				view.showErrorMessage(caught.getMessage());
+			}
+			public void onSuccess(List<V2WikiHeader> wikiHeaders) {
+				//remove current page from list
+				V2WikiHeader currentPage = null;
+				for (V2WikiHeader v2WikiHeader : wikiHeaders) {
+					if (v2WikiHeader.getId().equals(wikiPageId)) {
+						currentPage = v2WikiHeader;
+						break;
+					}
+				}
+				wikiHeaders.remove(currentPage);
+				subpageFinder.show(wikiHeaders, entityBundle.getEntity().getName(), wikiSelectedCallback);
+			};
+		});
+	}
+	
+	public void onSelectWikiParent(final V2WikiHeader parentWikiPage) {
+		//ok, update the parent id
+		// get the current wiki page header.
+		// update to the new parent wiki page id
+		// and refresh
+		final WikiPageKey key = getCurrentWikiPageKey();
+		getSynapseJavascriptClient().getV2WikiPage(key, new AsyncCallback<V2WikiPage>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				view.showErrorMessage(caught.getMessage());
+			}
+			@Override
+			public void onSuccess(V2WikiPage currentPage) {
+				updateParentWikiPageId(key, currentPage, parentWikiPage.getId());
+			}
+		});
+	}
+	
+	public void updateParentWikiPageId(WikiPageKey key, V2WikiPage page, String newParentWikiId) {
+		page.setParentWikiId(newParentWikiId);
+		getSynapseJavascriptClient().updateV2WikiPage(key, page, new AsyncCallback<V2WikiPage>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				view.showErrorMessage(caught.getMessage());
+			}
+			@Override
+			public void onSuccess(V2WikiPage result) {
+				entityUpdateHandler.onPersistSuccess(new EntityUpdatedEvent());
+			}
+		});
 	}
 	
 	public void createWikiPage(final String name) {
@@ -1160,9 +1224,12 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 			}
 		});
 	}
+	private WikiPageKey getCurrentWikiPageKey() {
+		return new WikiPageKey(this.entityBundle.getEntity().getId(), ObjectType.ENTITY.name(), wikiPageId);
+	}
 	
 	public void onDeleteWiki() {
-		final WikiPageKey key = new WikiPageKey(this.entityBundle.getEntity().getId(), ObjectType.ENTITY.name(), wikiPageId);
+		final WikiPageKey key = getCurrentWikiPageKey();
 		// Get the wiki page title and parent wiki id.  Go to the parent wiki if this delete is successful.
 		getSynapseJavascriptClient().getV2WikiPage(key, new AsyncCallback<V2WikiPage>() {
 			@Override

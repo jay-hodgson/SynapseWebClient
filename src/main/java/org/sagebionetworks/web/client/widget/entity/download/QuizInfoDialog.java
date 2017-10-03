@@ -2,11 +2,11 @@ package org.sagebionetworks.web.client.widget.entity.download;
 
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.place.Quiz;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.modal.Dialog;
 import org.sagebionetworks.web.client.widget.modal.Dialog.Callback;
 import org.sagebionetworks.web.shared.WebConstants;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -15,7 +15,7 @@ import com.google.inject.Inject;
  * @author jayhodgson
  *
  */
-public class QuizInfoDialog implements SynapseWidgetPresenter {
+public class QuizInfoDialog implements IsWidget {
 
 	private Dialog modal;
 	private QuizInfoWidget widget;

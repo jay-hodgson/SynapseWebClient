@@ -13,7 +13,6 @@ import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.cache.ClientCache;
 import org.sagebionetworks.web.client.place.Profile;
 import org.sagebionetworks.web.client.utils.Callback;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.WidgetRendererPresenter;
 import org.sagebionetworks.web.client.widget.asynch.UserProfileAsyncHandler;
 import org.sagebionetworks.web.client.widget.lazyload.LazyLoadHelper;
@@ -24,12 +23,11 @@ import org.sagebionetworks.web.shared.WikiPageKey;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.core.java.util.Collections.EmptyMap_CustomFieldSerializer;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class UserBadge implements UserBadgeView.Presenter, SynapseWidgetPresenter, WidgetRendererPresenter, IsWidget {
+public class UserBadge implements UserBadgeView.Presenter, WidgetRendererPresenter, IsWidget {
 	
 	public static final String DEFAULT_COLOR = "lightgrey";
 	public static final String DEFAULT_LETTER = "S";

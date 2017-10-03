@@ -6,7 +6,6 @@ import org.sagebionetworks.web.client.SageImageBundle;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.utils.CallbackP;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.search.UserGroupSuggestionProvider.UserGroupSuggestion;
 
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
@@ -18,7 +17,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class SynapseSuggestBox implements SynapseSuggestBoxView.Presenter, SynapseWidgetPresenter, IsWidget, Focusable, HasKeyDownHandlers {
+public class SynapseSuggestBox implements SynapseSuggestBoxView.Presenter, IsWidget, Focusable, HasKeyDownHandlers {
 	
 	public static final int DELAY = 750;	// milliseconds
 	public static final int PAGE_SIZE = 10;

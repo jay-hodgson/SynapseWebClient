@@ -1,12 +1,12 @@
 package org.sagebionetworks.web.client.widget.entity.download;
 
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.entity.download.QuizInfoWidgetView.Presenter;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class QuizInfoWidget implements Presenter, SynapseWidgetPresenter {
+public class QuizInfoWidget implements Presenter, IsWidget {
 	private QuizInfoWidgetView view;
 	
 	@Inject

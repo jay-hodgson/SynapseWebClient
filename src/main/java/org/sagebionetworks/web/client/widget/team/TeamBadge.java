@@ -4,7 +4,6 @@ import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.web.client.SynapseJavascriptClient;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.widget.HasNotificationUI;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -12,7 +11,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TeamBadge implements TeamBadgeView.Presenter, SynapseWidgetPresenter, HasNotificationUI, IsWidget {
+public class TeamBadge implements TeamBadgeView.Presenter, HasNotificationUI, IsWidget {
 	
 	private TeamBadgeView view;
 	private SynapseJavascriptClient jsClient;

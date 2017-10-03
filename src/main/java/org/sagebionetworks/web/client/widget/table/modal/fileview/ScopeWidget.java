@@ -1,16 +1,17 @@
 package org.sagebionetworks.web.client.widget.table.modal.fileview;
 
+import static org.sagebionetworks.web.client.widget.table.v2.schema.ColumnModelsWidget.getTableType;
+
 import org.sagebionetworks.repo.model.Entity;
 import org.sagebionetworks.repo.model.EntityBundle;
 import org.sagebionetworks.repo.model.table.EntityView;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.events.EntityUpdatedEvent;
 import org.sagebionetworks.web.client.events.EntityUpdatedHandler;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
 
-import static org.sagebionetworks.web.client.widget.table.v2.schema.ColumnModelsWidget.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -47,7 +48,7 @@ Scope Widget - these are the UI output elements in this widget:
  * @author Jay
  *
  */
-public class ScopeWidget implements SynapseWidgetPresenter, ScopeWidgetView.Presenter {
+public class ScopeWidget implements IsWidget, ScopeWidgetView.Presenter {
 	boolean isEditable;
 	ScopeWidgetView view;
 	SynapseClientAsync synapseClient;

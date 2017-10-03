@@ -24,16 +24,15 @@ import org.sagebionetworks.web.client.events.EntitySelectedEvent;
 import org.sagebionetworks.web.client.events.EntitySelectedHandler;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.utils.CallbackP;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.entity.EntityTreeItem;
 import org.sagebionetworks.web.client.widget.entity.MoreTreeItem;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class EntityTreeBrowser implements EntityTreeBrowserView.Presenter,
-		SynapseWidgetPresenter {
+public class EntityTreeBrowser implements EntityTreeBrowserView.Presenter, IsWidget {
 	private EntityTreeBrowserView view;
 	private SynapseJavascriptClient jsClient;
 	private AuthenticationController authenticationController;

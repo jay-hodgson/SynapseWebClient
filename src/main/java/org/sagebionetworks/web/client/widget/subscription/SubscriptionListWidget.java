@@ -6,16 +6,16 @@ import org.sagebionetworks.repo.model.subscription.SubscriptionPagedResults;
 import org.sagebionetworks.web.client.PortalGinInjector;
 import org.sagebionetworks.web.client.SubscriptionClientAsync;
 import org.sagebionetworks.web.client.security.AuthenticationController;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
 import org.sagebionetworks.web.client.widget.pagination.PageChangeListener;
 import org.sagebionetworks.web.client.widget.pagination.countbased.BasicPaginationWidget;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class SubscriptionListWidget implements SubscriptionListWidgetView.Presenter, SynapseWidgetPresenter, PageChangeListener {
+public class SubscriptionListWidget implements SubscriptionListWidgetView.Presenter, IsWidget, PageChangeListener {
 	
 	private SubscriptionListWidgetView view;
 	SubscriptionClientAsync subscribeClient;

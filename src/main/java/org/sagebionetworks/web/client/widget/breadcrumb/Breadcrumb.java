@@ -13,14 +13,13 @@ import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.place.Synapse;
 import org.sagebionetworks.web.client.place.Synapse.EntityArea;
 import org.sagebionetworks.web.client.utils.CallbackP;
-import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class Breadcrumb implements BreadcrumbView.Presenter, SynapseWidgetPresenter, IsWidget {
+public class Breadcrumb implements BreadcrumbView.Presenter, IsWidget {
 
 	private BreadcrumbView view;
 	private GlobalApplicationState globalApplicationState;
