@@ -300,6 +300,7 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 			configureEditWiki();
 			configureViewWikiSource();
 			configureAddWikiSubpage();
+			configureChangeWikiSubpage();
 			configureDeleteWikiAction();
 			configureMove();
 			configureLink();
@@ -510,7 +511,18 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 			actionMenu.setActionEnabled(Action.ADD_WIKI_SUBPAGE, false);
 		}
 	}
-
+	
+	private void configureChangeWikiSubpage(){
+		if (entityBundle.getRootWikiId() == null) {
+			actionMenu.setActionVisible(Action.CHANGE_WIKI_SUBPAGE_PARENT, false);
+			actionMenu.setActionEnabled(Action.CHANGE_WIKI_SUBPAGE_PARENT, false);
+		} else {
+			boolean isRootWiki = entityBundle.getRootWikiId().equals(wikiPageId);
+			actionMenu.setActionVisible(Action.CHANGE_WIKI_SUBPAGE_PARENT, !isRootWiki);
+			actionMenu.setActionEnabled(Action.CHANGE_WIKI_SUBPAGE_PARENT, !isRootWiki);
+			actionMenu.setActionListener(Action.CHANGE_WIKI_SUBPAGE_PARENT, this);
+		}
+	}
 	
 	private void configureMove(){
 		if(isMovableType(entityBundle.getEntity()) ){
@@ -750,6 +762,9 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 			break;
 		case ADD_WIKI_SUBPAGE:
 			onAddWikiSubpage();
+			break;
+		case CHANGE_WIKI_SUBPAGE_PARENT :
+			onChangeWikiSubpageParent();
 			break;
 		case MOVE_ENTITY:
 			onMove();
@@ -1033,6 +1048,19 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 				}
 			});
 		}
+	}
+	
+	public void onChangeWikiSubpageParent() {
+		preflightController.checkUpdateEntity(this.entityBundle, new Callback() {
+			@Override
+			public void invoke() {
+				postCheckChangeWikiSubpageParent();
+			}
+		});
+	}
+	
+	private void postCheckChangeWikiSubpageParent() {
+		//TODO: show wiki subpage tree, where you can select a wiki page (that will become the new parent)
 	}
 	
 	public void createWikiPage(final String name) {

@@ -3,7 +3,6 @@ package org.sagebionetworks.web.client.widget.entity.renderer;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.sagebionetworks.web.client.DisplayUtils;
-import org.sagebionetworks.web.client.widget.entity.renderer.WikiSubpagesOrderEditor.HasChangesHandler;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -29,8 +28,7 @@ public class WikiSubpagesOrderEditorViewImpl extends Composite implements WikiSu
 	
 	private Presenter presenter;
 	private WikiSubpageOrderEditorTree tree;
-	private HasChangesHandler hasChangesHandler;
-
+	
 	@Inject
 	public WikiSubpagesOrderEditorViewImpl(Binder binder) {
 		initWidget(binder.createAndBindUi(this));
@@ -43,9 +41,8 @@ public class WikiSubpagesOrderEditorViewImpl extends Composite implements WikiSu
 	}
 	
 	@Override
-	public void configure(WikiSubpageOrderEditorTree subpageTree, HasChangesHandler hasChangesHandler) {
+	public void configure(WikiSubpageOrderEditorTree subpageTree) {
 		this.tree = subpageTree;
-		this.hasChangesHandler = hasChangesHandler;
 		treePanel.setWidget(tree.asWidget());
 		subpageTree.setMovabilityCallback(getTreeItemMovabilityCallback());
 	}

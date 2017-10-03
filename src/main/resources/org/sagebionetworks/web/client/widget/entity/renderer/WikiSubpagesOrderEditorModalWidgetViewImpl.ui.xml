@@ -7,7 +7,7 @@
 
 	<!-- Dialog for creating a new table -->
 	<b:Modal ui:field="uiModal" title="Subpage Order Editor" closable="true"
-		dataBackdrop="STATIC" dataKeyboard="false" size="SMALL">
+		dataBackdrop="STATIC" dataKeyboard="false">
 		<b:ModalBody>
 			<g:SimplePanel ui:field="editorPanel" />
 		</b:ModalBody>

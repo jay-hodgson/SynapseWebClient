@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.sagebionetworks.repo.model.v2.wiki.V2WikiHeader;
-import org.sagebionetworks.schema.adapter.JSONEntity;
 import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.entity.renderer.WikiSubpagesOrderEditorViewImpl.TreeItemMovabilityCallback;
 
@@ -29,11 +28,8 @@ public class WikiSubpageOrderEditorTree implements WikiSubpageOrderEditorTreeVie
 	@Inject
 	public WikiSubpageOrderEditorTree(WikiSubpageOrderEditorTreeView view) {
 		this.view = view;
-		
 		header2node = new HashMap<V2WikiHeader, SubpageOrderEditorTreeNode>();
 		id2node = new HashMap<String, SubpageOrderEditorTreeNode>();
-		
-		
 		view.setPresenter(this);
 	}
 	

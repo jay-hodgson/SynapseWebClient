@@ -1,37 +1,29 @@
 package org.sagebionetworks.web.client.widget.entity.renderer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.sagebionetworks.repo.model.v2.wiki.V2WikiHeader;
 import org.sagebionetworks.web.client.DisplayUtils;
-import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.utils.UnorderedListPanel;
 import org.sagebionetworks.web.client.widget.entity.renderer.WikiSubpageOrderEditorTree.SubpageOrderEditorTreeNode;
 
-import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class WikiSubpageOrderEditorTreeViewImpl extends FlowPanel implements WikiSubpageOrderEditorTreeView {
 	
-	private GlobalApplicationState globalAppState;
 	private Presenter presenter;
 	
 	private Map<String, Widget> headerId2listItem;
 	private Map<Widget, UnorderedListPanel> listItem2childrenList;
 	
 	@Inject
-	public WikiSubpageOrderEditorTreeViewImpl(GlobalApplicationState globalAppState) {
-		this.globalAppState = globalAppState;
-		
+	public WikiSubpageOrderEditorTreeViewImpl() {
 		addStyleName("notopmargin nav bs-sidenav well");
 		add(new HTML("<h4 class=\"margin-left-15\">Edit Order</h4>"));
 		
@@ -42,8 +34,6 @@ public class WikiSubpageOrderEditorTreeViewImpl extends FlowPanel implements Wik
 	public void moveTreeItem(SubpageOrderEditorTreeNode node, boolean moveUp) {
 		Widget listItem = headerId2listItem.get(node.getHeader().getId());
 		UnorderedListPanel childrenList = listItem2childrenList.get(headerId2listItem.get(node.getHeader().getId()));
-		
-		
 		SubpageOrderEditorTreeNode parent = presenter.getParent(node);
 		UnorderedListPanel parentPanel = listItem2childrenList.get(headerId2listItem.get(node.getHeader().getParentId()));
 		
@@ -63,7 +53,6 @@ public class WikiSubpageOrderEditorTreeViewImpl extends FlowPanel implements Wik
 		}
 		
 		// Add to insertIndex.
-		
 		swapWidgetInPanel(parentPanel, listItem, insertIndex, moveUp);
 		
 		int childListIndex = parentPanel.indexOf(listItem) + 1;
@@ -71,8 +60,6 @@ public class WikiSubpageOrderEditorTreeViewImpl extends FlowPanel implements Wik
 		if (childrenList != null) {
 			swapWidgetInPanel(parentPanel, childrenList, childListIndex, moveUp);
 		}
-		
-		
 	}
 	
 	private void swapWidgetInPanel(UnorderedListPanel parentPanel, Widget toInsert, int insertIndex, boolean moveUp) {
