@@ -25,9 +25,13 @@ public class WikiSubpageFinder implements Dialog.Callback, IsWidget {
 		this.dialog = dialog;
 		this.synAlert = synAlert;
 		this.tree = tree;
-		dialog.configure("Select Wiki Page", "OK", "Cancel", this, true);
+		dialog.configure("Select Wiki Page", "OK", "Cancel", this, false);
 		dialog.add(tree.asWidget());
 		dialog.add(synAlert.asWidget());
+	}
+	
+	public void setTitle(String title) {
+		dialog.setTitle(title);
 	}
 	
 	@Override
@@ -45,6 +49,7 @@ public class WikiSubpageFinder implements Dialog.Callback, IsWidget {
 		}
 		
 		wikiPageIdSelectedCallback.invoke(selectedNode.getHeader());
+		dialog.hide();
 	}
 	
 	@Override

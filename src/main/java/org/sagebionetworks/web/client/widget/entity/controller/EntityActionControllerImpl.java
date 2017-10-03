@@ -1072,6 +1072,7 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 		//show wiki subpage finder (where you can select a wiki page that will become the new parent)
 		if (subpageFinder == null) {
 			subpageFinder = ginInjector.getWikiSubpageFinder();
+			subpageFinder.setTitle("Select New Parent Wiki Page");
 			view.addWidget(subpageFinder);
 		}
 		//step 1, get the full wiki tree for this entity

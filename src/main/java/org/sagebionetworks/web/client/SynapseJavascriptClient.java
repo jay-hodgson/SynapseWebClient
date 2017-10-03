@@ -1,6 +1,5 @@
 package org.sagebionetworks.web.client;
-import static com.google.gwt.http.client.RequestBuilder.GET;
-import static com.google.gwt.http.client.RequestBuilder.POST;
+import static com.google.gwt.http.client.RequestBuilder.*;
 import static org.apache.http.HttpStatus.*;
 import static org.sagebionetworks.client.exceptions.SynapseTooManyRequestsException.TOO_MANY_REQUESTS_STATUS_CODE;
 import static org.sagebionetworks.web.shared.WebConstants.FILE_SERVICE_URL_KEY;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
+import com.google.gwt.http.client.RequestBuilder.Method;
 import org.sagebionetworks.repo.model.Entity;
 import org.sagebionetworks.repo.model.EntityBundle;
 import org.sagebionetworks.repo.model.EntityChildrenRequest;
@@ -174,7 +173,15 @@ public class SynapseJavascriptClient {
 	}
 	
 	private void doPost(String url, String requestData, OBJECT_TYPE responseType, AsyncCallback callback) {
-		requestBuilder.configure(POST, url);
+		doPutPost(POST, url, requestData, responseType, callback);
+	}
+	
+	private void doPut(String url, String requestData, OBJECT_TYPE responseType, AsyncCallback callback) {
+		doPutPost(PUT, url, requestData, responseType, callback);
+	}
+	
+	private void doPutPost(Method method, String url, String requestData, OBJECT_TYPE responseType, AsyncCallback callback) {
+		requestBuilder.configure(method, url);
 		requestBuilder.setHeader(ACCEPT, APPLICATION_JSON_CHARSET_UTF8);
 		requestBuilder.setHeader(CONTENT_TYPE, APPLICATION_JSON_CHARSET_UTF8);
 		if (authController.isLoggedIn()) {
@@ -182,6 +189,7 @@ public class SynapseJavascriptClient {
 		}
 		sendRequest(url, requestData, responseType, callback);
 	}
+
 	
 	private void sendRequest(final String url, final String requestData, final OBJECT_TYPE responseType, final AsyncCallback callback) {
 		try {
@@ -329,7 +337,7 @@ public class SynapseJavascriptClient {
 		try {
 			JSONObjectAdapter jsonAdapter = jsonObjectAdapter.createNew();
 			page.writeToJSONObject(jsonAdapter);
-			doPost(url, jsonAdapter.toJSONString(), OBJECT_TYPE.V2WikiPage, callback);
+			doPut(url, jsonAdapter.toJSONString(), OBJECT_TYPE.V2WikiPage, callback);
 		} catch (JSONObjectAdapterException e) {
 			callback.onFailure(e);
 		}

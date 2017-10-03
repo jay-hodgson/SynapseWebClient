@@ -77,6 +77,10 @@ public class Dialog extends UIObject implements IsWidget, HasWidgets {
 		modal.setSize(modalSize);
 	}
 	
+	public void setTitle(String title) {
+		modal.setTitle(title);
+	}
+	
 	/**
 	 * @param title The text shown in the title bar.
 	 * @param body This will be the main body of the dialog.  It can be any GWT widget.
