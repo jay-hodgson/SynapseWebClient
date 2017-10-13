@@ -107,7 +107,6 @@ import org.sagebionetworks.web.client.widget.entity.download.Uploader;
 import org.sagebionetworks.web.client.widget.entity.editor.APITableColumnConfigView;
 import org.sagebionetworks.web.client.widget.entity.editor.APITableConfigEditor;
 import org.sagebionetworks.web.client.widget.entity.editor.AttachmentConfigEditor;
-import org.sagebionetworks.web.client.widget.entity.editor.BookmarkConfigEditor;
 import org.sagebionetworks.web.client.widget.entity.editor.ButtonLinkConfigEditor;
 import org.sagebionetworks.web.client.widget.entity.editor.CytoscapeConfigEditor;
 import org.sagebionetworks.web.client.widget.entity.editor.EntityListConfigEditor;
@@ -235,7 +234,6 @@ import org.sagebionetworks.web.client.widget.verification.VerificationSubmission
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
-import com.google.gwt.user.client.rpc.XsrfTokenServiceAsync;
 
 /**
  * The root portal dependency injection root.
@@ -325,7 +323,6 @@ public interface PortalGinInjector extends Ginjector {
 	 *  Markdown Widgets
 	 */
 	////// Editors
-	public BookmarkConfigEditor getBookmarkConfigEditor();
 	public ReferenceConfigEditor getReferenceConfigEditor();
 	public ProvenanceConfigEditor getProvenanceConfigEditor();
 	public ImageConfigEditor getImageConfigEditor();

@@ -1,9 +1,11 @@
 package org.sagebionetworks.web.client.widget.entity.registration;
 
+import static org.sagebionetworks.web.shared.WidgetConstants.*;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import static org.sagebionetworks.web.shared.WidgetConstants.*;
+
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.web.client.DisplayConstants;
@@ -48,9 +50,7 @@ public class WidgetRegistrarImpl implements WidgetRegistrar {
 	public WidgetEditorPresenter getWidgetEditorForWidgetDescriptor(WikiPageKey wikiKey, String contentTypeKey, Map<String, String> model, DialogCallback dialogCallback) { 
 		//use gin to create a new instance of the proper class.
 		WidgetEditorPresenter presenter = null;
-		if(contentTypeKey.equals(BOOKMARK_CONTENT_TYPE)) {
-			presenter = ginInjector.getBookmarkConfigEditor();
-		} else if(contentTypeKey.equals(REFERENCE_CONTENT_TYPE)) {
+		if(contentTypeKey.equals(REFERENCE_CONTENT_TYPE)) {
 			presenter = ginInjector.getReferenceConfigEditor();
 		} else if (contentTypeKey.equals(JOIN_TEAM_CONTENT_TYPE)) {
 			presenter = ginInjector.getJoinTeamConfigEditor();
