@@ -39,6 +39,8 @@ import org.sagebionetworks.repo.model.UserBundle;
 import org.sagebionetworks.repo.model.UserGroupHeader;
 import org.sagebionetworks.repo.model.UserGroupHeaderResponsePage;
 import org.sagebionetworks.repo.model.UserProfile;
+import org.sagebionetworks.repo.model.asynch.AsynchronousRequestBody;
+import org.sagebionetworks.repo.model.asynch.AsynchronousResponseBody;
 import org.sagebionetworks.repo.model.discussion.DiscussionFilter;
 import org.sagebionetworks.repo.model.discussion.DiscussionReplyBundle;
 import org.sagebionetworks.repo.model.discussion.DiscussionThreadBundle;
@@ -64,6 +66,7 @@ import org.sagebionetworks.web.client.SynapseJavascriptFactory.OBJECT_TYPE;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.shared.WikiPageKey;
+import org.sagebionetworks.web.shared.asynch.AsynchType;
 import org.sagebionetworks.web.shared.exceptions.BadRequestException;
 import org.sagebionetworks.web.shared.exceptions.ConflictException;
 import org.sagebionetworks.web.shared.exceptions.ConflictingUpdateException;
@@ -149,6 +152,26 @@ public class SynapseJavascriptClient {
 	public static final String LIMIT_PARAMETER = "limit=";
 	private static final String NEXT_PAGE_TOKEN_PARAM = "nextPageToken=";
 	public static final String SKIP_TRASH_CAN_PARAM = "skipTrashCan";
+	public static final String COLUMN = "/column";
+	public static final String COLUMN_BATCH = COLUMN + "/batch";
+	public static final String COLUMN_VIEW_DEFAULT = COLUMN + "/tableview/defaults/";
+	public static final String TABLE = "/table";
+	public static final String ROW_ID = "/row";
+	public static final String ROW_VERSION = "/version";
+	public static final String TABLE_QUERY = TABLE + "/query";
+	public static final String TABLE_QUERY_NEXTPAGE = TABLE_QUERY + "/nextPage";
+	public static final String TABLE_DOWNLOAD_CSV = TABLE + "/download/csv";
+	public static final String TABLE_UPLOAD_CSV = TABLE + "/upload/csv";
+	public static final String TABLE_UPLOAD_CSV_PREVIEW = TABLE + "/upload/csv/preview";
+	public static final String TABLE_APPEND = TABLE + "/append";
+	public static final String TABLE_TRANSACTION = TABLE+"/transaction";
+	public static final String ASYNCHRONOUS_JOB = "/asynchronous/job";
+	public static final String FILE = "/file";
+	public static final String FILE_BULK = FILE+"/bulk";
+
+	public static final String ASYNC_START = "/async/start";
+	public static final String ASYNC_GET = "/async/get/";
+
 	public String repoServiceUrl,fileServiceUrl; 
 	
 	@Inject
@@ -239,7 +262,7 @@ public class SynapseJavascriptClient {
 								responseObject = jsFactory.newInstance(responseType, jsonObject);
 							}
 							callback.onSuccess(responseObject);
-						} catch (JSONObjectAdapterException e) {
+						} catch (Exception e) {
 							onError(null, e);
 						}
 					} else {
@@ -781,6 +804,17 @@ public class SynapseJavascriptClient {
 		} catch (JSONObjectAdapterException e) {
 			callback.onFailure(e);
 		}
+	}
+	
+	public void getAsynchJobResults(AsynchType type, String jobId, AsynchronousRequestBody request, AsyncCallback<AsynchronousResponseBody> callback) {
+		String endpoint;
+		if (AsynchType.BulkFileDownload.equals(type)) {
+			endpoint = getFileServiceUrl();
+		} else {
+			endpoint = getRepoServiceUrl();
+		}
+		String url = type.getResultUrl(jobId, request);
+		doGet(endpoint + url, OBJECT_TYPE.AsyncResponse, callback);
 	}
 }
 

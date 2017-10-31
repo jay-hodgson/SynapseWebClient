@@ -20,6 +20,10 @@ import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.repo.model.UserBundle;
 import org.sagebionetworks.repo.model.UserGroupHeaderResponsePage;
 import org.sagebionetworks.repo.model.UserProfile;
+import org.sagebionetworks.repo.model.asynch.AsynchronousJobStatus;
+import org.sagebionetworks.repo.model.asynch.AsynchronousRequestBody;
+import org.sagebionetworks.repo.model.asynch.AsynchronousResponseBody;
+import org.sagebionetworks.repo.model.asynch.AsynchronousResponseBodyInstanceFactory;
 import org.sagebionetworks.repo.model.dao.WikiPageKey;
 import org.sagebionetworks.repo.model.discussion.DiscussionReplyBundle;
 import org.sagebionetworks.repo.model.discussion.DiscussionThreadBundle;
@@ -42,6 +46,9 @@ import org.sagebionetworks.repo.model.wiki.WikiPage;
 import org.sagebionetworks.schema.adapter.JSONArrayAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
+import org.sagebionetworks.web.shared.exceptions.ResultNotReadyException;
+
+import com.google.gwt.core.client.GWT;
 
 public class SynapseJavascriptFactory {
 	public enum OBJECT_TYPE {
@@ -81,6 +88,7 @@ public class SynapseJavascriptFactory {
 		StackStatus,
 		UserProfile,
 		FileHandleResults,
+		AsyncResponse,
 		JSON,
 		None
 	}
@@ -89,14 +97,27 @@ public class SynapseJavascriptFactory {
 	 * Create a new instance of a concrete class using the object type
 	 * @throws JSONObjectAdapterException 
 	 */
-	public Object newInstance(OBJECT_TYPE type, JSONObjectAdapter json) throws JSONObjectAdapterException {
+	public Object newInstance(OBJECT_TYPE type, JSONObjectAdapter json) throws JSONObjectAdapterException, ResultNotReadyException {
 		if (OBJECT_TYPE.Entity.equals(type) && json.has("concreteType")) {
 			// attempt to construct based on concreteType
 			String concreteType = json.getString("concreteType");
 			Entity entity = EntityInstanceFactory.singleton().newInstance(concreteType);
 			entity.initializeFromJSONObject(json);
 			return entity;
-		} 
+		}
+		if (OBJECT_TYPE.AsyncResponse.equals(type)) {
+			if (json.has("concreteType")) {
+				String concreteType = json.getString("concreteType");
+				AsynchronousResponseBodyInstanceFactory asyncResponseFactory = AsynchronousResponseBodyInstanceFactory.singleton();
+				AsynchronousResponseBody response = asyncResponseFactory.newInstance(concreteType);
+				response.initializeFromJSONObject(json);
+				return response;
+			} else {
+				GWT.debugger();
+				AsynchronousJobStatus status = new AsynchronousJobStatus(json);
+				throw new ResultNotReadyException(status);
+			}
+		}
 		switch (type) {
 		case EntityBundle :
 			return new EntityBundle(json);

@@ -4,6 +4,7 @@ import org.sagebionetworks.repo.model.asynch.AsynchronousJobStatus;
 import org.sagebionetworks.repo.model.asynch.AsynchronousRequestBody;
 import org.sagebionetworks.repo.model.asynch.AsynchronousResponseBody;
 import org.sagebionetworks.web.client.SynapseClientAsync;
+import org.sagebionetworks.web.client.SynapseJavascriptClient;
 import org.sagebionetworks.web.client.widget.asynch.TimerProvider.FireHandler;
 import org.sagebionetworks.web.shared.asynch.AsynchType;
 import org.sagebionetworks.web.shared.exceptions.ResultNotReadyException;
@@ -28,12 +29,15 @@ public class AsynchronousJobTrackerImpl implements AsynchronousJobTracker {
 	private UpdatingAsynchProgressHandler handler;
 	private OneTimeReference<AsynchronousProgressHandler> oneTimeReference;
 	private boolean isCanceled;
-
+	private SynapseJavascriptClient jsClient;
+	
 	@Inject
 	public AsynchronousJobTrackerImpl(SynapseClientAsync synapseClient,
-			TimerProvider timerProvider) {
+			TimerProvider timerProvider,
+			SynapseJavascriptClient jsClient) {
 		super();
 		this.synapseClient = synapseClient;
+		this.jsClient = jsClient;
 		this.timerProvider = timerProvider;
 	}
 
@@ -106,7 +110,7 @@ public class AsynchronousJobTrackerImpl implements AsynchronousJobTracker {
 	 */
 	private void checkAndWait(AsynchronousRequestBody requestBody) {
 		// Get the current status
-		synapseClient.getAsynchJobResults(this.type, this.jobId, requestBody,
+		jsClient.getAsynchJobResults(this.type, this.jobId, requestBody,
 				new AsyncCallback<AsynchronousResponseBody>() {
 					@Override
 					public void onSuccess(AsynchronousResponseBody response) {
