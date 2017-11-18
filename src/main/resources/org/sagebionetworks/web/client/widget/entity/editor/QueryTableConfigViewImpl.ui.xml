@@ -11,6 +11,7 @@
 					<b:FormLabel for="query">Query</b:FormLabel>
 					<b:TextBox ui:field="queryField" name="query" b:id="query" />
 					<b:Button ui:field="autoAddColumns" icon="REFRESH" addStyleNames="margin-top-10" text="Refresh Columns" />
+					<b:Button ui:field="optimizeSelectColumns" icon="ARROW_UP" addStyleNames="margin-top-10 margin-left-10" text="Optimize SQL Select Columns" />
 				</b:FormGroup>
 				<b:FormGroup>
 					<b:CheckBox ui:field="isPagingField" text="Support pagination"/>

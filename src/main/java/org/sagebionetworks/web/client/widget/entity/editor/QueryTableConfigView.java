@@ -14,19 +14,20 @@ public interface QueryTableConfigView extends IsWidget, WidgetEditorView {
 	 */
 	public void setPresenter(Presenter presenter);
 	public String getQueryString();
-	
+	void setQueryString(String queryString);
 	public Boolean isPaging();
 	public Boolean isShowRowNumbers();
 	public List<APITableColumnConfig> getConfigs();
 	public void configure(APITableConfig tableConfig);
 	public void setQueryPlaceholder(String placeHolder);
 	public void setConfigs(List<APITableColumnConfig> newColumnConfigs);
-
+	void setOptimizeQuerySelectColumnsButtonVisible(boolean visible);
 	/**
 	 * Presenter interface
 	 */
 	public interface Presenter {
 		void autoAddColumns();
+		void updateQuerySelectColumns();
 	}
 
 	

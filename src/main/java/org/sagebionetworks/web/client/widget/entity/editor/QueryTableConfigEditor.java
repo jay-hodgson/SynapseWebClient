@@ -46,12 +46,14 @@ public class QueryTableConfigEditor implements QueryTableConfigView.Presenter, W
 		descriptor = widgetDescriptor;
 		APITableConfig tableConfig = new APITableConfig(widgetDescriptor);
 		String uri = tableConfig.getUri();
+		view.setOptimizeQuerySelectColumnsButtonVisible(false);
 		if (uri != null) {
 			//strip off prefix and decode query string
 			if (uri.startsWith(servicePrefix)) {
 				uri = gwt.decodeQueryString(uri.substring(servicePrefix.length()));
 			} 
 			tableConfig.setUri(uri);
+			view.setOptimizeQuerySelectColumnsButtonVisible(uri.contains("*"));
 		} 
 		view.configure(tableConfig);
 	}
@@ -84,6 +86,24 @@ public class QueryTableConfigEditor implements QueryTableConfigView.Presenter, W
 		APITableConfigEditor.updateDescriptorWithColumnConfigs(descriptor, configs);
 	}
 
+	@Override
+	public void updateQuerySelectColumns() {
+		List<APITableColumnConfig> configs = view.getConfigs();
+		StringBuilder columnNames = new StringBuilder();
+		for (Iterator iterator = configs.iterator(); iterator.hasNext();) {
+			APITableColumnConfig config = (APITableColumnConfig) iterator.next();
+			String inputColumnName = config.getInputColumnNames().iterator().next();
+			columnNames.append(inputColumnName);
+			if (iterator.hasNext()) {
+				columnNames.append(",");
+			}
+		}
+		String oldQueryString = view.getQueryString();
+		String newQueryString = oldQueryString.replace("*", columnNames.toString());
+		view.setQueryString(newQueryString);
+		view.setOptimizeQuerySelectColumnsButtonVisible(false);
+	}
+	
 	@Override
 	public void autoAddColumns() {
 		// execute the current query to get the column headers, then update the column manager

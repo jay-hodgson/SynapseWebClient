@@ -30,6 +30,8 @@ public class QueryTableConfigViewImpl implements QueryTableConfigView {
 	CheckBox isRowVisibleField;
 	@UiField
 	Button autoAddColumns;
+	@UiField
+	Button optimizeSelectColumns;
 	
 	@UiField
 	SimplePanel columnManagerContainer;
@@ -44,6 +46,9 @@ public class QueryTableConfigViewImpl implements QueryTableConfigView {
 			public void onClick(ClickEvent event) {
 				presenter.autoAddColumns();
 			}
+		});
+		optimizeSelectColumns.addClickHandler(event -> {
+			presenter.updateQuerySelectColumns();
 		});
 	}
 	@Override
@@ -75,7 +80,10 @@ public class QueryTableConfigViewImpl implements QueryTableConfigView {
 	public String getQueryString() {
 		return queryField.getValue();
 	}
-	
+	@Override
+	public void setQueryString(String queryString) {
+		queryField.setValue(queryString);
+	}
 	@Override
 	public Boolean isPaging() {
 		return isPagingField.getValue();
@@ -117,6 +125,10 @@ public class QueryTableConfigViewImpl implements QueryTableConfigView {
 	@Override
 	public void setConfigs(List<APITableColumnConfig> newColumnConfigs) {
 		columnsManager.configure(newColumnConfigs);
+	}
+	@Override
+	public void setOptimizeQuerySelectColumnsButtonVisible(boolean visible) {
+		optimizeSelectColumns.setVisible(visible);
 	}
 	
 	/*
