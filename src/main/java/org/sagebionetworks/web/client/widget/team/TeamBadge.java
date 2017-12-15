@@ -1,10 +1,14 @@
 package org.sagebionetworks.web.client.widget.team;
 
 import org.sagebionetworks.repo.model.Team;
+import org.sagebionetworks.repo.model.file.FileHandleAssociateType;
+import org.sagebionetworks.repo.model.file.FileHandleAssociation;
+import org.sagebionetworks.repo.model.file.FileResult;
 import org.sagebionetworks.web.client.SynapseJavascriptClient;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.widget.HasNotificationUI;
 import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
+import org.sagebionetworks.web.client.widget.asynch.PresignedURLAsyncHandlerImpl;
 import org.sagebionetworks.web.client.widget.asynch.TeamAsyncHandler;
 
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -20,11 +24,15 @@ public class TeamBadge implements SynapseWidgetPresenter, HasNotificationUI, IsW
 	private Integer maxNameLength;
 	private String teamName;
 	private ClickHandler customClickHandler = null;
+	private PresignedURLAsyncHandlerImpl presignedUrlAsyncHandler;
 	
 	@Inject
-	public TeamBadge(TeamBadgeView view, TeamAsyncHandler teamAsyncHandler) {
+	public TeamBadge(TeamBadgeView view, 
+			TeamAsyncHandler teamAsyncHandler,
+			PresignedURLAsyncHandlerImpl presignedUrlAsyncHandler) {
 		this.view = view;
 		this.teamAsyncHandler = teamAsyncHandler;
+		this.presignedUrlAsyncHandler = presignedUrlAsyncHandler;
 	}
 	
 	public void setMaxNameLength(Integer maxLength) {
@@ -58,6 +66,23 @@ public class TeamBadge implements SynapseWidgetPresenter, HasNotificationUI, IsW
 	
 	public void configure(Team team) {
 		view.setTeam(team, maxNameLength, customClickHandler);
+		if (team.getIcon() != null) {
+			FileHandleAssociation fha = new FileHandleAssociation();
+			fha.setAssociateObjectId(team.getId());
+			fha.setAssociateObjectType(FileHandleAssociateType.TeamAttachment);
+			fha.setFileHandleId(team.getIcon());
+			presignedUrlAsyncHandler.getFileResult(fha, new AsyncCallback<FileResult>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					view.showDefaultPicture();
+				}
+				public void onSuccess(FileResult result) {
+					view.setPicture(result.getPreSignedURL());
+				};
+			});
+		} else {
+			view.showDefaultPicture();
+		}
 	}
 	
 	/**

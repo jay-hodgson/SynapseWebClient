@@ -27,7 +27,7 @@ public abstract class BaseFileHandleAsyncHandlerImpl {
 	private Map<String, List<AsyncCallback<FileResult>>> reference2Callback = new HashMap<String, List<AsyncCallback<FileResult>>>();
 	private List<FileHandleAssociation> fileHandleAssociations = new ArrayList<FileHandleAssociation>();
 	SynapseJavascriptClient jsClient;
-	public static final int LIMIT = 95;
+	public static final int LIMIT = 40;
 	
 	public BaseFileHandleAsyncHandlerImpl(SynapseJavascriptClient jsClient, GWTWrapper gwt) {
 		this.jsClient = jsClient;

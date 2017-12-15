@@ -69,28 +69,32 @@ public class TeamBadgeViewImpl extends FlowPanel implements TeamBadgeView {
 			String name = maxNameLength == null ? team.getName() : DisplayUtils.stubStrPartialWord(team.getName(), maxNameLength);
 			anchor.setText(name);
 			anchor.setHref(DisplayUtils.getTeamHistoryToken(team.getId()));
-			
-			ClickHandler clickHandler = new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					anchor.fireEvent(event);
-				}
-			};
-			if (team.getIcon() != null && team.getIcon().length() > 0) {
-				Image profilePicture = new Image();
-				profilePicture.setUrl(DisplayUtils.createTeamIconUrl(synapseJSNIUtils.getBaseFileHandleUrl(), team.getId()));
-				profilePicture.setHeight("24px");
-				profilePicture.addStyleName("imageButton userProfileImage displayInline margin-right-4");
-				profilePicture.addClickHandler(clickHandler);
-				add(profilePicture);
-			} else {
-				Icon defaultProfilePicture = new Icon(IconType.USERS);
-				defaultProfilePicture.addStyleName("imageButton lightGreyText margin-right-4");
-				add(defaultProfilePicture);
-			}
+
 			add(anchor);
 			add(notificationsPanel);
 		}
+	}
+	
+	@Override
+	public void setPicture(String url) {
+		ClickHandler clickHandler = new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				anchor.fireEvent(event);
+			}
+		};
+		Image profilePicture = new Image();
+		profilePicture.setUrl(url);
+		profilePicture.setHeight("24px");
+		profilePicture.addStyleName("imageButton userProfileImage displayInline margin-right-4");
+		profilePicture.addClickHandler(clickHandler);
+		insert(profilePicture, 0);
+	}
+	@Override
+	public void showDefaultPicture() {
+		Icon defaultProfilePicture = new Icon(IconType.USERS);
+		defaultProfilePicture.addStyleName("imageButton lightGreyText margin-right-4");
+		insert(defaultProfilePicture, 0);		
 	}
 	
 	@Override

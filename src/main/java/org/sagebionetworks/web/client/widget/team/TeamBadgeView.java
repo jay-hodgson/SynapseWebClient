@@ -8,7 +8,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface TeamBadgeView extends IsWidget, SynapseView {
 	public void setTeam(Team team, Integer maxNameLength, ClickHandler customClickHandler);
-
+	void setPicture(String url);
+	void showDefaultPicture();
 	public void showLoadError(String principalId);
 	
 	public void setRequestCount(String count);

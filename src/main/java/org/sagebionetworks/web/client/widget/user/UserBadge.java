@@ -3,6 +3,9 @@ package org.sagebionetworks.web.client.widget.user;
 import java.util.Map;
 
 import org.sagebionetworks.repo.model.UserProfile;
+import org.sagebionetworks.repo.model.file.FileHandleAssociateType;
+import org.sagebionetworks.repo.model.file.FileHandleAssociation;
+import org.sagebionetworks.repo.model.file.FileResult;
 import org.sagebionetworks.schema.adapter.AdapterFactory;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
@@ -15,6 +18,7 @@ import org.sagebionetworks.web.client.place.Profile;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.WidgetRendererPresenter;
+import org.sagebionetworks.web.client.widget.asynch.PresignedURLAsyncHandler;
 import org.sagebionetworks.web.client.widget.asynch.UserProfileAsyncHandler;
 import org.sagebionetworks.web.client.widget.lazyload.LazyLoadHelper;
 import org.sagebionetworks.web.shared.WebConstants;
@@ -48,7 +52,7 @@ public class UserBadge implements UserBadgeView.Presenter, SynapseWidgetPresente
 	private String principalId = null, username = null;
 	UserProfileAsyncHandler userProfileAsyncHandler;
 	private AdapterFactory adapterFactory;
-
+	private PresignedURLAsyncHandler presignedURLAsyncHandler;
 	public static final ClickHandler DO_NOTHING_ON_CLICK = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent event) {
@@ -64,7 +68,8 @@ public class UserBadge implements UserBadgeView.Presenter, SynapseWidgetPresente
 			ClientCache clientCache,
 			LazyLoadHelper lazyLoadHelper,
 			UserProfileAsyncHandler userProfileAsyncHandler,
-			AdapterFactory adapterFactory) {
+			AdapterFactory adapterFactory,
+			PresignedURLAsyncHandler presignedURLAsyncHandler) {
 		this.view = view;
 		this.synapseClient = synapseClient;
 		this.globalApplicationState = globalApplicationState;
@@ -73,6 +78,7 @@ public class UserBadge implements UserBadgeView.Presenter, SynapseWidgetPresente
 		this.lazyLoadHelper = lazyLoadHelper;
 		this.userProfileAsyncHandler = userProfileAsyncHandler;
 		this.adapterFactory = adapterFactory;
+		this.presignedURLAsyncHandler = presignedURLAsyncHandler;
 		this.openNewWindow = false;
 		view.setPresenter(this);
 		view.setSize(BadgeSize.SMALL);
@@ -126,16 +132,28 @@ public class UserBadge implements UserBadgeView.Presenter, SynapseWidgetPresente
 
 	public void configurePicture() {
 		if (profile != null && profile.getProfilePicureFileHandleId() != null) {
-			String url = DisplayUtils.createUserProfileAttachmentUrl(synapseJSNIUtils.getBaseProfileAttachmentUrl(), profile.getOwnerId(), profile.getProfilePicureFileHandleId(), true);
-			if (!useCachedImage) {
-				url += DisplayUtils.getParamForNoCaching();
-			}
-			view.showCustomUserPicture(url);
+			FileHandleAssociation fha = new FileHandleAssociation();
+			fha.setAssociateObjectId(profile.getOwnerId());
+			fha.setAssociateObjectType(FileHandleAssociateType.UserProfileAttachment);
+			fha.setFileHandleId(profile.getProfilePicureFileHandleId());
+			presignedURLAsyncHandler.getFileResult(fha, new AsyncCallback<FileResult>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					showDefaultProfilePicture();
+				}
+				public void onSuccess(FileResult result) {
+					view.showCustomUserPicture(result.getPreSignedURL());		
+				};
+			});
 		} else {
-			view.setDefaultPictureLetter(getDefaultPictureLetter(profile));
-			view.setDefaultPictureColor(getDefaultPictureColor(profile));
-			view.showAnonymousUserPicture();
+			showDefaultProfilePicture();
 		}
+	}
+	
+	private void showDefaultProfilePicture() {
+		view.setDefaultPictureLetter(getDefaultPictureLetter(profile));
+		view.setDefaultPictureColor(getDefaultPictureColor(profile));
+		view.showAnonymousUserPicture();
 	}
 	
 	public String getDefaultPictureColor(UserProfile profile) {
