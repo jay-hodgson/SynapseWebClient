@@ -42,8 +42,8 @@ public class ClientProperties {
 	/*
 	 * JavaScript WebResources
 	 */
-	public static final WebResource MATHJAX_LOADER_JS = new WebResource("js/mathjax-loader.js", ResourceType.JAVASCRIPT);
-	public static final WebResource MATHJAX_JS = new WebResource("https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=default", ResourceType.JAVASCRIPT);
+	public static final WebResource MATH_CSS = new WebResource("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-alpha2/katex.min.css", ResourceType.CSS);
+	public static final WebResource MATH_JS = new WebResource("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-alpha2/katex.min.js", ResourceType.JAVASCRIPT);
 	public static final WebResource TWITTER_JS = new WebResource("https://platform.twitter.com/widgets.js", ResourceType.JAVASCRIPT);
 	public static final WebResource PLOTLY_JS = new WebResource("https://cdn.plot.ly/plotly-1.31.2.min.js", ResourceType.JAVASCRIPT);
 	public static final WebResource AWS_SDK_JS = new WebResource("js/aws-sdk-2.86.0.min.js", ResourceType.JAVASCRIPT);

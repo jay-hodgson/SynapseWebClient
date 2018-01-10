@@ -12,6 +12,7 @@ import org.sagebionetworks.web.client.widget.provenance.nchart.NChartLayersArray
 import org.sagebionetworks.web.shared.WebConstants;
 
 import com.google.gwt.core.client.Callback;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -428,12 +429,21 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 	}-*/;
 	
 	@Override
-	public void processWithMathJax(Element element) {
-		_processWithMathJax(element);		
+	public void processMath(Element element) {
+		// remove \(, \), \[, \]
+		String tex = element.getInnerText();
+		boolean isCenterDiv = tex.contains("\\[");
+		tex = tex.replace("\\(","").replace("\\)", "");
+		tex = tex.replace("\\[","").replace("\\]", "");
+		String html = _processMath(tex);
+		if (isCenterDiv) {
+			html = "<div class=\"center\">"+html+"</div>";
+		}
+		element.setInnerHTML(html);
 	}
 
-	private final static native void _processWithMathJax(Element element) /*-{
-		$wnd.layoutMath(element);
+	private final static native String _processMath(String tex) /*-{
+		return $wnd.katex.renderToString(tex);
 	}-*/;
 
 	@Override

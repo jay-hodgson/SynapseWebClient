@@ -112,7 +112,7 @@ public class MarkdownWidgetTest {
 		verify(mockSynapseJSNIUtils).loadTableSorters();
 		
 		//verify loadMath
-		verify(mockSynapseJSNIUtils).processWithMathJax(mockElementWrapper.getElement());
+		verify(mockSynapseJSNIUtils).processMath(mockElementWrapper.getElement());
 		
 		//verify highlight code blocks applied
 		verify(mockSynapseJSNIUtils).highlightCodeBlocks();
@@ -154,7 +154,7 @@ public class MarkdownWidgetTest {
 		verify(mockSynapseJSNIUtils).loadTableSorters();
 		
 		//verify loadMath
-		verify(mockSynapseJSNIUtils).processWithMathJax(mockElementWrapper.getElement());
+		verify(mockSynapseJSNIUtils).processMath(mockElementWrapper.getElement());
 		
 		//verify loadWidgets
 		verify(mockWidgetRegistrar).getWidgetContentType(elementContentType);

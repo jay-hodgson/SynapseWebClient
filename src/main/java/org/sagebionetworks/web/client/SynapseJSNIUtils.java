@@ -63,7 +63,7 @@ public interface SynapseJSNIUtils {
 	public void uploadUrlToGenomeSpace(String url);	
 	public void uploadUrlToGenomeSpace(String url, String filename);
 	
-	public void processWithMathJax(Element element);	
+	public void processMath(Element element);	
 
 	public void loadCss(String url, Callback<Void, Exception> callback);
 
