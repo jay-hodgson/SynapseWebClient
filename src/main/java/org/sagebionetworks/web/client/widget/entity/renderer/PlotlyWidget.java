@@ -7,7 +7,7 @@ import static org.sagebionetworks.web.shared.WidgetConstants.BAR_MODE;
 import static org.sagebionetworks.web.shared.WidgetConstants.FILL_COLUMN_NAME;
 import static org.sagebionetworks.web.shared.WidgetConstants.IS_HORIZONTAL;
 import static org.sagebionetworks.web.shared.WidgetConstants.SHOW_LEGEND;
-import static org.sagebionetworks.web.shared.WidgetConstants.TABLE_QUERY_KEY;
+import static org.sagebionetworks.web.shared.WidgetConstants.*;
 import static org.sagebionetworks.web.shared.WidgetConstants.TITLE;
 import static org.sagebionetworks.web.shared.WidgetConstants.TYPE;
 import static org.sagebionetworks.web.shared.WidgetConstants.X_AXIS_TITLE;
@@ -63,6 +63,7 @@ public class PlotlyWidget implements PlotlyWidgetView.Presenter, WidgetRendererP
 	private SynapseAlert synAlert;
 	private String sql, title, xTitle, yTitle;
 	GraphType graphType;
+	String colorScale;
 	String xAxisType, yAxisType;
 	BarMode barMode;
 	private AsynchronousJobTracker jobTracker;
@@ -112,6 +113,7 @@ public class PlotlyWidget implements PlotlyWidgetView.Presenter, WidgetRendererP
 		xTitle = descriptor.get(X_AXIS_TITLE);
 		yTitle = descriptor.get(Y_AXIS_TITLE);
 		graphType = GraphType.valueOf(descriptor.get(TYPE));
+		colorScale = descriptor.get(COLOR_SCALE);
 		
 		xAxisType = descriptor.containsKey(X_AXIS_TYPE) ? descriptor.get(X_AXIS_TYPE) : "-"; 
 		yAxisType = descriptor.containsKey(Y_AXIS_TYPE) ? descriptor.get(Y_AXIS_TYPE) : "-";
@@ -240,9 +242,9 @@ public class PlotlyWidget implements PlotlyWidgetView.Presenter, WidgetRendererP
 		try {
 			List<PlotlyTraceWrapper> plotlyGraphData;
 			if (fillColumnName != null) {
-				plotlyGraphData = transform(xAxisColumnName, fillColumnName, graphType, graphData);
+				plotlyGraphData = transform(xAxisColumnName, fillColumnName, graphType, graphData, colorScale);
 			} else { 
-				plotlyGraphData = transform(xAxisColumnName, graphType, graphData); 
+				plotlyGraphData = transform(xAxisColumnName, graphType, graphData, colorScale); 
 			}
 			initializeOrientation(plotlyGraphData);
 			view.setLoadingVisible(false);
@@ -275,7 +277,7 @@ public class PlotlyWidget implements PlotlyWidgetView.Presenter, WidgetRendererP
 	 * @param graphData
 	 * @return
 	 */
-	public static List<PlotlyTraceWrapper> transform(String xAxisColumnName, GraphType graphType, Map<String, List<String>> graphData) {
+	public static List<PlotlyTraceWrapper> transform(String xAxisColumnName, GraphType graphType, Map<String, List<String>> graphData, String colorScale) {
 		String[] xData = ArrayUtils.getStringArray(graphData.remove(xAxisColumnName));
 		List<PlotlyTraceWrapper> plotlyGraphData = new ArrayList<PlotlyTraceWrapper>(graphData.size());
 		for (String columnName : graphData.keySet()) {
@@ -284,13 +286,14 @@ public class PlotlyWidget implements PlotlyWidgetView.Presenter, WidgetRendererP
 			String[] yData = ArrayUtils.getStringArray(graphData.get(columnName));
 			trace.setY(yData);
 			trace.setType(graphType);
+			trace.setColorScale(colorScale);
 			trace.setName(columnName);
 			plotlyGraphData.add(trace);
 		}
 		return plotlyGraphData;
 	}
 	
-	public static List<PlotlyTraceWrapper> transform(String xAxisColumnName, String fillColumnName, GraphType graphType, Map<String, List<String>> graphData) {
+	public static List<PlotlyTraceWrapper> transform(String xAxisColumnName, String fillColumnName, GraphType graphType, Map<String, List<String>> graphData, String colorScale) {
 		String[] xData = ArrayUtils.getStringArray(graphData.remove(xAxisColumnName));
 		String[] fillColumnData = ArrayUtils.getStringArray(graphData.remove(fillColumnName));
 		if (xAxisColumnName.equals(fillColumnName)) {
@@ -322,6 +325,7 @@ public class PlotlyWidget implements PlotlyWidgetView.Presenter, WidgetRendererP
 				newTrace.setX(ArrayUtils.getStringArray(traceX));
 				newTrace.setY(ArrayUtils.getStringArray(traceY));
 				newTrace.setType(graphType);
+				newTrace.setColorScale(colorScale);
 				String traceName = targetFillColumnValue == null ? "" : targetFillColumnValue;
 				if (yColumnCount > 1) {
 					traceName = columnName + " : " + traceName;

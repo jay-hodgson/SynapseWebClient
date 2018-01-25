@@ -305,11 +305,12 @@ public class PlotlyWidgetTest {
 		
 		String fillColumnName = "fill";
 		GraphType graphType = GraphType.BAR;
+		String colorScale = "Electric";
 		Map<String, List<String>> graphData = new HashMap<>();
 		graphData.put(xAxisColumnName, Arrays.asList("1", "1", "2"));
 		graphData.put(fillColumnName, Arrays.asList("a", "b", "a"));
 		graphData.put(y1ColumnName, Arrays.asList("40", "50", "60"));
-		List<PlotlyTraceWrapper> traces = PlotlyWidget.transform(xAxisColumnName, fillColumnName, graphType, graphData);
+		List<PlotlyTraceWrapper> traces = PlotlyWidget.transform(xAxisColumnName, fillColumnName, graphType, graphData, colorScale);
 		assertEquals(2, traces.size());
 		PlotlyTraceWrapper a = traces.get(0).getName().equals("a") ? traces.get(0) : traces.get(1);
 		assertEquals(2, a.getX().length);
@@ -321,13 +322,13 @@ public class PlotlyWidgetTest {
 	public void testTransformWithXColumnFill() {
 		String xAxisColumnName = "x";
 		String y1ColumnName = "y1";
-		
+		String colorScale = "Earth";
 		String fillColumnName = xAxisColumnName;
 		GraphType graphType = GraphType.BAR;
 		Map<String, List<String>> graphData = new HashMap<>();
 		graphData.put(xAxisColumnName, Arrays.asList("1", "1", "2"));
 		graphData.put(y1ColumnName, Arrays.asList("40", "50", "60"));
-		List<PlotlyTraceWrapper> traces = PlotlyWidget.transform(xAxisColumnName, fillColumnName, graphType, graphData);
+		List<PlotlyTraceWrapper> traces = PlotlyWidget.transform(xAxisColumnName, fillColumnName, graphType, graphData, colorScale);
 		assertEquals(2, traces.size());
 		PlotlyTraceWrapper a = traces.get(0).getName().equals("1") ? traces.get(0) : traces.get(1);
 		assertEquals(2, a.getX().length);

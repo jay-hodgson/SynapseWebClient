@@ -6,13 +6,17 @@ import jsinterop.annotations.JsIgnore;
 
 public class PlotlyTraceWrapper {
 	String[] x, y;
-	String name, type;
+	String name, type, colorscale;
 	boolean isHorizontal = false;
 	
 	public PlotlyTraceWrapper() {
 	}
 	public void setType(GraphType newType) {
 		type = newType.name().toLowerCase();
+	}
+	
+	public void setColorScale(String colorscale) {
+		this.colorscale = colorscale;
 	}
 	
 	@JsIgnore
@@ -63,16 +67,17 @@ public class PlotlyTraceWrapper {
 		String orientationValue = isHorizontal ? "h" : "v";
 		String[] xAxis = isHorizontal ? y : x;
 		String[] yAxis = isHorizontal ? x : y;
-		return _getTrace(name, type, xAxis, yAxis, orientationValue);
+		return _getTrace(name, type, xAxis, yAxis, orientationValue, colorscale);
 	}
 
-	private static native JavaScriptObject _getTrace(String nameValue, String typeValue, String[] xValue, String[] yValue, String orientationValue) /*-{
+	private static native JavaScriptObject _getTrace(String nameValue, String typeValue, String[] xValue, String[] yValue, String orientationValue, String colorscaleValue) /*-{
 		return {
 			type : typeValue,
 			name : nameValue,
 			x : xValue,
 			y : yValue,
-			orientation : orientationValue
+			orientation : orientationValue,
+			colorscale : colorscaleValue
 		}
 	}-*/;
 
