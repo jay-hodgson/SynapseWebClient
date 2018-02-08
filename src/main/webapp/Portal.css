@@ -2512,3 +2512,22 @@ div.colborder {
 	border: 1px dashed grey;
 	border-radius: 4px;
 }
+
+.full-image-container, .full-image, .image-loaded {
+  background-position: center center;
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+  -webkit-filter: none;
+}
+
+.blur-image {
+  filter: blue(6px);
+  transition: -webkit-filter 0s 0.3s linear, filter 0s 0.3s linear;
+}
+
+.image-loaded {
+  transition: opacity .25s linear;
+}

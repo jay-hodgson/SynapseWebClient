@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.sagebionetworks.repo.model.file.BatchFileRequest;
 import org.sagebionetworks.repo.model.file.BatchFileResult;
@@ -13,10 +14,11 @@ import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.SynapseJavascriptClient;
 import org.sagebionetworks.web.client.utils.Callback;
+import org.sagebionetworks.web.client.utils.FutureUtils;
 import org.sagebionetworks.web.shared.exceptions.ForbiddenException;
 import org.sagebionetworks.web.shared.exceptions.NotFoundException;
-import org.sagebionetworks.web.shared.exceptions.UnauthorizedException;
 
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public abstract class BaseFileHandleAsyncHandlerImpl {
@@ -38,6 +40,11 @@ public abstract class BaseFileHandleAsyncHandlerImpl {
 			}
 		};
 		gwt.scheduleFixedDelay(callback, 200 + gwt.nextInt(150));
+	}
+	
+	public FluentFuture<FileResult> getFileResult(FileHandleAssociation fileHandleAssociation) {
+		Consumer<AsyncCallback<FileResult>> closure = cb -> getFileResult(fileHandleAssociation, cb);
+		return FutureUtils.getFuture(closure);
 	}
 	
 	public void getFileResult(FileHandleAssociation fileHandleAssociation, AsyncCallback<FileResult> callback) {

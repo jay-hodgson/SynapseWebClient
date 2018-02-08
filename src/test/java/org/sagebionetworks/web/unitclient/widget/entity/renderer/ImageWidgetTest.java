@@ -110,7 +110,7 @@ public class ImageWidgetTest {
 		verify(mockSynapseJavascriptClient).getEntityForVersion(eq(synId), eq((Long)null), any(AsyncCallback.class));
 		verify(mockPresignedURLAsyncHandler).getFileResult(any(FileHandleAssociation.class), any(AsyncCallback.class));
 		boolean isLoggedIn = true;
-		verify(mockView).configure(eq(PRESIGNED_URL), eq(FILE_NAME), anyString(), anyString(), eq(synId), eq(isLoggedIn));
+		verify(mockView).configure(eq(PRESIGNED_URL), anyString(), eq(FILE_NAME), anyString(), anyString(), eq(synId), eq(isLoggedIn));
 	}
 	
 	@Test
@@ -134,7 +134,7 @@ public class ImageWidgetTest {
 		assertEquals(FileHandleAssociateType.FileEntity, fha.getAssociateObjectType());
 		assertEquals(dataFileHandleId, fha.getFileHandleId());
 		boolean isLoggedIn = true;
-		verify(mockView).configure(eq(PRESIGNED_URL), eq(FILE_NAME), anyString(), anyString(), eq(synId), eq(isLoggedIn));
+		verify(mockView).configure(eq(PRESIGNED_URL), anyString(), eq(FILE_NAME), anyString(), anyString(), eq(synId), eq(isLoggedIn));
 	}
 	
 	@Test
@@ -174,7 +174,7 @@ public class ImageWidgetTest {
 		assertEquals(FileHandleAssociateType.WikiAttachment, fha.getAssociateObjectType());
 		assertEquals(fileHandleId2, fha.getFileHandleId());
 		boolean isLoggedIn = true;
-		verify(mockView).configure(eq(PRESIGNED_URL), eq(FILE_NAME), anyString(), anyString(), eq((String)null), eq(isLoggedIn));
+		verify(mockView).configure(eq(PRESIGNED_URL), anyString(), eq(FILE_NAME), anyString(), anyString(), eq((String)null), eq(isLoggedIn));
 	}
 	
 	@Test

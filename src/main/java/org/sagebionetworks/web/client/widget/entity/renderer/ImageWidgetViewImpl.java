@@ -1,5 +1,6 @@
 package org.sagebionetworks.web.client.widget.entity.renderer;
 
+import org.gwtbootstrap3.client.ui.html.Div;
 import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.cache.ClientCache;
@@ -7,6 +8,8 @@ import org.sagebionetworks.web.client.place.Synapse;
 import org.sagebionetworks.web.shared.WebConstants;
 import org.sagebionetworks.web.shared.WidgetConstants;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -20,7 +23,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class ImageWidgetViewImpl extends FlowPanel implements ImageWidgetView {
+public class ImageWidgetViewImpl extends Div implements ImageWidgetView {
 
 	private GlobalApplicationState globalApplicationState;
 	private ClientCache clientCache;
@@ -47,10 +50,13 @@ public class ImageWidgetViewImpl extends FlowPanel implements ImageWidgetView {
 	}
 	
 	@Override
-	public void configure(final String url, final String fileName,
+	public void configure(final String url, String previewImageUrl, final String fileName,
 			final String scale, String alignment, final String synapseId, final boolean isLoggedIn) {
 		clear();
 		add(synAlert);
+		Div fullImage = new Div();
+		fullImage.addStyleName("full-image");
+		add(fullImage);
 		hasTriedCache = false;
 		// Add a html panel that contains the image src from the attachments server (to pull asynchronously)
 		
@@ -110,6 +116,8 @@ public class ImageWidgetViewImpl extends FlowPanel implements ImageWidgetView {
 			@Override
 			public void onLoad(LoadEvent event) {
 				try {
+					fullImage.addStyleName("image-loaded");
+					ImageWidgetViewImpl.this.getElement().removeClassName("blur-image");
 					float imageHeight = image.getHeight();
 					float imageWidth = image.getWidth();
 					if (scale != null && !"100".equals(scale) && imageWidth > 0 && imageHeight > 0) {
@@ -143,8 +151,13 @@ public class ImageWidgetViewImpl extends FlowPanel implements ImageWidgetView {
 			}
 		});
 		image.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-		add(image);
+		fullImage.add(image);
+		add(fullImage);
 		image.setUrl(url);
+		if (previewImageUrl != null) {
+			this.getElement().addClassName("full-image-container blur-image");
+			this.getElement().setAttribute("style", "background-image: url(" + previewImageUrl + ");");
+		}
 	}
 	
 	public void addStyleName(String style) {
