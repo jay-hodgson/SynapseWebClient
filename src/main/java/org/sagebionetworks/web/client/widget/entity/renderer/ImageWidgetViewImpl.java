@@ -153,11 +153,11 @@ public class ImageWidgetViewImpl extends Div implements ImageWidgetView {
 		image.getElement().getStyle().setVisibility(Visibility.HIDDEN);
 		fullImage.add(image);
 		add(fullImage);
-		image.setUrl(url);
 		if (previewImageUrl != null) {
 			this.getElement().addClassName("full-image-container blur-image");
 			this.getElement().setAttribute("style", "background-image: url(" + previewImageUrl + ");");
 		}
+		image.setUrl(url);
 	}
 	
 	public void addStyleName(String style) {
