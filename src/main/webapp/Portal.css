@@ -2524,7 +2524,7 @@ div.colborder {
 }
 
 .blur-image {
-  filter: blue(6px);
+  filter: none;
   transition: -webkit-filter 0s 0.3s linear, filter 0s 0.3s linear;
 }
 
