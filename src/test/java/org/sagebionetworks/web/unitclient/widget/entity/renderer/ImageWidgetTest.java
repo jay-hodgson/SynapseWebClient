@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.sagebionetworks.web.client.utils.FutureUtils.getDoneFuture;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.sagebionetworks.repo.model.EntityBundle;
 import org.sagebionetworks.repo.model.FileEntity;
 import org.sagebionetworks.repo.model.ObjectType;
 import org.sagebionetworks.repo.model.file.FileHandle;
@@ -68,6 +70,8 @@ public class ImageWidgetTest {
 	ArgumentCaptor<FileHandleAssociation> fhaCaptor;
 	@Captor
 	ArgumentCaptor<Throwable> throwableCaptor;
+	@Mock
+	EntityBundle mockEntityBundle;
 	
 	public static final String PRESIGNED_URL = "https://s3.presigned/image.jpg";
 	public static final String FILE_NAME = "image.jpg";
@@ -86,7 +90,7 @@ public class ImageWidgetTest {
 		descriptor.put(WidgetConstants.IMAGE_WIDGET_FILE_NAME_KEY, FILE_NAME);
 		when(mockAuthenticationController.isLoggedIn()).thenReturn(true);
 		when(mockFileResult.getPreSignedURL()).thenReturn(PRESIGNED_URL);
-		AsyncMockStubber.callSuccessWith(mockFileResult).when(mockPresignedURLAsyncHandler).getFileResult(any(FileHandleAssociation.class), any(AsyncCallback.class));
+		when(mockPresignedURLAsyncHandler.getFileResult(any(FileHandleAssociation.class))).thenReturn(getDoneFuture(mockFileResult));
 	}
 	
 	@Test
@@ -97,7 +101,8 @@ public class ImageWidgetTest {
 	
 	@Test
 	public void testConfigureFromSynapseId() {
-		AsyncMockStubber.callSuccessWith(mockFileEntity).when(mockSynapseJavascriptClient).getEntityForVersion(anyString(), anyLong(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(mockEntityBundle).when(mockSynapseJavascriptClient).getEntityBundleForVersion(anyString(), anyLong(), anyInt(), any(AsyncCallback.class));
+		when(mockEntityBundle.getEntity()).thenReturn(mockFileEntity);
 		String synId = "syn239";
 		descriptor.put(WidgetConstants.IMAGE_WIDGET_SYNAPSE_ID_KEY, synId);
 		String dataFileHandleId = "8765";
@@ -107,15 +112,16 @@ public class ImageWidgetTest {
 		widget.configure(wikiKey,descriptor, null, null);
 		
 		verify(mockSynAlert).clear();
-		verify(mockSynapseJavascriptClient).getEntityForVersion(eq(synId), eq((Long)null), any(AsyncCallback.class));
-		verify(mockPresignedURLAsyncHandler).getFileResult(any(FileHandleAssociation.class), any(AsyncCallback.class));
+		verify(mockSynapseJavascriptClient).getEntityBundleForVersion(eq(synId), eq((Long)null), anyInt(), any(AsyncCallback.class));
+		verify(mockPresignedURLAsyncHandler).getFileResult(any(FileHandleAssociation.class));
 		boolean isLoggedIn = true;
 		verify(mockView).configure(eq(PRESIGNED_URL), anyString(), eq(FILE_NAME), anyString(), anyString(), eq(synId), eq(isLoggedIn));
 	}
 	
 	@Test
 	public void testConfigureFromSynapseIdWithVersion() {
-		AsyncMockStubber.callSuccessWith(mockFileEntity).when(mockSynapseJavascriptClient).getEntityForVersion(anyString(), anyLong(), any(AsyncCallback.class));
+		AsyncMockStubber.callSuccessWith(mockEntityBundle).when(mockSynapseJavascriptClient).getEntityBundleForVersion(anyString(), anyLong(), anyInt(), any(AsyncCallback.class));
+		when(mockEntityBundle.getEntity()).thenReturn(mockFileEntity);
 		String synId = "syn239";
 		Long version = 999L;
 		descriptor.put(WidgetConstants.IMAGE_WIDGET_SYNAPSE_ID_KEY, synId);
@@ -127,8 +133,8 @@ public class ImageWidgetTest {
 		widget.configure(wikiKey,descriptor, null, null);
 		
 		verify(mockSynAlert).clear();
-		verify(mockSynapseJavascriptClient).getEntityForVersion(eq(synId), eq(version), any(AsyncCallback.class));
-		verify(mockPresignedURLAsyncHandler).getFileResult(fhaCaptor.capture(), any(AsyncCallback.class));
+		verify(mockSynapseJavascriptClient).getEntityBundleForVersion(eq(synId), eq(version), anyInt(), any(AsyncCallback.class));
+		verify(mockPresignedURLAsyncHandler).getFileResult(fhaCaptor.capture());
 		FileHandleAssociation fha = fhaCaptor.getValue();
 		assertEquals(synId, fha.getAssociateObjectId());
 		assertEquals(FileHandleAssociateType.FileEntity, fha.getAssociateObjectType());
@@ -140,7 +146,7 @@ public class ImageWidgetTest {
 	@Test
 	public void testConfigureFromSynapseIdError() {
 		Exception ex = new Exception("so sad");
-		AsyncMockStubber.callFailureWith(ex).when(mockSynapseJavascriptClient).getEntityForVersion(anyString(), anyLong(), any(AsyncCallback.class));
+		AsyncMockStubber.callFailureWith(ex).when(mockSynapseJavascriptClient).getEntityBundleForVersion(anyString(), anyLong(), anyInt(), any(AsyncCallback.class));
 		String synId = "syn239";
 		descriptor.put(WidgetConstants.IMAGE_WIDGET_SYNAPSE_ID_KEY, synId);
 		
@@ -168,7 +174,7 @@ public class ImageWidgetTest {
 		
 		verify(mockSynAlert).clear();
 		verify(mockSynapseJavascriptClient).getWikiAttachmentFileHandles(any(WikiPageKey.class), eq(wikiVersion), any(AsyncCallback.class));
-		verify(mockPresignedURLAsyncHandler).getFileResult(fhaCaptor.capture(), any(AsyncCallback.class));
+		verify(mockPresignedURLAsyncHandler).getFileResult(fhaCaptor.capture());
 		FileHandleAssociation fha = fhaCaptor.getValue();
 		assertEquals(wikiKey.getWikiPageId(), fha.getAssociateObjectId());
 		assertEquals(FileHandleAssociateType.WikiAttachment, fha.getAssociateObjectType());
