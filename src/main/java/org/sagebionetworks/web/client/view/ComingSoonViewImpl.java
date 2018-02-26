@@ -102,11 +102,18 @@ public class ComingSoonViewImpl extends Composite implements ComingSoonView {
 	}
 	
 	private static native void _showUserList(String userGroupHeadersJson, Element el) /*-{
+		debugger;
 		$wnd.ReactDOM.render(
 			$wnd.React.createElement(
-				$wnd.SynapseReactComponents.UserListComponent,
-				{ usergroupheaders : JSON.parse(userGroupHeadersJson).children }), 
+				$wnd.SynapseReactComponents.SynapseHeader,
+				{ }), 
 				el
 			);
+//		$wnd.ReactDOM.render(
+//			$wnd.React.createElement(
+//				$wnd.SynapseReactComponents.UserListComponent,
+//				{ usergroupheaders : JSON.parse(userGroupHeadersJson).children }), 
+//				el
+//			);
 	}-*/;
 }

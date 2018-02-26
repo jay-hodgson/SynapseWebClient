@@ -42,7 +42,7 @@ public class ClientProperties {
 	/*
 	 * JavaScript WebResources
 	 */
-	public static final WebResource SYNAPSE_REACT_COMPONENTS_JS = new WebResource("js/react-components/synapse-react-components.min.js", ResourceType.JAVASCRIPT);
+	public static final WebResource SYNAPSE_REACT_COMPONENTS_JS = new WebResource("js/react-components/synapse-react-components.js", ResourceType.JAVASCRIPT);
 	public static final WebResource MATHJAX_LOADER_JS = new WebResource("js/mathjax-loader.js", ResourceType.JAVASCRIPT);
 	public static final WebResource MATHJAX_JS = new WebResource("https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=default", ResourceType.JAVASCRIPT);
 	public static final WebResource TWITTER_JS = new WebResource("https://platform.twitter.com/widgets.js", ResourceType.JAVASCRIPT);
