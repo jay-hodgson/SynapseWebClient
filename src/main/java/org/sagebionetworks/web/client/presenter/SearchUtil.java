@@ -1,13 +1,17 @@
 package org.sagebionetworks.web.client.presenter;
 
-import org.sagebionetworks.repo.model.Entity;
+import java.util.Arrays;
+
+import org.sagebionetworks.repo.model.search.query.SearchQuery;
+import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
+import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.web.client.ClientProperties;
 import org.sagebionetworks.web.client.GlobalApplicationState;
-import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.place.Search;
 import org.sagebionetworks.web.client.place.Synapse;
+import org.sagebionetworks.web.shared.SearchQueryUtils;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.http.client.URL;
 
 /**
  * This logic was removed from the search presenter so we could make a clean SearchPresenterProxy.
@@ -41,15 +45,30 @@ public class SearchUtil {
 		}
 		return null;
 	}
-	public static void searchForTerm(String queryTerm, final GlobalApplicationState globalApplicationState, SynapseClientAsync synapseClient) {
-		final Synapse synapsePlace = willRedirect(queryTerm);
-		final Search searchPlace = new Search(queryTerm);
+	public static void searchForTerm(
+			String queryTerm, 
+			GlobalApplicationState globalApplicationState, 
+			JSONObjectAdapter jsonObjectAdapter,
+			boolean allTypes) {
+		Synapse synapsePlace = willRedirect(queryTerm);
 		if (synapsePlace == null) {
-			//no potential redirect, go directly to search!
-			globalApplicationState.getPlaceChanger().goTo(searchPlace);	
+			try {
+				SearchQuery query;
+				if (allTypes) {
+					query = SearchQueryUtils.getAllTypesSearchQuery();
+				} else {
+					query = SearchQueryUtils.getDefaultSearchQuery();
+				}
+				query.setQueryTerm(Arrays.asList(queryTerm.split(" ")));
+				String json = query.writeToJSONObject(jsonObjectAdapter.createNew()).toJSONString();
+				Search searchPlace = new Search(URL.encode(json));
+				//no potential redirect, go directly to search!
+				globalApplicationState.getPlaceChanger().goTo(searchPlace);
+			} catch (JSONObjectAdapterException e) {
+				globalApplicationState.getPlaceChanger().goTo(new Search(queryTerm));
+			}	
 		} else {
 			globalApplicationState.getPlaceChanger().goTo(synapsePlace);
-			
 		}
 	}
 

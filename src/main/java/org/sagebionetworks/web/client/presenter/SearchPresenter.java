@@ -106,7 +106,7 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 
 	@Override
 	public void setSearchTerm(String queryTerm) {
-		SearchUtil.searchForTerm(queryTerm, globalApplicationState, synapseClient);
+		SearchUtil.searchForTerm(queryTerm, globalApplicationState, jsonObjectAdapter, false);
 	}
 
 	@Override
@@ -281,7 +281,7 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 		SearchQuery query = SearchQueryUtils.getDefaultSearchQuery();
 		timeValueToDisplay.clear();
 		searchStartTime = new Date();		
-		newQuery = true;		
+		newQuery = true;	
 		return query;
 	}
 	
