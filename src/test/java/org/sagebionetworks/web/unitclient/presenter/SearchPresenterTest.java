@@ -24,6 +24,7 @@ import org.sagebionetworks.repo.model.search.query.SearchQuery;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.schema.adapter.org.json.JSONObjectAdapterImpl;
 import org.sagebionetworks.web.client.ClientProperties;
+import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.PlaceChanger;
 import org.sagebionetworks.web.client.SynapseClientAsync;
@@ -54,6 +55,8 @@ public class SearchPresenterTest {
 	@Mock
 	PlaceChanger mockPlaceChanger;
 	@Mock
+	GWTWrapper mockGWT;
+	@Mock
 	SynapseAlert mockSynAlert;
 	@Mock
 	LoadMoreWidgetContainer mockLoadMoreWidgetContainer;
@@ -67,12 +70,14 @@ public class SearchPresenterTest {
 		when(mockGlobalApplicationState.getPlaceChanger()).thenReturn(mockPlaceChanger);
 		jsonObjectAdapter = new JSONObjectAdapterImpl();
 		
-		searchPresenter = new SearchPresenter(mockView,
+		searchPresenter = new SearchPresenter(
+				mockView,
 				mockGlobalApplicationState,
 				mockSynapseClient,
 				new JSONObjectAdapterImpl(),
 				mockSynAlert,
-				mockLoadMoreWidgetContainer);
+				mockLoadMoreWidgetContainer,
+				mockGWT);
 		
 		exampleTerm = "searchQueryTerm";
 		exampleTermSearchQuery = SearchQueryUtils.getDefaultSearchQuery();

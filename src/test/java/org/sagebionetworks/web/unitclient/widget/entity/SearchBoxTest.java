@@ -1,49 +1,40 @@
 package org.sagebionetworks.web.unitclient.widget.entity;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.sagebionetworks.schema.adapter.AdapterFactory;
-import org.sagebionetworks.schema.adapter.JSONArrayAdapter;
-import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
+import org.sagebionetworks.schema.adapter.org.json.JSONObjectAdapterImpl;
+import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.PlaceChanger;
-import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.place.PeopleSearch;
 import org.sagebionetworks.web.client.place.Search;
 import org.sagebionetworks.web.client.place.Synapse;
 import org.sagebionetworks.web.client.widget.search.SearchBox;
 import org.sagebionetworks.web.client.widget.search.SearchBoxView;
-import static org.junit.Assert.*;
+
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class SearchBoxTest {
 
 	@Mock
 	SearchBoxView mockView;
-	
 	@Mock
 	GlobalApplicationState mockGlobalApplicationState;
-	
-	@Mock
-	AdapterFactory mockAdapterFactory;
-	
-	@Mock
-	JSONObjectAdapter mockJSONObjectAdapter;
-	
-	@Mock
-	JSONArrayAdapter mockJSONArrayAdapter;
-	
-	@Mock
-	SynapseClientAsync mockSynapseClient;
-	
+	JSONObjectAdapterImpl jsonObjectAdapter;
 	@Mock
 	PlaceChanger mockPlaceChanger;
+	@Mock
+	GWTWrapper mockGWT;
 	@Captor
 	ArgumentCaptor<Place> placeCaptor;
 	SearchBox presenter;
@@ -51,27 +42,24 @@ public class SearchBoxTest {
 	@Before
 	public void before() {
 		MockitoAnnotations.initMocks(this);
-		presenter = new SearchBox(mockView, mockGlobalApplicationState, mockAdapterFactory, mockSynapseClient);
-		Mockito.when(mockGlobalApplicationState.getPlaceChanger()).thenReturn(mockPlaceChanger);
-		Mockito.when(mockAdapterFactory.createNew()).thenReturn(mockJSONObjectAdapter);
-		Mockito.when(mockJSONObjectAdapter.createNew()).thenReturn(mockJSONObjectAdapter);
-		Mockito.when(mockJSONObjectAdapter.createNewArray()).thenReturn(mockJSONArrayAdapter);
+		jsonObjectAdapter = new JSONObjectAdapterImpl();
+		presenter = new SearchBox(mockView, mockGlobalApplicationState, jsonObjectAdapter, mockGWT);
+		when(mockGlobalApplicationState.getPlaceChanger()).thenReturn(mockPlaceChanger);
 	}
 	
 	@Test
 	public void testPeopleSearch() {
 		presenter.search("@Tester");
-		Mockito.verify(mockGlobalApplicationState).getPlaceChanger();
-		Mockito.verify(mockPlaceChanger).goTo(Mockito.any(PeopleSearch.class));
+		verify(mockGlobalApplicationState).getPlaceChanger();
+		verify(mockPlaceChanger).goTo(any(PeopleSearch.class));
 	}
 	
 	@Test
 	public void testSearch() {
 		presenter.setSearchAll(false);
 		presenter.search("Test");
-		Mockito.verify(mockAdapterFactory, Mockito.never()).createNew();
-		Mockito.verify(mockGlobalApplicationState).getPlaceChanger();
-		Mockito.verify(mockPlaceChanger).goTo(Mockito.any(Search.class));
+		verify(mockGlobalApplicationState).getPlaceChanger();
+		verify(mockPlaceChanger).goTo(any(Search.class));
 	}
 	
 	@Test
@@ -82,18 +70,17 @@ public class SearchBoxTest {
 	
 	@Test
 	public void testSearchEnhanced() {
-		Mockito.when(mockJSONObjectAdapter.toJSONString()).thenReturn("syn456");
 		presenter.setSearchAll(true);
 		presenter.search("syn123");
-		Mockito.verify(mockJSONObjectAdapter, Mockito.atLeastOnce()).createNew();
+		verify(mockPlaceChanger).goTo(any(Search.class));
 	}
 	
 	@Test
 	public void testSearchDoi() {
 		String synId = "syn123.4";
 		presenter.search("10.7303/" + synId);
-		Mockito.verify(mockGlobalApplicationState).getPlaceChanger();
-		Mockito.verify(mockPlaceChanger).goTo(placeCaptor.capture());
+		verify(mockGlobalApplicationState).getPlaceChanger();
+		verify(mockPlaceChanger).goTo(placeCaptor.capture());
 		Place place = placeCaptor.getValue();
 		assertTrue(place instanceof Synapse);
 		assertEquals(synId, ((Synapse)place).toToken());
@@ -103,8 +90,7 @@ public class SearchBoxTest {
 	@Test
 	public void testSearchEmpty() {
 		presenter.search("");
-		Mockito.verify(mockJSONObjectAdapter, Mockito.never()).createNew();
-		Mockito.verify(mockGlobalApplicationState, Mockito.never()).getPlaceChanger();
+		verify(mockPlaceChanger, never()).goTo(any(Search.class));
 	}
 	
 }

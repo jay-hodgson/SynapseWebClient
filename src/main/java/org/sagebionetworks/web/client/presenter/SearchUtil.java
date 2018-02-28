@@ -6,6 +6,7 @@ import org.sagebionetworks.repo.model.search.query.SearchQuery;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.web.client.ClientProperties;
+import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.place.Search;
 import org.sagebionetworks.web.client.place.Synapse;
@@ -49,6 +50,7 @@ public class SearchUtil {
 			String queryTerm, 
 			GlobalApplicationState globalApplicationState, 
 			JSONObjectAdapter jsonObjectAdapter,
+			GWTWrapper gwt,
 			boolean allTypes) {
 		Synapse synapsePlace = willRedirect(queryTerm);
 		if (synapsePlace == null) {
@@ -61,7 +63,7 @@ public class SearchUtil {
 				}
 				query.setQueryTerm(Arrays.asList(queryTerm.split(" ")));
 				String json = query.writeToJSONObject(jsonObjectAdapter.createNew()).toJSONString();
-				Search searchPlace = new Search(URL.encode(json));
+				Search searchPlace = new Search(gwt.encode(json));
 				//no potential redirect, go directly to search!
 				globalApplicationState.getPlaceChanger().goTo(searchPlace);
 			} catch (JSONObjectAdapterException e) {

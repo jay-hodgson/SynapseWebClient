@@ -8,6 +8,7 @@ import org.sagebionetworks.repo.model.search.query.SearchQuery;
 import org.sagebionetworks.schema.adapter.AdapterFactory;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
+import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.place.PeopleSearch;
@@ -26,16 +27,19 @@ public class SearchBox implements SearchBoxView.Presenter, SynapseWidgetPresente
 	private SearchBoxView view;
 	private GlobalApplicationState globalApplicationState;
 	private JSONObjectAdapter adapterFactory;
+	private GWTWrapper gwt;
 	private boolean searchAll = false;
 	public static final RegExp DOI_REGEX = RegExp.compile("10[.]{1}[0-9]+[/]{1}(syn([0-9]+[.]?[0-9]*)+)$", "i");
 	
 	@Inject
 	public SearchBox(SearchBoxView view, 
 			GlobalApplicationState globalApplicationState,
-			JSONObjectAdapter adapterFactory) {
+			JSONObjectAdapter adapterFactory,
+			GWTWrapper gwt) {
 		this.view = view;
 		this.globalApplicationState = globalApplicationState;
 		this.adapterFactory = adapterFactory;
+		this.gwt = gwt;
 		view.setPresenter(this);
 	}	
 	
@@ -59,7 +63,7 @@ public class SearchBox implements SearchBoxView.Presenter, SynapseWidgetPresente
 				if (matcher != null && matcher.getGroupCount() > 0){
 					globalApplicationState.getPlaceChanger().goTo(new Synapse(matcher.getGroup(1)));
 				} else {
-					SearchUtil.searchForTerm(value, globalApplicationState, adapterFactory, searchAll);
+					SearchUtil.searchForTerm(value, globalApplicationState, adapterFactory, gwt, searchAll);
 				}
 			}
 		}

@@ -19,6 +19,7 @@ import org.sagebionetworks.repo.model.search.query.SearchQuery;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.web.client.DisplayConstants;
+import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.place.Search;
@@ -50,7 +51,7 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 	private boolean newQuery = false;
 	private Map<String,String> timeValueToDisplay = new HashMap<String, String>();
 	private Date searchStartTime;
-	
+	private GWTWrapper gwt;
 	LoadMoreWidgetContainer loadMoreWidgetContainer;
 	
 	@Inject
@@ -59,7 +60,8 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 			SynapseClientAsync synapseClient,
 			JSONObjectAdapter jsonObjectAdapter,
 			SynapseAlert synAlert,
-			LoadMoreWidgetContainer loadMoreWidgetContainer) {
+			LoadMoreWidgetContainer loadMoreWidgetContainer,
+			GWTWrapper gwt) {
 		this.view = view;
 		this.globalApplicationState = globalApplicationState;
 		this.synapseClient = synapseClient;
@@ -67,6 +69,7 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 		this.jsonObjectAdapter = jsonObjectAdapter;
 		this.synAlert = synAlert;
 		this.loadMoreWidgetContainer = loadMoreWidgetContainer;
+		this.gwt = gwt;
 		currentSearch = getBaseSearchQuery();
 		view.setPresenter(this);
 		view.setSynAlertWidget(synAlert.asWidget());
@@ -106,7 +109,7 @@ public class SearchPresenter extends AbstractActivity implements SearchView.Pres
 
 	@Override
 	public void setSearchTerm(String queryTerm) {
-		SearchUtil.searchForTerm(queryTerm, globalApplicationState, jsonObjectAdapter, false);
+		SearchUtil.searchForTerm(queryTerm, globalApplicationState, jsonObjectAdapter, gwt, false);
 	}
 
 	@Override
