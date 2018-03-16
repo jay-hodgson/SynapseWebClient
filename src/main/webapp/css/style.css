@@ -2830,7 +2830,6 @@ input[type=text],input[type=password],input.text,input.title,textarea {
 input[type=text]:focus,input[type=password]:focus,input.text:focus,input.title:focus,textarea:focus {
 	border-color:#dedede;
 	background-color:#fff;
-	background-image: url(../images/pattern/1w.png);
 	-webkit-transition: background-color 0.4s ease-in-out;
    -moz-transition: background-color 0.4s ease-in-out;
    -o-transition: background-color 0.4s ease-in-out;
@@ -3650,7 +3649,6 @@ background:#000 url(../images/cross.png) no-repeat center center;
 }
 .view:hover {
 	background-color:#e6e6e6;
-	background-image: url(../images/pattern/1w.png);
 	-moz-box-shadow:0px 1px 2px #aaa;
 	-webkit-box-shadow:0px 1px 2px #aaa;
 	box-shadow:0px 1px 2px #aaa;
