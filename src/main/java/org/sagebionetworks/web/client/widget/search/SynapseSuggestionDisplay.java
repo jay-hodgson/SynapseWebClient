@@ -6,6 +6,8 @@ import org.gwtbootstrap3.client.ui.html.Div;
 import org.gwtbootstrap3.client.ui.html.Text;
 import org.sagebionetworks.web.client.DisplayUtils;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SuggestBox;
@@ -63,14 +65,35 @@ public class SynapseSuggestionDisplay extends SuggestBox.DefaultSuggestionDispla
 		getPopupPanel().setWidget(loadingPanel);
 		//When in a bootstrap modal, the popup panel only has the correct top position when the window is scrolled up.
 		//When the modal is scrolled down in the page, the gwt PopupPanel gets confused (because the suggestBox always reports the same top position).
-		DisplayUtils.scrollToTop();
-		getPopupPanel().showRelativeTo(suggestBox);
+		//find modal
+//		boolean isInModal = isInModal(suggestBox.getElement());
+//		if (isInModal) {
+//			DisplayUtils.scrollToTop();
+//			getPopupPanel().showRelativeTo(suggestBox);  //defaults to the suggest box if target is not set, so this is a no-op
+//		} else {
+//			int left = suggestBox.getElement().getScrollLeft();
+//			int top = suggestBox.getElement().getScrollTop();
+//			GWT.debugger();
+//			getPopupPanel().setPopupPosition(left, top);	
+//		}
+	}
+	
+	private boolean isInModal(Element el) {
+		if (el == null) {
+			return false;
+		} else {
+			String className = el.getClassName();
+			if (className != null && className.contains("modal")) {
+				return true;
+			} else {
+				return isInModal(el.getParentElement());
+			}
+		}
 	}
 	
 	public void hideLoading() {
 		getPopupPanel().setWidget(popupContents);
 	}
-	
 	
 	private void setUpFields() {
 		resultsLabel = new Label();

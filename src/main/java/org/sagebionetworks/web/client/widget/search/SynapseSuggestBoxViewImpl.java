@@ -139,7 +139,8 @@ public class SynapseSuggestBoxViewImpl extends FlowPanel implements SynapseSugge
 	@Override
 	public void showLoading() {
 		originalScrollTop = Window.getScrollTop();
-		((SynapseSuggestionDisplay) suggestBox.getSuggestionDisplay()).showLoading(this);
+		
+		((SynapseSuggestionDisplay) suggestBox.getSuggestionDisplay()).showLoading(selectedItem);
 	}
 	
 	@Override
