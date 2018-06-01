@@ -14,6 +14,9 @@ import org.sagebionetworks.repo.model.table.QueryBundleRequest;
 import org.sagebionetworks.repo.model.table.QueryResultBundle;
 import org.sagebionetworks.repo.model.table.SelectColumn;
 import org.sagebionetworks.repo.model.table.SortItem;
+import org.sagebionetworks.schema.adapter.AdapterFactory;
+import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
+import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.PortalGinInjector;
 import org.sagebionetworks.web.client.SynapseClientAsync;
@@ -23,6 +26,7 @@ import org.sagebionetworks.web.client.utils.CallbackP;
 import org.sagebionetworks.web.client.widget.asynch.AsynchronousProgressHandler;
 import org.sagebionetworks.web.client.widget.asynch.AsynchronousProgressWidget;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
+import org.sagebionetworks.web.client.widget.pagination.PageChangeListener;
 import org.sagebionetworks.web.client.widget.table.modal.fileview.TableType;
 import org.sagebionetworks.web.shared.asynch.AsynchType;
 
@@ -56,7 +60,6 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 	SynapseClientAsync synapseClient;
 	TableQueryResultView view;
 	PortalGinInjector ginInjector;
-	QueryResultBundle bundle;
 	TablePageWidget pageViewerWidget;
 	QueryResultEditorWidget queryResultEditor;
 	Query startingQuery;
@@ -69,8 +72,10 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 	ClientCache clientCache;
 	GWTWrapper gwt;
 	int currentJobIndex = 0;
-	QueryResultBundle cachedFullQueryResultBundle = null;
-	boolean facetsVisible = true;
+	QueryResultBundle cachedFullQueryResultBundle = null, filteredResultsQueryBundle;
+	List<SortItem> sortItems;
+	boolean facetsVisible = true, isLoadAllPages = false;
+	
 	@Inject
 	public TableQueryResultWidget(TableQueryResultView view, 
 			SynapseClientAsync synapseClient, 
@@ -93,9 +98,13 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 			@Override
 			public void invoke() {
 				startingQuery.setSelectedFacets(null);
-				cachedFullQueryResultBundle = null;
-				startingQuery.setOffset(0L);
-				runQuery();
+				if (!isLoadAllPages) {
+					cachedFullQueryResultBundle = null;
+					startingQuery.setOffset(0L);
+					runQuery();	
+				} else {
+					facetsChanged();
+				}
 			}
 		};
 		facetChangedHandler = new CallbackP<FacetColumnRequest>() {
@@ -113,11 +122,21 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 					}
 				}
 				selectedFacets.add(request);
-				cachedFullQueryResultBundle = null;
-				startingQuery.setOffset(0L);
-				runQuery();
+				if (!isLoadAllPages) {
+					cachedFullQueryResultBundle = null;
+					startingQuery.setOffset(0L);
+					runQuery();
+				} else {
+					facetsChanged();
+				}
 			}
 		};
+	}
+	
+	public void facetsChanged() {
+		//calculate correct counts based on new selected facets.  use full result set (cachedFullQueryResultBundle) to set up current view (filteredResultsQueryBundle)
+		todo
+		this.pageViewerWidget.configure(filteredResultsQueryBundle, this.startingQuery, sortItems, false, tableType, null, this, facetChangedHandler, resetFacetsHandler);
 	}
 	
 	/**
@@ -134,6 +153,14 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 		this.queryListener = listener;
 		cachedFullQueryResultBundle = null;
 		runQuery();
+	}
+	
+	public void setLoadAllResults(boolean isLoadAllPages) {
+		this.isLoadAllPages = isLoadAllPages;
+		
+		//if loading all pages:
+		//cachedFullQueryResultBundle will contain Rows from all page.
+		//filteredResultsQueryBundle will contain the current page shown to the user (respecting any facet selection, calculated client-side).
 	}
 	
 	private void runQuery() {
@@ -178,8 +205,13 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 				
 				@Override
 				public void onComplete(AsynchronousResponseBody response) {
+					QueryResultBundle queryResultBundle = (QueryResultBundle) response;
 					if (currentJobIndex == jobIndex) {
-						setQueryResults((QueryResultBundle) response);
+						setQueryResults(queryResultBundle);
+					}
+					if (isLoadAllPages && startingQuery.getLimit().intValue() == queryResultBundle.getQueryResult().getQueryResults().getRows().size()) {
+						//get next page
+						preloadNextPage();
 					}
 				}
 				
@@ -194,6 +226,43 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 			verifyOldEtagIsNotInView(entityId, viewEtag);
 		}
 	}
+	
+	private void preloadNextPage() {
+		QueryBundleRequest qbr = new QueryBundleRequest();
+		long partMask = BUNDLE_MASK_QUERY_RESULTS;
+		qbr.setPartMask(partMask);
+		qbr.setQuery(this.startingQuery);
+		startingQuery.setOffset(startingQuery.getOffset() + startingQuery.getLimit());
+		String entityId = QueryBundleUtils.getTableId(this.startingQuery);
+		qbr.setEntityId(entityId);
+		AsynchronousProgressWidget progressWidget = ginInjector.creatNewAsynchronousProgressWidget();
+		progressWidget.startAndTrackJob(RUNNING_QUERY_MESSAGE, false, AsynchType.TableQuery, qbr, new AsynchronousProgressHandler() {
+			
+			@Override
+			public void onFailure(Throwable failure) {
+				showError(failure);	
+			}
+			
+			@Override
+			public void onComplete(AsynchronousResponseBody response) {
+				QueryResultBundle queryResultBundle = (QueryResultBundle) response;
+				addQueryResults(queryResultBundle);
+				if (startingQuery.getLimit().intValue() == queryResultBundle.getQueryResult().getQueryResults().getRows().size()) {
+					preloadNextPage();
+				}
+			}
+			
+			@Override
+			public void onCancel() {
+				showError(QUERY_CANCELED);
+			}
+		});
+	}
+	
+	public void addQueryResults(QueryResultBundle queryResultBundle) {
+		cachedFullQueryResultBundle.getQueryResult().getQueryResults().getRows().addAll(queryResultBundle.getQueryResult().getQueryResults().getRows());
+	}
+	
 	/**
 	 * Look for the given etag in the given file view.  If it is still there, wait a few seconds and try again.  
 	 * If the etag is not in the view, then remove the clientCache key and run the query (since this indicates that the user change was propagated to the replicated layer)
@@ -269,15 +338,26 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 				showError(caught);
 			}
 		});
-
+	}
+	
+	private QueryResultBundle deepCopyQueryResultBundle(QueryResultBundle toCopy) {
+		JSONObjectAdapter adapter = ginInjector.getAdapterFactory().createNew();
+		try {
+			toCopy.writeToJSONObject(adapter);
+			return new QueryResultBundle(adapter);
+		} catch (JSONObjectAdapterException e) {
+			showError(e);
+		}
+		return null;
 	}
 	
 	private void setQueryResultsAndSort(QueryResultBundle bundle, List<SortItem> sortItems){
-		this.bundle = bundle;
+		this.filteredResultsQueryBundle = bundle;
+		this.sortItems = sortItems;
 		this.view.setErrorVisible(false);
 		this.view.setProgressWidgetVisible(false);
 		// configure the page widget
-		this.pageViewerWidget.configure(bundle, this.startingQuery, sortItems, false, tableType, null, this, facetChangedHandler, resetFacetsHandler);
+		this.pageViewerWidget.configure(filteredResultsQueryBundle, this.startingQuery, sortItems, false, tableType, null, this, facetChangedHandler, resetFacetsHandler);
 		pageViewerWidget.setTableVisible(true);
 		fireFinishEvent(true, isQueryResultEditable());
 	}
@@ -287,7 +367,7 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 	 * @return
 	 */
 	public boolean isQueryResultEditable(){
-		List<SelectColumn> selectColums = QueryBundleUtils.getSelectFromBundle(this.bundle);
+		List<SelectColumn> selectColums = QueryBundleUtils.getSelectFromBundle(this.filteredResultsQueryBundle);
 		if(selectColums == null){
 			return false;
 		}
@@ -355,7 +435,7 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 			this.queryResultEditor = ginInjector.createNewQueryResultEditorWidget();
 			view.setEditorWidget(this.queryResultEditor);
 		}
-		this.queryResultEditor.showEditor(bundle, tableType, new Callback() {
+		this.queryResultEditor.showEditor(filteredResultsQueryBundle, tableType, new Callback() {
 			@Override
 			public void invoke() {
 				cachedFullQueryResultBundle = null;
@@ -367,10 +447,16 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 	@Override
 	public void onPageChange(Long newOffset) {
 		this.startingQuery.setOffset(newOffset);
-		queryChanging();
+		if (!isLoadAllPages) {
+			queryChanging();	
+		} else {
+//			cachedFullQueryResultBundle contains all rows.  set up filteredResultsQueryBundle to have the correct view
+//			handle page change on local data
+			todo
+		}
 	}
 	
-	private void runSql(String sql){
+	private void runSql(String sql) {
 		startingQuery.setSql(sql);
 		startingQuery.setOffset(0L);
 		queryChanging();

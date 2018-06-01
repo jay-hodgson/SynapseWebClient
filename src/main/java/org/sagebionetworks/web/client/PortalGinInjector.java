@@ -1,5 +1,6 @@
 package org.sagebionetworks.web.client;
 
+import org.sagebionetworks.schema.adapter.AdapterFactory;
 import org.sagebionetworks.web.client.cookie.CookieProvider;
 import org.sagebionetworks.web.client.presenter.ACTAccessApprovalsPresenter;
 import org.sagebionetworks.web.client.presenter.ACTDataAccessSubmissionDashboardPresenter;
@@ -574,4 +575,5 @@ public interface PortalGinInjector extends Ginjector {
 	WikiVersionAnchorListItem getWikiVersionAnchorListItem();
 	SynapseProperties getSynapseProperties();
 	QuizInfoDialog getQuizInfoDialog();
+	AdapterFactory getAdapterFactory();
 }
