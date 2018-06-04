@@ -56,6 +56,7 @@ import org.sagebionetworks.web.client.widget.accessrequirements.createaccessrequ
 import org.sagebionetworks.web.client.widget.accessrequirements.requestaccess.CreateDataAccessRequestWizard;
 import org.sagebionetworks.web.client.widget.accessrequirements.submission.ACTDataAccessSubmissionWidget;
 import org.sagebionetworks.web.client.widget.accessrequirements.submission.OpenSubmissionWidget;
+import org.sagebionetworks.web.client.widget.asynch.AsynchronousJobTracker;
 import org.sagebionetworks.web.client.widget.asynch.AsynchronousProgressWidget;
 import org.sagebionetworks.web.client.widget.biodalliance13.BiodallianceWidget;
 import org.sagebionetworks.web.client.widget.biodalliance13.editor.BiodallianceEditor;
@@ -576,4 +577,5 @@ public interface PortalGinInjector extends Ginjector {
 	SynapseProperties getSynapseProperties();
 	QuizInfoDialog getQuizInfoDialog();
 	AdapterFactory getAdapterFactory();
+	AsynchronousJobTracker getAsynchronousJobTracker();
 }

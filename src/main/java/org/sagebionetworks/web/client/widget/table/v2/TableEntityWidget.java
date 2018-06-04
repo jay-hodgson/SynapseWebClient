@@ -109,10 +109,6 @@ public class TableEntityWidget implements IsWidget,
 		this.view.setQueryInputWidget(this.queryInputWidget);
 	}
 	
-	public void setLoadAllResults(boolean isLoadAllPages) {
-		queryResultsWidget.setLoadAllResults(isLoadAllPages);
-	}
-	
 	public DownloadTableQueryModalWidget getDownloadTableQueryModalWidget() {
 		if (downloadTableQueryModalWidget == null) {
 			downloadTableQueryModalWidget = ginInjector.getDownloadTableQueryModalWidget();

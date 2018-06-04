@@ -1,20 +1,30 @@
 package org.sagebionetworks.web.client.widget.table.v2.results;
 
+import static org.sagebionetworks.repo.model.table.TableConstants.NULL_VALUE_KEYWORD;
 import static org.sagebionetworks.web.client.ServiceEntryPointUtils.fixServiceEntryPoint;
 import static org.sagebionetworks.web.client.widget.table.v2.TableEntityWidget.DEFAULT_LIMIT;
 import static org.sagebionetworks.web.client.widget.table.v2.TableEntityWidget.DEFAULT_OFFSET;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.sagebionetworks.repo.model.asynch.AsynchronousJobStatus;
 import org.sagebionetworks.repo.model.asynch.AsynchronousResponseBody;
+import org.sagebionetworks.repo.model.table.FacetColumnRangeRequest;
 import org.sagebionetworks.repo.model.table.FacetColumnRequest;
+import org.sagebionetworks.repo.model.table.FacetColumnResult;
+import org.sagebionetworks.repo.model.table.FacetColumnResultValueCount;
+import org.sagebionetworks.repo.model.table.FacetColumnResultValues;
+import org.sagebionetworks.repo.model.table.FacetColumnValuesRequest;
 import org.sagebionetworks.repo.model.table.Query;
 import org.sagebionetworks.repo.model.table.QueryBundleRequest;
 import org.sagebionetworks.repo.model.table.QueryResultBundle;
+import org.sagebionetworks.repo.model.table.Row;
 import org.sagebionetworks.repo.model.table.SelectColumn;
 import org.sagebionetworks.repo.model.table.SortItem;
-import org.sagebionetworks.schema.adapter.AdapterFactory;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.web.client.GWTWrapper;
@@ -23,13 +33,15 @@ import org.sagebionetworks.web.client.SynapseClientAsync;
 import org.sagebionetworks.web.client.cache.ClientCache;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.utils.CallbackP;
+import org.sagebionetworks.web.client.widget.asynch.AsynchronousJobTracker;
 import org.sagebionetworks.web.client.widget.asynch.AsynchronousProgressHandler;
 import org.sagebionetworks.web.client.widget.asynch.AsynchronousProgressWidget;
+import org.sagebionetworks.web.client.widget.asynch.UpdatingAsynchProgressHandler;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
-import org.sagebionetworks.web.client.widget.pagination.PageChangeListener;
 import org.sagebionetworks.web.client.widget.table.modal.fileview.TableType;
 import org.sagebionetworks.web.shared.asynch.AsynchType;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -74,7 +86,7 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 	int currentJobIndex = 0;
 	QueryResultBundle cachedFullQueryResultBundle = null, filteredResultsQueryBundle;
 	List<SortItem> sortItems;
-	boolean facetsVisible = true, isLoadAllPages = false;
+	boolean facetsVisible = true, isLoadAllPages = true;
 	
 	@Inject
 	public TableQueryResultWidget(TableQueryResultView view, 
@@ -135,8 +147,89 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 	
 	public void facetsChanged() {
 		//calculate correct counts based on new selected facets.  use full result set (cachedFullQueryResultBundle) to set up current view (filteredResultsQueryBundle)
-		todo
-		this.pageViewerWidget.configure(filteredResultsQueryBundle, this.startingQuery, sortItems, false, tableType, null, this, facetChangedHandler, resetFacetsHandler);
+		List<FacetColumnRequest> selectedFacets = startingQuery.getSelectedFacets();
+		filteredResultsQueryBundle = deepCopyQueryBundle(cachedFullQueryResultBundle);
+		
+		// apply facets to filteredResultsQueryBundle!
+		// first, remove rows that don't pass the selected facets
+		List<FacetColumnResult> facetResults = filteredResultsQueryBundle.getFacets();
+		List<Row> allRows = filteredResultsQueryBundle.getQueryResult().getQueryResults().getRows();
+		List<SelectColumn> selectedColumns = filteredResultsQueryBundle.getQueryResult().getQueryResults().getHeaders();
+		Map<String, Integer> columnName2Index = new HashMap<>();
+		for (int i = 0; i < selectedColumns.size(); i++) {
+			columnName2Index.put(selectedColumns.get(i).getName(), i);
+		}
+		Map<String, FacetColumnResult> columnName2FacetColumnResult = new HashMap<>();
+		for (FacetColumnResult facetColumnResult : facetResults) {
+			columnName2FacetColumnResult.put(facetColumnResult.getColumnName(), facetColumnResult);
+			//also reset the counts (for values results)
+			if (facetColumnResult instanceof FacetColumnResultValues) {
+				for (FacetColumnResultValueCount valueCount : ((FacetColumnResultValues)facetColumnResult).getFacetValues()) {
+					valueCount.setCount(0L);
+				}
+			}
+		}
+		
+		List<Row> filteredRows = new ArrayList<>();
+		for (Row row : allRows) {
+			//does this row pass the selected facet definitions?
+			boolean passesFacetConditions = true;
+			for (FacetColumnRequest facetColumnRequest : selectedFacets) {
+				int index = columnName2Index.get(facetColumnRequest.getColumnName());
+				String value = row.getValues().get(index);
+				if (facetColumnRequest instanceof FacetColumnRangeRequest) {
+					if (value != null) {
+						Double valueDouble = Double.parseDouble(value);
+						FacetColumnRangeRequest rangeRequest = (FacetColumnRangeRequest)facetColumnRequest;
+						if (rangeRequest.getMin() != null) {
+							Double minDouble = Double.parseDouble(rangeRequest.getMin());
+							if (valueDouble < minDouble) {
+								passesFacetConditions = false;
+								break;
+							}
+						}
+						if (rangeRequest.getMax() != null) {
+							Double maxDouble = Double.parseDouble(rangeRequest.getMax());
+							if (valueDouble > maxDouble) {
+								passesFacetConditions = false;
+								break;
+							}
+						}
+					} else {
+						passesFacetConditions = false;
+						break;
+					}
+				} else {
+					FacetColumnValuesRequest valuesRequest = (FacetColumnValuesRequest)facetColumnRequest;
+					Set<String> selectedFacetValues = valuesRequest.getFacetValues();
+					if (value != null && !selectedFacetValues.contains(value)) {
+						passesFacetConditions = false;
+						break;
+					}
+				}
+			}
+			if (passesFacetConditions) {
+				filteredRows.add(row);
+			}
+		}
+		//now that we have the correct rows, update the counts!
+		for (Row row : allRows) {
+			for (FacetColumnResult facetColumnResult : facetResults) {
+				if (facetColumnResult instanceof FacetColumnResultValues) {
+					FacetColumnResultValues facetColumnResultValues = (FacetColumnResultValues)facetColumnResult;
+					int index = columnName2Index.get(facetColumnResultValues.getColumnName());
+					String value = row.getValues().get(index);
+					for (FacetColumnResultValueCount valueCount : facetColumnResultValues.getFacetValues()) {
+						if ((value == null && valueCount.getValue().equals(NULL_VALUE_KEYWORD)) ||
+							value != null && valueCount.getValue().equals(value)) {
+							valueCount.setCount(valueCount.getCount().longValue()+1);
+						}
+					}
+				}
+			}
+		}
+		filteredResultsQueryBundle.getQueryResult().getQueryResults().setRows(filteredRows);
+		onPageChange(0L);
 	}
 	
 	/**
@@ -153,14 +246,6 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 		this.queryListener = listener;
 		cachedFullQueryResultBundle = null;
 		runQuery();
-	}
-	
-	public void setLoadAllResults(boolean isLoadAllPages) {
-		this.isLoadAllPages = isLoadAllPages;
-		
-		//if loading all pages:
-		//cachedFullQueryResultBundle will contain Rows from all page.
-		//filteredResultsQueryBundle will contain the current page shown to the user (respecting any facet selection, calculated client-side).
 	}
 	
 	private void runQuery() {
@@ -209,9 +294,10 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 					if (currentJobIndex == jobIndex) {
 						setQueryResults(queryResultBundle);
 					}
+//					todo: do a query to find out how many pages there are (isLoadAllPages) 
 					if (isLoadAllPages && startingQuery.getLimit().intValue() == queryResultBundle.getQueryResult().getQueryResults().getRows().size()) {
-						//get next page
-						preloadNextPage();
+						//get next page!
+						preloadNextPage(startingQuery.getLimit());
 					}
 				}
 				
@@ -227,20 +313,22 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 		}
 	}
 	
-	private void preloadNextPage() {
+	private void preloadNextPage(final Long offset) {
 		QueryBundleRequest qbr = new QueryBundleRequest();
 		long partMask = BUNDLE_MASK_QUERY_RESULTS;
 		qbr.setPartMask(partMask);
-		qbr.setQuery(this.startingQuery);
-		startingQuery.setOffset(startingQuery.getOffset() + startingQuery.getLimit());
+		
+		qbr.setQuery(deepCopyQuery(this.startingQuery));
+		qbr.getQuery().setOffset(offset);
 		String entityId = QueryBundleUtils.getTableId(this.startingQuery);
 		qbr.setEntityId(entityId);
-		AsynchronousProgressWidget progressWidget = ginInjector.creatNewAsynchronousProgressWidget();
-		progressWidget.startAndTrackJob(RUNNING_QUERY_MESSAGE, false, AsynchType.TableQuery, qbr, new AsynchronousProgressHandler() {
+		AsynchronousJobTracker jobTracker = ginInjector.getAsynchronousJobTracker();
+		jobTracker.startAndTrack(AsynchType.TableQuery, qbr, AsynchronousProgressWidget.WAIT_MS,
+				new UpdatingAsynchProgressHandler() {
 			
 			@Override
 			public void onFailure(Throwable failure) {
-				showError(failure);	
+				showError(failure);
 			}
 			
 			@Override
@@ -248,13 +336,25 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 				QueryResultBundle queryResultBundle = (QueryResultBundle) response;
 				addQueryResults(queryResultBundle);
 				if (startingQuery.getLimit().intValue() == queryResultBundle.getQueryResult().getQueryResults().getRows().size()) {
-					preloadNextPage();
+					preloadNextPage(offset + startingQuery.getLimit());
+				} else {
+					//done preloading!
+					filteredResultsQueryBundle = deepCopyQueryBundle(cachedFullQueryResultBundle);
 				}
 			}
 			
 			@Override
 			public void onCancel() {
 				showError(QUERY_CANCELED);
+			}
+			
+			@Override
+			public void onUpdate(AsynchronousJobStatus status) {
+			}
+			
+			@Override
+			public boolean isAttached() {
+				return true;
 			}
 		});
 	}
@@ -321,16 +421,19 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 			bundle.setColumnModels(cachedFullQueryResultBundle.getColumnModels());
 			bundle.setFacets(cachedFullQueryResultBundle.getFacets());
 			bundle.setSelectColumns(cachedFullQueryResultBundle.getSelectColumns());
-		} else {
-			cachedFullQueryResultBundle = bundle;
+			
 		}
+		//cachedFullQueryResultBundle will be populated with all pages (if loading all results locally)
+		cachedFullQueryResultBundle = bundle;
+		//filteredResultsQueryBundle will be filtered by the facet selection (if shown)
+		filteredResultsQueryBundle = bundle;
 		
 		// Get the sort info
 		this.synapseClient.getSortFromTableQuery(this.startingQuery.getSql(), new AsyncCallback<List<SortItem>>() {
 			
 			@Override
 			public void onSuccess(List<SortItem> sortItems) {
-				setQueryResultsAndSort(bundle, sortItems);
+				setQueryResultsAndSort(sortItems);
 			}
 			
 			@Override
@@ -340,7 +443,7 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 		});
 	}
 	
-	private QueryResultBundle deepCopyQueryResultBundle(QueryResultBundle toCopy) {
+	private QueryResultBundle deepCopyQueryBundle(QueryResultBundle toCopy) {
 		JSONObjectAdapter adapter = ginInjector.getAdapterFactory().createNew();
 		try {
 			toCopy.writeToJSONObject(adapter);
@@ -351,8 +454,18 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 		return null;
 	}
 	
-	private void setQueryResultsAndSort(QueryResultBundle bundle, List<SortItem> sortItems){
-		this.filteredResultsQueryBundle = bundle;
+	private Query deepCopyQuery(Query toCopy) {
+		JSONObjectAdapter adapter = ginInjector.getAdapterFactory().createNew();
+		try {
+			toCopy.writeToJSONObject(adapter);
+			return new Query(adapter);
+		} catch (JSONObjectAdapterException e) {
+			showError(e);
+		}
+		return null;
+	}
+	
+	private void setQueryResultsAndSort(List<SortItem> sortItems){
 		this.sortItems = sortItems;
 		this.view.setErrorVisible(false);
 		this.view.setProgressWidgetVisible(false);
@@ -450,9 +563,16 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 		if (!isLoadAllPages) {
 			queryChanging();	
 		} else {
-//			cachedFullQueryResultBundle contains all rows.  set up filteredResultsQueryBundle to have the correct view
-//			handle page change on local data
-			todo
+			//filteredResultsQueryBundle has the filtered rows.
+			//update the page view so that the rows shown are for the offset only.
+			QueryResultBundle currentPage = deepCopyQueryBundle(filteredResultsQueryBundle);
+			List<Row> rows = currentPage.getQueryResult().getQueryResults().getRows();
+			List<Row> rowsToShow = new ArrayList<>();
+			for (int i = startingQuery.getOffset().intValue(); i < (startingQuery.getOffset() + startingQuery.getLimit()) && i < rows.size(); i++) {
+				rowsToShow.add(rows.get(i));
+			}
+			currentPage.getQueryResult().getQueryResults().setRows(rowsToShow);
+			this.pageViewerWidget.configure(currentPage, this.startingQuery, sortItems, false, tableType, null, this, facetChangedHandler, resetFacetsHandler);
 		}
 	}
 	
