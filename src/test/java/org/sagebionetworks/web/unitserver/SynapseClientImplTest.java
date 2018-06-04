@@ -892,6 +892,7 @@ public class SynapseClientImplTest {
 		String testUrl = "  http://mytesturl/" + myFileName;
 		String testId = "myTestId";
 		String md5 = "e10e3f4491440ce7b48edc97f03307bb";
+		String newVersionComment = "new version";
 		Long fileSize=2048L;
 		FileEntity file = new FileEntity();
 		String originalFileEntityName = "syn1223";
@@ -903,7 +904,7 @@ public class SynapseClientImplTest {
 		handle.setExternalURL(testUrl);
 
 		resetUpdateExternalFileHandleMocks(testId, file, handle);
-		synapseClient.updateExternalFile(testId, testUrl, myFileName, contentType, fileSize, md5, storageLocationId);
+		synapseClient.updateExternalFile(testId, testUrl, myFileName, contentType, fileSize, md5, storageLocationId, newVersionComment);
 
 		verify(mockSynapse).getEntityById(testId);
 		
@@ -928,7 +929,7 @@ public class SynapseClientImplTest {
 				.thenThrow(
 						new IllegalArgumentException(
 								"invalid name for some reason"));
-		synapseClient.updateExternalFile(testId, testUrl, myFileName, contentType, fileSize, md5, storageLocationId);
+		synapseClient.updateExternalFile(testId, testUrl, myFileName, contentType, fileSize, md5, storageLocationId, newVersionComment);
 
 		// called createExternalFileHandle
 		verify(mockSynapse).createExternalFileHandle(
@@ -945,6 +946,7 @@ public class SynapseClientImplTest {
 		String fileName = "testing.txt";
 		String md5 = "e10e3f4491440ce7b48edc97f03307bb";
 		String contentType = "text/plain";
+		String newVersionComment = "new version";
 		Long fileSize = 1024L;
 		when(
 				mockSynapse
@@ -952,7 +954,7 @@ public class SynapseClientImplTest {
 				.thenReturn(new ExternalFileHandle());
 		when(mockSynapse.createEntity(any(FileEntity.class))).thenReturn(
 				new FileEntity());
-		synapseClient.createExternalFile(parentEntityId, externalUrl, fileName, contentType, fileSize, md5, storageLocationId);
+		synapseClient.createExternalFile(parentEntityId, externalUrl, fileName, contentType, fileSize, md5, storageLocationId, newVersionComment);
 		ArgumentCaptor<ExternalFileHandle> captor = ArgumentCaptor
 				.forClass(ExternalFileHandle.class);
 		verify(mockSynapse).createExternalFileHandle(captor.capture());
@@ -973,6 +975,7 @@ public class SynapseClientImplTest {
 		String expectedAutoFilename = "test.txt";
 		String fileName = null;
 		String md5 = "e10e3f4491440ce7b48edc97f03307bb";
+		String newVersionComment = "new version";
 		String contentType = "text/plain";
 		Long fileSize = 1024L;
 		when(mockExternalFileHandle.getFileName()).thenReturn(expectedAutoFilename);
@@ -981,7 +984,7 @@ public class SynapseClientImplTest {
 				.thenReturn(mockExternalFileHandle);
 		when(mockSynapse.createEntity(any(FileEntity.class))).thenReturn(
 				new FileEntity());
-		synapseClient.createExternalFile(parentEntityId, externalUrl, fileName, contentType, fileSize, md5, storageLocationId);
+		synapseClient.createExternalFile(parentEntityId, externalUrl, fileName, contentType, fileSize, md5, storageLocationId, newVersionComment);
 		ArgumentCaptor<ExternalFileHandle> captor = ArgumentCaptor
 				.forClass(ExternalFileHandle.class);
 		verify(mockSynapse).createExternalFileHandle(captor.capture());
@@ -1057,7 +1060,7 @@ public class SynapseClientImplTest {
 		EntityIdList childEntities = new EntityIdList();
 		childEntities.setIdList(new ArrayList());
 
-		synapseClient.setFileEntityFileHandle(null, null, "parentEntityId");
+		synapseClient.setFileEntityFileHandle(null, null, "parentEntityId", null);
 
 		// it should have tried to create a new entity (since entity id was
 		// null)

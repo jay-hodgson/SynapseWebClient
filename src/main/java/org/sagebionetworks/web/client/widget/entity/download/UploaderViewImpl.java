@@ -124,6 +124,10 @@ public class UploaderViewImpl extends FlowPanel implements
 	AwsLoginView awsLoginView;
 	TabListItem externalTab;
 	
+	FormGroup versionCommentFormGroup = new FormGroup();
+	FormLabel versionCommentLabel = new FormLabel();
+	TextBox versionCommentField = new TextBox();
+	
 	@Inject
 	public UploaderViewImpl(SynapseJSNIUtils synapseJSNIUtils, 
 			SageImageBundle sageImageBundle,
@@ -177,7 +181,11 @@ public class UploaderViewImpl extends FlowPanel implements
 		cancelBtn.setPull(Pull.RIGHT);
 		cancelBtn.setMarginRight(5);
 
-		pathField = new TextBox();
+		versionCommentLabel.setText("Add Version Comment (Optional)");
+		versionCommentFormGroup.add(versionCommentLabel);
+		versionCommentFormGroup.add(versionCommentField);
+		versionCommentFormGroup.addStyleName("margin-top-20 margin-bottom-40");
+		
 		initUploadPanel();
 		initExternalPanel();
 		
@@ -228,6 +236,11 @@ public class UploaderViewImpl extends FlowPanel implements
 	}
 	
 
+	@Override
+	public String getVersionComment() {
+		return versionCommentField.getValue();
+	}
+	
 	private void handleSubmitResult(String result) {
 		if (result != null) {
 			presenter.handleSubmitResult(result);
@@ -270,6 +283,7 @@ public class UploaderViewImpl extends FlowPanel implements
 		fileUploadInput.setValue(null);
 		fileUploadLabel.setText("");
 		uploadSpeedLabel.setHTML("");
+		versionCommentField.setValue("");
 		awsLoginView.clear();
 	}
 	
@@ -408,7 +422,7 @@ public class UploaderViewImpl extends FlowPanel implements
 			chooseFileButtonGroup.setVisible(isEnabled);
 			chooseSingleFileBtn.setVisible(!isEnabled);
 		}
-		
+		versionCommentFormGroup.setVisible(!isEnabled);
 	}
 	
 	/*
@@ -462,6 +476,8 @@ public class UploaderViewImpl extends FlowPanel implements
 			
 			container.add(tabs);
 			container.add(tabContent);
+			versionCommentFormGroup.removeFromParent();
+			container.add(versionCommentFormGroup);
 		} else {
 			container.add(uploadPanel);
 			configureUploadButton();

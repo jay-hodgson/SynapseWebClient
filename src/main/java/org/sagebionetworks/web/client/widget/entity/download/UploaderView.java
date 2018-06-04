@@ -50,6 +50,7 @@ public interface UploaderView extends IsWidget, SynapseView, HasAttachHandlers {
 	
 	void enableUpload();
 	void setSelectedFilenames(String fileNames);
+	String getVersionComment();
 	/**
 	 * Presenter interface
 	 */
