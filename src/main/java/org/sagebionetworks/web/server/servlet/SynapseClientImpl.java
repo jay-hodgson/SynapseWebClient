@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
@@ -131,6 +132,10 @@ import org.sagebionetworks.web.shared.exceptions.TableQueryParseException;
 import org.sagebionetworks.web.shared.exceptions.UnauthorizedException;
 import org.sagebionetworks.web.shared.exceptions.UnknownErrorException;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.gwt.thirdparty.guava.common.base.Supplier;
 import com.google.gwt.thirdparty.guava.common.base.Suppliers;
 
@@ -185,6 +190,19 @@ public class SynapseClientImpl extends SynapseClientBase implements
 			}
 		};
 	}
+
+	private LoadingCache<String, List<SortItem>> sql2SortItems = CacheBuilder
+			.newBuilder().maximumSize(100)
+			.build(new CacheLoader<String, List<SortItem>>() {
+				@Override
+				public List<SortItem> load(String sql) throws Exception {
+					try {
+						return TableSqlProcessor.getSortingInfo(sql);
+					} catch (ParseException e) {
+						throw new TableQueryParseException(e.getMessage());
+					}
+				}
+			});
 
 	AdapterFactory adapterFactory = new AdapterFactoryImpl();
 	private volatile HashMap<String, org.sagebionetworks.web.shared.WikiPageKey> pageName2WikiKeyMap;
@@ -1855,9 +1873,13 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	public List<SortItem> getSortFromTableQuery(String sql)
 			throws RestServiceException {
 		try {
-			return TableSqlProcessor.getSortingInfo(sql);
-		} catch (ParseException e) {
-			throw new TableQueryParseException(e.getMessage());
+			return sql2SortItems.get(sql);
+		} catch (ExecutionException e) {
+			if (e.getCause() != null && e.getCause() instanceof SynapseException) {
+				throw ExceptionUtil.convertSynapseException((SynapseException) e.getCause());
+			} else {
+				throw new RestServiceException(e.getMessage());
+			}
 		}
 	}
 	
