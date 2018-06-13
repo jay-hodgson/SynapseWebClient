@@ -5,6 +5,7 @@ import org.gwtbootstrap3.extras.notify.client.ui.Notify;
 import org.gwtbootstrap3.extras.notify.client.ui.NotifySettings;
 import org.sagebionetworks.repo.model.file.FileHandleAssociateType;
 import org.sagebionetworks.web.client.callback.MD5Callback;
+import org.sagebionetworks.web.client.utils.CallbackP;
 import org.sagebionetworks.web.client.widget.provenance.nchart.LayoutResult;
 import org.sagebionetworks.web.client.widget.provenance.nchart.LayoutResultJso;
 import org.sagebionetworks.web.client.widget.provenance.nchart.NChartCharacters;
@@ -330,6 +331,39 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 		fileReader.readAsBinaryString(file);
 	}-*/;
 
+	/**
+	 * Use CryptoJS to calculate the md5 of part of a file.
+	 */
+	private final static native String _getMd5(String s) /*-{
+		var hash = $wnd.CryptoJS.MD5(s);
+		var md5 = hash.toString($wnd.CryptoJS.enc.Hex);
+		return md5;
+	}-*/;
+
+	/**
+	 * Use CryptoJS to calculate the md5 of part of a file.
+	 */
+	@Override
+	public void getFileEtag(JavaScriptObject blob, int totalPartCount, Long chunkSize, CallbackP<String> etagCallback) {
+		getFilePartsMd5(blob, totalPartCount, chunkSize, 0, "", etagCallback);
+	}
+
+	public void getFilePartsMd5(final JavaScriptObject blob, final int totalPartCount, final Long chunkSize,
+			final int currentPart, final String allMd5s, final CallbackP<String> etagCallback) {
+		_getFileMd5(_getFilePart(blob, currentPart, chunkSize.doubleValue()), md5HexValue -> {
+			int nextPart = currentPart + 1;
+			if (nextPart == totalPartCount) {
+				// done!
+				String etag = _getMd5(allMd5s + md5HexValue);
+				consoleLog("Calculated etag: " + etag);
+				etagCallback.invoke(etag);
+			} else {
+				// process next chunk
+				getFilePartsMd5(blob, totalPartCount, chunkSize, nextPart, allMd5s + md5HexValue, etagCallback);
+			}
+		});
+	}
+	
 	/**
 	 * Use CryptoJS to calculate the md5 of part of a file.
 	 */

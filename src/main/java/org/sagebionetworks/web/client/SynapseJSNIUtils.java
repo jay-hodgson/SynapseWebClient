@@ -2,6 +2,7 @@ package org.sagebionetworks.web.client;
 
 import org.sagebionetworks.repo.model.file.FileHandleAssociateType;
 import org.sagebionetworks.web.client.callback.MD5Callback;
+import org.sagebionetworks.web.client.utils.CallbackP;
 import org.sagebionetworks.web.client.widget.provenance.nchart.LayoutResult;
 import org.sagebionetworks.web.client.widget.provenance.nchart.NChartCharacters;
 import org.sagebionetworks.web.client.widget.provenance.nchart.NChartLayersArray;
@@ -84,4 +85,5 @@ public interface SynapseJSNIUtils {
 
 	Element getElementById(String elementId);
 	String getCdnEndpoint();
+	void getFileEtag(JavaScriptObject blob, int totalPartCount, Long chunkSize, CallbackP<String> etagCallback);
 }

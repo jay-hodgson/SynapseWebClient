@@ -304,20 +304,23 @@ public class MultipartUploaderImpl implements MultipartUploader {
 	
 	public void completeMultipartUpload() {
 		logFullUpload();
-		//combine
-		jsClient.completeMultipartUpload(currentStatus.getUploadId(), new AsyncCallback<MultipartUploadStatus>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				//failed to complete multipart upload.  log it and start over.
-				logError(caught.getMessage());
-				retryRequired = true;
-				checkAllPartsProcessed();
-			}
-			
-			@Override
-			public void onSuccess(MultipartUploadStatus status) {
-				handler.uploadSuccess(status.getResultFileHandleId());
-			}
+		//verify full file again by calculating s3 etag (concatenated part md5s)
+		synapseJsniUtils.getFileEtag(blob, totalPartCount, request.getPartSizeBytes(), etag -> {
+			//combine
+			jsClient.completeMultipartUpload(currentStatus.getUploadId(), new AsyncCallback<MultipartUploadStatus>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					//failed to complete multipart upload.  log it and start over.
+					logError(caught.getMessage());
+					retryRequired = true;
+					checkAllPartsProcessed();
+				}
+				
+				@Override
+				public void onSuccess(MultipartUploadStatus status) {
+					handler.uploadSuccess(status.getResultFileHandleId());
+				}
+			});
 		});
 	}
 	
