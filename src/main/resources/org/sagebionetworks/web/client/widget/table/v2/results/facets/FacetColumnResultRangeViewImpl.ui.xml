@@ -8,11 +8,12 @@
 		<bh:Div addStyleNames="margin-top-15 margin-bottom-5">
 			<bh:Strong ui:field="columnName"/>
 		</bh:Div>
-		<g:HorizontalPanel verticalAlignment="ALIGN_MIDDLE">
+		<bh:Div ui:field="radioButtonContainer" />
+		<g:HorizontalPanel ui:field="rangeUI" verticalAlignment="ALIGN_MIDDLE" visible="false">
 			<b:TextBox ui:field="minField" width="105px"/>
 			<bh:Span text="to" addStyleNames="margin-left-5 margin-right-5"/>
 			<b:TextBox ui:field="maxField" width="105px"/>
-			<b:Button ui:field="applyButton" text="Apply" type="PRIMARY" addStyleNames="margin-left-5" icon="FILTER" />
+			<b:Button ui:field="applyButton" text="Apply" type="LINK" addStyleNames="margin-left-5" />
 		</g:HorizontalPanel>
 		<bh:Div ui:field="synAlertContainer"/>
 	</bh:Div>
