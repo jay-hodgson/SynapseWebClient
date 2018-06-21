@@ -83,6 +83,7 @@ public class SynapseSuggestBox implements SynapseSuggestBoxView.Presenter, Synap
 		this.selectedSuggestion = selectedSuggestion;
 		if (selectedSuggestion != null) {
 			view.setSelectedText("Currently selected: " + selectedSuggestion.getName());
+			SynapseSuggestOracle.addSelectionToRecentList(oracle.getTypeFilter(), selectedSuggestion);
 			if(callback != null) {
 				callback.invoke(selectedSuggestion);
 			}

@@ -1,5 +1,10 @@
 package org.sagebionetworks.web.client.widget.search;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.sagebionetworks.repo.model.principal.TypeFilter;
 import org.sagebionetworks.web.client.GWTTimer;
 
@@ -20,12 +25,22 @@ public class SynapseSuggestOracle extends SuggestOracle {
 	public String width;
 	private GWTTimer timer;
 	private TypeFilter type = TypeFilter.ALL;
+	public static final Map<TypeFilter, List<UserGroupSuggestion>> RECENTLY_SELECTED_SUGGESTIONS = new HashMap<>();
+	static {
+		for (TypeFilter filter : TypeFilter.values()) {
+			RECENTLY_SELECTED_SUGGESTIONS.put(filter, new ArrayList<>());
+		}
+	}
+	
 	@Inject
 	public SynapseSuggestOracle(GWTTimer timer) {
 		this.timer = timer;
 	}
 	public void setTypeFilter(TypeFilter type) {
 		this.type = type;
+	}
+	public TypeFilter getTypeFilter() {
+		return type;
 	}
 	public void configure(final SynapseSuggestBox suggestBox,
 			int pageSize,
@@ -84,7 +99,21 @@ public class SynapseSuggestOracle extends SuggestOracle {
 		this.callback = callback;
 		timer.cancel();
 		timer.schedule(SynapseSuggestBox.DELAY);
-	}	
+	}
+	
+	@Override
+	public void requestDefaultSuggestions(Request request, Callback callback) {
+		SuggestOracle.Response response = new SuggestOracle.Response(RECENTLY_SELECTED_SUGGESTIONS.get(type));
+		callback.onSuggestionsReady(request, response);
+	}
+	
+	public static void addSelectionToRecentList(TypeFilter type, UserGroupSuggestion suggestion) {
+		List<UserGroupSuggestion> suggestions = RECENTLY_SELECTED_SUGGESTIONS.get(type);
+		if (suggestions.size() > 10) {
+			suggestions.remove(suggestions.size() - 1);
+		}
+		suggestions.add(0, suggestion);
+	}
 	
 	@Override
 	public boolean isDisplayStringHTML() {
