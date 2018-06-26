@@ -8,6 +8,7 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.ValidationUtils;
+import org.sagebionetworks.web.client.widget.UrlBox;
 import org.sagebionetworks.web.shared.WebConstants;
 import org.sagebionetworks.web.shared.WidgetConstants;
 import org.sagebionetworks.web.shared.WikiPageKey;
@@ -21,7 +22,7 @@ import com.google.inject.Inject;
 public class ButtonLinkConfigViewImpl implements ButtonLinkConfigView {
 	public interface ButtonLinkConfigViewImplUiBinder extends UiBinder<Widget, ButtonLinkConfigViewImpl> {}
 	@UiField
-	TextBox urlField;
+	UrlBox urlField;
 	@UiField
 	TextBox nameField;
 	@UiField

@@ -5,6 +5,7 @@ import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.ValidationUtils;
+import org.sagebionetworks.web.client.widget.UrlBox;
 import org.sagebionetworks.web.client.widget.entity.renderer.ShinySiteWidget;
 
 import com.google.gwt.uibinder.client.UiBinder;
@@ -17,7 +18,7 @@ public class ShinySiteConfigViewImpl implements ShinySiteConfigView {
 	
 	private Presenter presenter;
 	@UiField
-	public TextBox urlField;
+	public UrlBox urlField;
 	@UiField
 	public TextBox heightField;
 	

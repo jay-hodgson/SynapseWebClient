@@ -4,6 +4,7 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.ValidationUtils;
 import org.sagebionetworks.web.client.presenter.LoginPresenter;
+import org.sagebionetworks.web.client.widget.UrlBox;
 import org.sagebionetworks.web.client.widget.table.v2.results.cell.EntityIdCellEditorImpl;
 
 import com.google.gwt.regexp.shared.MatchResult;
@@ -16,7 +17,7 @@ public class LinkConfigViewImpl implements LinkConfigView {
 	public interface LinkConfigViewImplUiBinder extends UiBinder<Widget, LinkConfigViewImpl> {}
 	private Presenter presenter;
 	@UiField
-	TextBox urlField;
+	UrlBox urlField;
 	@UiField
 	TextBox nameField;
 	

@@ -3,6 +3,7 @@ package org.sagebionetworks.web.client.widget.entity.controller;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.sagebionetworks.web.client.widget.UrlBox;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -23,7 +24,7 @@ public class ProvenanceURLDialogWidgetViewImpl extends Composite implements Prov
 	Modal modal;
 	
 	@UiField
-	TextBox editURLField;
+	UrlBox editURLField;
 	
 	@UiField
 	TextBox editNameField;

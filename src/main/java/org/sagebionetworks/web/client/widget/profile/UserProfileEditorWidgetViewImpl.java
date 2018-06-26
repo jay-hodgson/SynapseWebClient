@@ -7,6 +7,7 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.html.Div;
 import org.gwtbootstrap3.client.ui.html.Span;
+import org.sagebionetworks.web.client.widget.UrlBox;
 import org.sagebionetworks.web.client.widget.search.GooglePlacesSuggestOracle;
 
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -49,7 +50,7 @@ public class UserProfileEditorWidgetViewImpl implements
 	@UiField
 	FormGroup linkFormGroup;
 	@UiField
-	TextBox link;
+	UrlBox link;
 	@UiField
 	HelpBlock linkHelpBlock;
 	@UiField

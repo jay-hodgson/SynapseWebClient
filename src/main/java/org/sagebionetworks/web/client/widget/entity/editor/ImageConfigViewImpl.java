@@ -13,6 +13,7 @@ import org.sagebionetworks.web.client.SageImageBundle;
 import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.ValidationUtils;
 import org.sagebionetworks.web.client.cache.ClientCache;
+import org.sagebionetworks.web.client.widget.UrlBox;
 import org.sagebionetworks.web.client.widget.entity.browse.EntityFilter;
 import org.sagebionetworks.web.client.widget.entity.browse.EntityFinder;
 
@@ -38,7 +39,7 @@ public class ImageConfigViewImpl implements ImageConfigView {
 	@UiField
 	TextBox nameField;
 	@UiField
-	TextBox urlField;
+	UrlBox urlField;
 	@UiField
 	TextBox entityField;
 	@UiField
