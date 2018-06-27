@@ -1,6 +1,7 @@
 package org.sagebionetworks.web.client.plotly;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
 
 import jsinterop.annotations.JsIgnore;
 
@@ -63,10 +64,28 @@ public class PlotlyTraceWrapper {
 		String orientationValue = isHorizontal ? "h" : "v";
 		String[] xAxis = isHorizontal ? y : x;
 		String[] yAxis = isHorizontal ? x : y;
-		return _getTrace(name, type, xAxis, yAxis, orientationValue);
+		JsArrayString xAxisNative = getNewNativeArray();
+		for (String x : xAxis) {
+			pushValue(x, xAxisNative);
+		}
+		JsArrayString yAxisNative = getNewNativeArray();
+		for (String y : yAxis) {
+			pushValue(y, yAxisNative);
+		}
+		
+		return _getTrace(name, type, xAxisNative, yAxisNative, orientationValue);
 	}
+	
+	private native JsArrayString getNewNativeArray() /*-{
+		return [];
+	}-*/;
+	
+	private native void pushValue(String s, JsArrayString arr) /*-{
+		arr.push(s);
+	}-*/;
 
-	private static native JavaScriptObject _getTrace(String nameValue, String typeValue, String[] xValue, String[] yValue, String orientationValue) /*-{
+
+	private static native JavaScriptObject _getTrace(String nameValue, String typeValue, JsArrayString xValue, JsArrayString yValue, String orientationValue) /*-{
 		return {
 			type : typeValue,
 			name : nameValue,
