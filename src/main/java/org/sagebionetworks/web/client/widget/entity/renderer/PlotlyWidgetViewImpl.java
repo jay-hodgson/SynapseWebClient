@@ -81,20 +81,29 @@ public class PlotlyWidgetViewImpl implements PlotlyWidgetView {
 		_showChart(chartContainer.getElement(), getPlotlyTraceArray(xyData), barMode, title, xTitle, yTitle, xAxisType, yAxisType, showLegend);
 	}
 	
-	public static JavaScriptObject[] getPlotlyTraceArray(List<PlotlyTraceWrapper> l) {
+	public static JavaScriptObject getPlotlyTraceArray(List<PlotlyTraceWrapper> l) {
 		if (l == null) {
 			return null;
 		}
-		JavaScriptObject[] d = new JavaScriptObject[l.size()];
+		JavaScriptObject d = _getArray();
 		for (int i = 0; i < l.size(); i++) {
-			d[i] = l.get(i).getTrace();
+			_pushValue(l.get(i).getTrace(), d);
 		}
 		return d;
 	}
 	
+	private static native JavaScriptObject _getArray() /*-{
+		return [];
+	}-*/;
+	
+	private static native JavaScriptObject _pushValue(JavaScriptObject ob, JavaScriptObject array) /*-{
+		array.push(ob);
+	}-*/;
+
+			
 	private static native void _showChart(
 			Element el, 
-			JavaScriptObject[] xyData, 
+			JavaScriptObject xyData, 
 			String barMode, 
 			String plotTitle, 
 			String xTitle, 
