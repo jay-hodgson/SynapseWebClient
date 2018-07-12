@@ -1,0 +1,8 @@
+/*
+ * font-awesome overrides
+ */
+ 
+#rootPanel .fa-folder {
+  content: url(/images/svg-icons/yinyang.svg);
+  margin: 4px 5px -1px 0px;
+}
