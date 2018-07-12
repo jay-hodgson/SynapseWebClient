@@ -2,7 +2,15 @@
  * font-awesome overrides
  */
  
-#rootPanel .fa-folder {
+#rootPanel .entityBadge .fa {
+  max-height: 15px;
+  max-width: 15px;
+}
+#rootPanel .fa {
+  display: unset;
+}
+
+
+#rootPanel .fa-folder:before {
   content: url(/images/svg-icons/yinyang.svg);
-  margin: 4px 5px -1px 0px;
 }
