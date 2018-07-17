@@ -8,6 +8,7 @@ import org.sagebionetworks.web.client.widget.provenance.nchart.NChartLayersArray
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 
 public interface SynapseJSNIUtils {
@@ -84,4 +85,5 @@ public interface SynapseJSNIUtils {
 
 	Element getElementById(String elementId);
 	String getCdnEndpoint();
+	public String xlsToHtml(ArrayBuffer responseArrayBuffer);
 }

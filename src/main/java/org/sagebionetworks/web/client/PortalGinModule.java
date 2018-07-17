@@ -455,6 +455,8 @@ import org.sagebionetworks.web.client.widget.entity.renderer.WikiSubpagesOrderEd
 import org.sagebionetworks.web.client.widget.entity.renderer.WikiSubpagesOrderEditorViewImpl;
 import org.sagebionetworks.web.client.widget.entity.renderer.WikiSubpagesView;
 import org.sagebionetworks.web.client.widget.entity.renderer.WikiSubpagesViewImpl;
+import org.sagebionetworks.web.client.widget.entity.renderer.XlsPreviewView;
+import org.sagebionetworks.web.client.widget.entity.renderer.XlsPreviewViewImpl;
 import org.sagebionetworks.web.client.widget.entity.restriction.v2.RestrictionWidgetView;
 import org.sagebionetworks.web.client.widget.entity.restriction.v2.RestrictionWidgetViewImpl;
 import org.sagebionetworks.web.client.widget.entity.tabs.ChallengeTabView;
@@ -1415,5 +1417,6 @@ public class PortalGinModule extends AbstractGinModule {
 		bind(SynapseProperties.class).to(SynapsePropertiesImpl.class).in(Singleton.class);
 		bind(Moment.class).to(MomentImpl.class);
 		bind(DownloadSpeedTester.class).to(DownloadSpeedTesterImpl.class);
+		bind(XlsPreviewView.class).to(XlsPreviewViewImpl.class);
 	}
 }

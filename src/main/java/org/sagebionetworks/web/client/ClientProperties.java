@@ -45,6 +45,7 @@ public class ClientProperties {
 	public static final WebResource MATHJAX_JS = new WebResource("https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=default", ResourceType.JAVASCRIPT);
 	public static final WebResource TWITTER_JS = new WebResource("https://platform.twitter.com/widgets.js", ResourceType.JAVASCRIPT);
 	public static final WebResource PLOTLY_JS = new WebResource("https://cdn.plot.ly/plotly-1.33.1.min.js", ResourceType.JAVASCRIPT);
+	public static final WebResource SHEETS_JS = new WebResource("https://unpkg.com/xlsx@0.13.2/dist/xlsx.full.min.js", ResourceType.JAVASCRIPT);
 	public static final WebResource PLOTLY_REACT_JS = new WebResource("https://unpkg.com/react-plotly.js@1.3.0/dist/create-plotly-component.min.js", ResourceType.JAVASCRIPT);
 	public static final WebResource AWS_SDK_JS = new WebResource("js/aws-sdk-2.86.0.min.js", ResourceType.JAVASCRIPT);
 	public static final String QUERY_SERVICE_PREFIX = "/query?query=";

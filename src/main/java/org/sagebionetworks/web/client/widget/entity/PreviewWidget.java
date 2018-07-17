@@ -40,6 +40,7 @@ import org.sagebionetworks.web.client.widget.entity.renderer.HtmlPreviewWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.NbConvertPreviewWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.PDFPreviewWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.VideoWidget;
+import org.sagebionetworks.web.client.widget.entity.renderer.XlsPreviewWidget;
 import org.sagebionetworks.web.shared.WebConstants;
 import org.sagebionetworks.web.shared.WidgetConstants;
 import org.sagebionetworks.web.shared.WikiPageKey;
@@ -60,7 +61,7 @@ public class PreviewWidget implements PreviewWidgetView.Presenter, WidgetRendere
 	public static final int VIDEO_WIDTH = 320;
 	public static final int VIDEO_HEIGHT = 180;
 	public enum PreviewFileType {
-		PLAINTEXT, CODE, ZIP, CSV, IMAGE, NONE, TAB, HTML, PDF, IPYNB, VIDEO, MARKDOWN
+		PLAINTEXT, CODE, ZIP, CSV, IMAGE, NONE, TAB, HTML, PDF, IPYNB, VIDEO, MARKDOWN, XLS
 	}
 	public static final long MAX_HTML_FILE_SIZE = 5 * new Double(MB).longValue();
 	
@@ -142,6 +143,8 @@ public class PreviewWidget implements PreviewWidgetView.Presenter, WidgetRendere
 				return PreviewFileType.PDF;
 			} else if (isRecognizedCodeFileName(fileName) || isWebRecognizedCodeFileName(fileName)) {
 				return PreviewFileType.CODE;
+			} else if (fileName != null && (fileName.toLowerCase().endsWith("xls") || fileName.toLowerCase().endsWith("xlsx")) ) {
+				return PreviewFileType.XLS;
 			} else if (fileName != null && (fileName.toLowerCase().endsWith(".md") || fileName.toLowerCase().endsWith(".rmd"))) {
 				return PreviewFileType.MARKDOWN;
 			}
@@ -257,6 +260,11 @@ public class PreviewWidget implements PreviewWidgetView.Presenter, WidgetRendere
 				VideoWidget videoWidget = ginInjector.getVideoWidget();
 				videoWidget.configure(bundle.getEntity().getId(), fileHandleToShow.getFileName(), VIDEO_WIDTH, VIDEO_HEIGHT);
 				view.setPreviewWidget(videoWidget);
+				break;
+			case XLS :
+				XlsPreviewWidget xlsPreviewWidget = ginInjector.getXlsPreviewWidget();
+				xlsPreviewWidget.configure(bundle.getEntity().getId(), fileHandleToShow);
+				view.setPreviewWidget(xlsPreviewWidget);
 				break;
 			case HTML :
 				if (fileHandleToShow.getContentSize() != null && fileHandleToShow.getContentSize() < MAX_HTML_FILE_SIZE) {

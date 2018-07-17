@@ -17,6 +17,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.LinkElement;
 import com.google.gwt.dom.client.MetaElement;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Window.Location;
@@ -731,4 +732,16 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 	public final static native void _unmountComponentAtNode(Element el) /*-{
 		return $wnd.ReactDOM.unmountComponentAtNode(el);
 	}-*/;
+	
+	@Override
+	public String xlsToHtml(ArrayBuffer responseArrayBuffer) {
+		return _xlsToHtml(responseArrayBuffer);
+	}
+	
+	private final static native String _xlsToHtml(ArrayBuffer data) /*-{
+		var workbook = $wnd.XLSX.read(data, {type:"array"});
+		var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+		return $wnd.XLSX.utils.sheet_to_html(firstSheet);
+	}-*/;
+
 }

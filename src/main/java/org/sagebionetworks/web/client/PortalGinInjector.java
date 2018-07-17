@@ -165,6 +165,7 @@ import org.sagebionetworks.web.client.widget.entity.renderer.TeamMemberRowWidget
 import org.sagebionetworks.web.client.widget.entity.renderer.TeamMembersWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.VideoWidget;
 import org.sagebionetworks.web.client.widget.entity.renderer.WikiFilesPreviewWidget;
+import org.sagebionetworks.web.client.widget.entity.renderer.XlsPreviewWidget;
 import org.sagebionetworks.web.client.widget.entity.tabs.ChallengeTabView;
 import org.sagebionetworks.web.client.widget.entity.tabs.DiscussionTabView;
 import org.sagebionetworks.web.client.widget.entity.tabs.DockerTabView;
@@ -562,6 +563,7 @@ public interface PortalGinInjector extends Ginjector {
 	PDFPreviewWidget getPDFPreviewWidget();
 	HtmlPreviewWidget getHtmlPreviewWidget();
 	NbConvertPreviewWidget getNbConvertPreviewWidget();
+	XlsPreviewWidget getXlsPreviewWidget();
 	S3DirectLoginDialog getS3DirectLoginDialog();
 	DownloadTableQueryModalWidget getDownloadTableQueryModalWidget();
 	CopyTextModal getCopyTextModal();
