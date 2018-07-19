@@ -184,36 +184,27 @@ public class TableEntityWidget implements IsWidget,
 				onUploadTableData();
 			}
 		});
-		this.actionMenu.setActionListener(Action.DOWNLOAD_TABLE_QUERY_RESULTS, new ActionListener() {
-			@Override
-			public void onAction(Action action) {
-				onDownloadResults();
-			}
+		this.actionMenu.setActionListener(Action.DOWNLOAD_TABLE_QUERY_RESULTS, action -> {
+			onDownloadResults();
 		});
-		this.actionMenu.setActionListener(Action.EDIT_TABLE_DATA, new ActionListener() {
-			@Override
-			public void onAction(Action action) {
-				onEditResults();
-			}
+		this.actionMenu.setActionListener(Action.DOWNLOOAD_TABLE_PROGRAMMATIC_OPTIONS, action -> {
+			onShowProgrammaticDownloadFiles();
 		});
-		this.actionMenu.setActionListener(Action.SHOW_TABLE_SCHEMA, new ActionListener() {
-			@Override
-			public void onAction(Action action) {
-				isShowingSchema = !isShowingSchema;
-				view.setSchemaVisible(isShowingSchema);
-				String showHide = isShowingSchema ? HIDE : SHOW;
-				actionMenu.setActionText(Action.SHOW_TABLE_SCHEMA, showHide+entityTypeDisplay+SCHEMA);
-			}
+		this.actionMenu.setActionListener(Action.EDIT_TABLE_DATA, action -> {
+			onEditResults();
+		});
+		this.actionMenu.setActionListener(Action.SHOW_TABLE_SCHEMA, action -> {
+			isShowingSchema = !isShowingSchema;
+			view.setSchemaVisible(isShowingSchema);
+			String showHide = isShowingSchema ? HIDE : SHOW;
+			actionMenu.setActionText(Action.SHOW_TABLE_SCHEMA, showHide+entityTypeDisplay+SCHEMA);
 		});
 		
-		this.actionMenu.setActionListener(Action.SHOW_VIEW_SCOPE, new ActionListener() {
-			@Override
-			public void onAction(Action action) {
-				isShowingScope = !isShowingScope;
-				view.setScopeVisible(isShowingScope);
-				String showHide = isShowingScope ? HIDE : SHOW;
-				actionMenu.setActionText(Action.SHOW_VIEW_SCOPE, showHide + SCOPE + entityTypeDisplay);
-			}
+		this.actionMenu.setActionListener(Action.SHOW_VIEW_SCOPE, action -> {
+			isShowingScope = !isShowingScope;
+			view.setScopeVisible(isShowingScope);
+			String showHide = isShowingScope ? HIDE : SHOW;
+			actionMenu.setActionText(Action.SHOW_VIEW_SCOPE, showHide + SCOPE + entityTypeDisplay);
 		});
 	}
 
@@ -528,7 +519,7 @@ public class TableEntityWidget implements IsWidget,
 	}
 	
 	@Override
-	public void onShowDownloadFiles() {
+	public void onShowProgrammaticDownloadFiles() {
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 			@Override
 			public void onSuccess(String sql) {

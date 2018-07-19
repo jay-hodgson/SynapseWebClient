@@ -1,13 +1,12 @@
 package org.sagebionetworks.web.client.widget.table.v2;
 
 import org.gwtbootstrap3.client.ui.Alert;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.InputGroup;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.sagebionetworks.web.client.DisplayUtils;
-import org.sagebionetworks.web.shared.WebConstants;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -48,11 +47,11 @@ public class QueryInputViewImpl implements QueryInputView{
 	@UiField
 	Button editResultsButton;
 	@UiField
-	Button downloadResultsButton;
+	AnchorListItem exportTableLink;
 	@UiField
 	Button showQueryButton;
 	@UiField
-	Button downloadFilesButton;
+	AnchorListItem programmaticDownloadOptionsLink;
 	HTMLPanel panel;
 	Presenter presenter;
 	
@@ -93,7 +92,7 @@ public class QueryInputViewImpl implements QueryInputView{
 				presenter.onEditResults();
 			}
 		});
-		downloadResultsButton.addClickHandler(new ClickHandler() {
+		exportTableLink.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				presenter.onDownloadResults();
@@ -105,10 +104,10 @@ public class QueryInputViewImpl implements QueryInputView{
 				presenter.onShowQuery();
 			}
 		});
-		downloadFilesButton.addClickHandler(new ClickHandler() {
+		programmaticDownloadOptionsLink.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				presenter.onDownloadFiles();
+				presenter.onShowProgrammaticDownloadFiles();
 			}
 		});
 	}
@@ -166,7 +165,7 @@ public class QueryInputViewImpl implements QueryInputView{
 
 	@Override
 	public void setDownloadEnabled(boolean enabled) {
-		this.downloadResultsButton.setEnabled(enabled);
+		this.exportTableLink.setEnabled(enabled);
 	}
 
 
@@ -180,7 +179,7 @@ public class QueryInputViewImpl implements QueryInputView{
 		showQueryButton.setVisible(visible);
 	}
 	@Override
-	public void setDownloadFilesVisible(boolean visible) {
-		downloadFilesButton.setVisible(visible);
+	public void setProgrammaticDownloadFilesVisible(boolean visible) {
+		programmaticDownloadOptionsLink.setVisible(visible);
 	}
 }

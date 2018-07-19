@@ -633,7 +633,7 @@ public class TableEntityWidgetTest {
 		when(mockQueryChangeHandler.getQueryString()).thenReturn(startQuery);
 		widget.configure(entityBundle, true, mockQueryChangeHandler, mockActionMenu);
 		
-		widget.onShowDownloadFiles();
+		widget.onShowProgrammaticDownloadFiles();
 		
 		verify(mockFileViewClientsHelp).setQuery(facetBasedSql);
 		verify(mockFileViewClientsHelp).show();

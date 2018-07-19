@@ -41,7 +41,7 @@ public interface QueryInputView extends IsWidget {
 		/**
 		 * Called when the user clicks download files.
 		 */
-		void onDownloadFiles();
+		void onShowProgrammaticDownloadFiles();
 	}
 	
 	/**
@@ -103,5 +103,5 @@ public interface QueryInputView extends IsWidget {
 	public void setEditVisible(boolean visibile);
 	public void setQueryInputVisible(boolean visible);
 	public void setShowQueryVisible(boolean visible);
-	public void setDownloadFilesVisible(boolean visible);;
+	public void setProgrammaticDownloadFilesVisible(boolean visible);;
 }

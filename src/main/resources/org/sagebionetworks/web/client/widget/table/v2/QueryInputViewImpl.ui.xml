@@ -23,10 +23,14 @@
 					</b:InputGroup>
 				</t:TableData>
 				<t:TableData width="370px" paddingRight="5">
-					<b:Button type="PRIMARY" ui:field="downloadFilesButton" icon="QUESTION_CIRCLE" height="34px" addStyleNames="margin-left-10" pull="RIGHT" text="How to Download Files" />
-					<b:Tooltip title="Download Data">
-						<b:Button ui:field="downloadResultsButton" icon="DOWNLOAD" height="34px" addStyleNames="margin-left-5" pull="RIGHT" />
-					</b:Tooltip>
+					<b:DropDown addStyleNames="right margin-left-5 margin-right-5 margin-top-5">
+						<b:Button dataToggle="DROPDOWN" height="28px" >Download Options</b:Button>
+						<b:DropDownMenu addStyleNames="dropdown-menu-right">
+							<b:AnchorListItem ui:field="directFileDownloadLink" visible="false">Direct file download</b:AnchorListItem>
+							<b:AnchorListItem ui:field="programmaticDownloadOptionsLink">Programmatic options</b:AnchorListItem>
+							<b:AnchorListItem ui:field="exportTableLink">Export Table</b:AnchorListItem>
+						</b:DropDownMenu>
+					</b:DropDown>
 					<b:Tooltip title="Edit query results">
 						<b:Button ui:field="editResultsButton" icon="EDIT" height="34px" addStyleNames="margin-left-5" pull="RIGHT"/>
 					</b:Tooltip>

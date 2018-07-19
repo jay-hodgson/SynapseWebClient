@@ -3,7 +3,6 @@ package org.sagebionetworks.web.client.widget.table.v2;
 import static org.sagebionetworks.web.client.ServiceEntryPointUtils.fixServiceEntryPoint;
 
 import org.sagebionetworks.web.client.SynapseClientAsync;
-import org.sagebionetworks.web.client.widget.clienthelp.FileViewClientsHelp;
 import org.sagebionetworks.web.client.widget.table.v2.results.QueryExecutionListener;
 import org.sagebionetworks.web.client.widget.table.v2.results.QueryInputListener;
 
@@ -155,12 +154,12 @@ public class QueryInputWidget implements QueryInputView.Presenter, IsWidget, Que
 	}
 	
 	public void setDownloadFilesVisible(boolean visible) {
-		view.setDownloadFilesVisible(visible);
+		view.setProgrammaticDownloadFilesVisible(visible);
 	}
 
 	@Override
-	public void onDownloadFiles() {
-		queryInputListener.onShowDownloadFiles();
+	public void onShowProgrammaticDownloadFiles() {
+		queryInputListener.onShowProgrammaticDownloadFiles();
 	}
 	
 	public void setVisible(boolean visible) {

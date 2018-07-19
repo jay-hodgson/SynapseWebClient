@@ -26,6 +26,7 @@ import org.sagebionetworks.repo.model.file.FileHandle;
 import org.sagebionetworks.repo.model.table.EntityView;
 import org.sagebionetworks.repo.model.table.Table;
 import org.sagebionetworks.repo.model.table.TableEntity;
+import org.sagebionetworks.repo.model.table.ViewTypeMask;
 import org.sagebionetworks.repo.model.v2.wiki.V2WikiHeader;
 import org.sagebionetworks.repo.model.wiki.WikiPage;
 import org.sagebionetworks.web.client.ChallengeClientAsync;
@@ -590,17 +591,32 @@ public class EntityActionControllerImpl implements EntityActionController, Actio
 			actionMenu.setActionText(Action.UPLOAD_TABLE_DATA, "Upload Data to " + enityTypeDisplay);
 			actionMenu.setActionVisible(Action.EDIT_TABLE_DATA, canEditResults);
 			actionMenu.setActionVisible(Action.DOWNLOAD_TABLE_QUERY_RESULTS, true);
+			actionMenu.setActionVisible(Action.DOWNLOOAD_TABLE_PROGRAMMATIC_OPTIONS, true);
+			actionMenu.setActionVisible(Action.DOWNLOAD_TABLE_FILES, isDownloadFilesAvailable((Table)entityBundle.getEntity()));
 			actionMenu.setActionVisible(Action.SHOW_TABLE_SCHEMA, true);
 			actionMenu.setActionVisible(Action.SHOW_VIEW_SCOPE, !(entityBundle.getEntity() instanceof TableEntity));
 		} else {
 			actionMenu.setActionVisible(Action.UPLOAD_TABLE_DATA, false);
 			actionMenu.setActionVisible(Action.EDIT_TABLE_DATA, false);
 			actionMenu.setActionVisible(Action.DOWNLOAD_TABLE_QUERY_RESULTS, false);
+			actionMenu.setActionVisible(Action.DOWNLOOAD_TABLE_PROGRAMMATIC_OPTIONS, false);
+			actionMenu.setActionVisible(Action.DOWNLOAD_TABLE_FILES, false);
 			actionMenu.setActionVisible(Action.SHOW_TABLE_SCHEMA, false);
 			actionMenu.setActionVisible(Action.SHOW_VIEW_SCOPE, false);
 		}
 	}
 	
+	public static boolean isDownloadFilesAvailable(Table entity) {
+		if (entity instanceof EntityView) {
+			EntityView entityView = (EntityView)entity;
+			int mask = entityView.getViewTypeMask().intValue();
+			// set to visible if view includes files
+			return (mask & new Long(ViewTypeMask.File.getMask()).intValue()) > 0;
+		} else {
+			return false;
+		}
+	}
+
 	private void configureFileUpload() {
 		if(entityBundle.getEntity() instanceof FileEntity ){
 			actionMenu.setActionVisible(Action.UPLOAD_NEW_FILE, permissions.getCanCertifiedUserEdit());
