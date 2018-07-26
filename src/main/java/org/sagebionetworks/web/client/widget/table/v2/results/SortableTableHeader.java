@@ -15,7 +15,7 @@ public interface SortableTableHeader extends IsWidget {
 	 * @param text
 	 * @param handler
 	 */
-	public void configure(String text, SortingListener listener);
+	public void configure(String displayText, String columnSql, SortingListener listener);
 	
 	/**
 	 * Set the icon to be shown with this header.

@@ -13,6 +13,7 @@ import org.sagebionetworks.repo.model.table.FacetColumnResult;
 import org.sagebionetworks.repo.model.table.Query;
 import org.sagebionetworks.repo.model.table.QueryResultBundle;
 import org.sagebionetworks.repo.model.table.Row;
+import org.sagebionetworks.repo.model.table.SelectColumn;
 import org.sagebionetworks.repo.model.table.SortDirection;
 import org.sagebionetworks.repo.model.table.SortItem;
 import org.sagebionetworks.web.client.PortalGinInjector;
@@ -99,25 +100,32 @@ public class TablePageWidget implements TablePageView.Presenter, IsWidget, RowSe
 		view.setEditorBufferVisible(isEditable);
 		tableId = QueryBundleUtils.getTableId(bundle);
 		// Map the columns to types
-		types = ColumnModelUtils.buildTypesForQueryResults(QueryBundleUtils.getSelectFromBundle(bundle), bundle.getColumnModels());
+		List<SelectColumn> selectColumns = QueryBundleUtils.getSelectFromBundle(bundle);
+		types = ColumnModelUtils.buildTypesForQueryResults(selectColumns, bundle.getColumnModels());
 		// setup the headers from the types
 		List<IsWidget> headers = new ArrayList<IsWidget>();
 		Map<String, SortItem> sortedHeaders = new HashMap<String, SortItem>();
 		if (sortList != null) {
 			for (SortItem sort : sortList) {
-				sortedHeaders.put(sort.getColumn(), sort);
+				sortedHeaders.put(sort.getColumnSQL(), sort);
 			}	
 		}
+		Map<String, String> columnModelName2ColumnSqlName = new HashMap<String, String>();
+		for (SelectColumn selectColumn: selectColumns) {
+			columnModelName2ColumnSqlName.put(selectColumn.getName(), selectColumn.getColumnSQL());
+		}
+		
 		for (ColumnModel type: types) {
 			// Create each header
-			String headerName = type.getName();
+			String headerDisplayName = type.getName();
+			String headerColumnNameSql = columnModelName2ColumnSqlName.get(headerDisplayName);
 			if(!isEditable){
 				// For sorting we need click handler and to set sort direction when needed.
 				SortableTableHeader sth = ginInjector.createSortableTableHeader();
-				sth.configure(type.getName(), pageChangeListener);
+				sth.configure(headerDisplayName, headerColumnNameSql, pageChangeListener);
 				headers.add(sth);
-				if(sortedHeaders.containsKey(headerName)) {
-					SortItem sortItem = sortedHeaders.get(headerName);
+				if(sortedHeaders.containsKey(headerColumnNameSql)) {
+					SortItem sortItem = sortedHeaders.get(headerColumnNameSql);
 					if(SortDirection.DESC.equals(sortItem.getDirection())){
 						sth.setIcon(IconType.SORT_DESC);
 					}else{
@@ -127,7 +135,7 @@ public class TablePageWidget implements TablePageView.Presenter, IsWidget, RowSe
 			}else{
 				// For the static case we just set the header name.
 				StaticTableHeader sth = ginInjector.createStaticTableHeader();
-				sth.setHeader(headerName);
+				sth.setHeader(headerDisplayName);
 				headers.add(sth);
 			}
 		}

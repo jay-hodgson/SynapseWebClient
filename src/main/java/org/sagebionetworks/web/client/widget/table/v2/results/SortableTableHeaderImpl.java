@@ -35,11 +35,11 @@ public class SortableTableHeaderImpl implements SortableTableHeader {
 	}
 
 	@Override
-	public void configure(final String text, final SortingListener handler) {
-		tableHeaderLink.setText(text);
+	public void configure(String displayText, final String columnSql, final SortingListener handler) {
+		tableHeaderLink.setText(displayText);
 		if(handler != null){
 			tableHeaderLink.addClickHandler(event -> {
-				handler.onToggleSort(text);
+				handler.onToggleSort(columnSql);
 			});
 		}
 	}

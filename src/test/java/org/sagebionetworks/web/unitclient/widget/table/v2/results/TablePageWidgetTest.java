@@ -277,13 +277,19 @@ public class TablePageWidgetTest {
 		// Check each header
 		for(int i=0; i<sortHeaders.size(); i++){
 			SortableTableHeader sth = sortHeaders.get(i);
-			String headerName;
+			String displayColumnName;
 			if(i < bundle.getSelectColumns().size()){
-				headerName = bundle.getSelectColumns().get(i).getName();
+				displayColumnName = bundle.getSelectColumns().get(i).getName();
 			}else{
-				headerName = "sum(four)";
+				displayColumnName = "sum(four)";
 			}
-			verify(sth).configure(headerName, mockPageChangeListner);
+			String columnSql;
+			if(i < bundle.getSelectColumns().size()){
+				columnSql = bundle.getSelectColumns().get(i).getColumnSQL();
+			}else{
+				columnSql = "sum(four)";
+			}
+			verify(sth).configure(displayColumnName, columnSql, mockPageChangeListner);
 			if(i == sortColumnIndex){
 				verify(sth).setIcon(IconType.SORT_DESC);
 			}else{
