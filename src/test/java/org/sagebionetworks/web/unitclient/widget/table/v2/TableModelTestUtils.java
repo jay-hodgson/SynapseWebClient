@@ -371,6 +371,7 @@ public class TableModelTestUtils {
 			sc.setColumnType(cm.getColumnType());
 			sc.setId(cm.getId());
 			sc.setName(cm.getName());
+			sc.setColumnSQL(cm.getName());
 			resutls.add(sc);
 		}
 		return resutls;

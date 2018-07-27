@@ -263,7 +263,7 @@ public class TablePageWidgetTest {
 	public void testConfigureWithSortDescending(){
 		int sortColumnIndex = 2;
 		SortItem sort = new SortItem();
-		sort.setColumn(schema.get(sortColumnIndex).getName());
+		sort.setColumnSQL(schema.get(sortColumnIndex).getName());
 		sort.setDirection(SortDirection.DESC);
 		List<SortItem> sortList = new ArrayList<SortItem>();
 		sortList.add(sort);
@@ -302,7 +302,7 @@ public class TablePageWidgetTest {
 	public void testConfigureWithSortAscending(){
 		int sortColumnIndex = 1;
 		SortItem sort = new SortItem();
-		sort.setColumn(schema.get(sortColumnIndex).getName());
+		sort.setColumnSQL(schema.get(sortColumnIndex).getName());
 		sort.setDirection(SortDirection.ASC);
 		List<SortItem> sortList = new ArrayList<SortItem>();
 		sortList.add(sort);
@@ -330,11 +330,11 @@ public class TablePageWidgetTest {
 		int ascColumnIndex = 1;
 		int descColumnIndex = 2;
 		SortItem sort = new SortItem();
-		sort.setColumn(schema.get(ascColumnIndex).getName());
+		sort.setColumnSQL(schema.get(ascColumnIndex).getName());
 		sort.setDirection(SortDirection.ASC);
 		sortList.add(sort);
 		sort = new SortItem();
-		sort.setColumn(schema.get(descColumnIndex).getName());
+		sort.setColumnSQL(schema.get(descColumnIndex).getName());
 		sort.setDirection(SortDirection.DESC);
 		sortList.add(sort);
 		boolean isEditable = false;
@@ -364,7 +364,7 @@ public class TablePageWidgetTest {
 	public void testConfigureWithSortDirectionNull(){
 		int sortColumnIndex = 1;
 		SortItem sort = new SortItem();
-		sort.setColumn(schema.get(sortColumnIndex).getName());
+		sort.setColumnSQL(schema.get(sortColumnIndex).getName());
 		// When the direction is null
 		sort.setDirection(null);
 		List<SortItem> sortList = new ArrayList<SortItem>();
