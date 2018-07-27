@@ -5,9 +5,7 @@ import static org.sagebionetworks.web.client.widget.table.v2.TableEntityWidget.D
 import static org.sagebionetworks.web.client.widget.table.v2.TableEntityWidget.DEFAULT_OFFSET;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.sagebionetworks.repo.model.asynch.AsynchronousResponseBody;
 import org.sagebionetworks.repo.model.table.FacetColumnRequest;
@@ -18,6 +16,7 @@ import org.sagebionetworks.repo.model.table.QueryResultBundle;
 import org.sagebionetworks.repo.model.table.Row;
 import org.sagebionetworks.repo.model.table.RowSet;
 import org.sagebionetworks.repo.model.table.SelectColumn;
+import org.sagebionetworks.repo.model.table.SortDirection;
 import org.sagebionetworks.repo.model.table.SortItem;
 import org.sagebionetworks.web.client.GWTWrapper;
 import org.sagebionetworks.web.client.PortalGinInjector;
@@ -31,7 +30,6 @@ import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
 import org.sagebionetworks.web.client.widget.table.modal.fileview.TableType;
 import org.sagebionetworks.web.shared.asynch.AsynchType;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -76,7 +74,6 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 	int currentJobIndex = 0;
 	QueryResultBundle cachedFullQueryResultBundle = null;
 	boolean facetsVisible = true;
-	public static final Map<String, List<SortItem>> SQL_2_SORT_ITEMS_CACHE = new HashMap<>();
 	
 	@Inject
 	public TableQueryResultWidget(TableQueryResultView view, 
@@ -284,33 +281,15 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 		} else {
 			cachedFullQueryResultBundle = bundle;
 		}
-		
-		if (SQL_2_SORT_ITEMS_CACHE.containsKey(this.startingQuery.getSql())) {
-			setQueryResultsAndSort(bundle, SQL_2_SORT_ITEMS_CACHE.get(this.startingQuery.getSql()));
-		} else  {
-			// Get the sort info
-			this.synapseClient.getSortFromTableQuery(this.startingQuery.getSql(), new AsyncCallback<List<SortItem>>() {
-				
-				@Override
-				public void onSuccess(List<SortItem> sortItems) {
-					SQL_2_SORT_ITEMS_CACHE.put(startingQuery.getSql(), sortItems);
-					setQueryResultsAndSort(bundle, sortItems);
-				}
-				
-				@Override
-				public void onFailure(Throwable caught) {
-					showError(caught);
-				}
-			});
-		}
+		setQueryResultsAndSort(bundle);
 	}
 	
-	private void setQueryResultsAndSort(QueryResultBundle bundle, List<SortItem> sortItems){
+	private void setQueryResultsAndSort(QueryResultBundle bundle){
 		this.bundle = bundle;
 		this.view.setErrorVisible(false);
 		this.view.setProgressWidgetVisible(false);
 		// configure the page widget
-		this.pageViewerWidget.configure(bundle, this.startingQuery, sortItems, false, tableType, null, this, facetChangedHandler, resetFacetsHandler);
+		this.pageViewerWidget.configure(bundle, this.startingQuery, startingQuery.getSort(), false, tableType, null, this, facetChangedHandler, resetFacetsHandler);
 		pageViewerWidget.setTableVisible(true);
 		fireFinishEvent(true, isQueryResultEditable());
 	}
@@ -403,12 +382,6 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 		queryChanging();
 	}
 	
-	private void runSql(String sql){
-		startingQuery.setSql(sql);
-		startingQuery.setOffset(0L);
-		queryChanging();
-	}
-
 	private void queryChanging() {
 		if(this.queryListener != null){
 			this.queryListener.onStartingNewQuery(this.startingQuery);
@@ -424,16 +397,30 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 	@Override
 	public void onToggleSort(String header) {
 		// This call will generate a new SQL string with the requested column toggled.
-		synapseClient.toggleSortOnTableQuery(this.startingQuery.getSql(), header, new AsyncCallback<String>(){
-			@Override
-			public void onFailure(Throwable caught) {
-				showError(caught);
+		SortItem sortItem = null;
+		List<SortItem> sortItems = startingQuery.getSort();
+		if (sortItems == null) {
+			sortItems = new ArrayList<>();
+			startingQuery.setSort(sortItems);
+		}
+		for (SortItem s : sortItems) {
+			if (s.getColumnSQL().equals(header)) {
+				// found sort item, flip direction
+				sortItem = s;
+				SortDirection newDirection = SortDirection.ASC.equals(sortItem.getDirection()) ? SortDirection.DESC : SortDirection.ASC;
+				sortItem.setDirection(newDirection);
+				break;
 			}
-
-			@Override
-			public void onSuccess(String sql) {
-				runSql(sql);
-			}});
+		}
+		if (sortItem == null) {
+			sortItem = new SortItem();
+			sortItem.setColumnSQL(header);
+			sortItem.setDirection(SortDirection.DESC);
+			sortItems.add(sortItem);
+		}
+		
+		startingQuery.setOffset(0L);
+		queryChanging();
 	}
 	
 	public void setFacetsVisible(boolean visible) {

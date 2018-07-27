@@ -92,7 +92,6 @@ import org.sagebionetworks.repo.model.table.ColumnChange;
 import org.sagebionetworks.repo.model.table.ColumnModel;
 import org.sagebionetworks.repo.model.table.ColumnModelPage;
 import org.sagebionetworks.repo.model.table.FacetColumnRequest;
-import org.sagebionetworks.repo.model.table.SortItem;
 import org.sagebionetworks.repo.model.table.TableSchemaChangeRequest;
 import org.sagebionetworks.repo.model.table.TableUpdateRequest;
 import org.sagebionetworks.repo.model.table.TableUpdateTransactionRequest;
@@ -1827,25 +1826,6 @@ public class SynapseClientImpl extends SynapseClientBase implements
 	public void validateTableQuery(String sql) throws RestServiceException {
 		try {
 			TableQueryParser.parserQuery(sql);
-		} catch (ParseException e) {
-			throw new TableQueryParseException(e.getMessage());
-		}
-	}
-	
-	@Override
-	public String toggleSortOnTableQuery(String sql, String header)	throws RestServiceException {
-		try {
-			return TableSqlProcessor.toggleSort(sql, header);
-		} catch (ParseException e) {
-			throw new TableQueryParseException(e.getMessage());
-		}
-	}
-	
-	@Override
-	public List<SortItem> getSortFromTableQuery(String sql)
-			throws RestServiceException {
-		try {
-			return TableSqlProcessor.getSortingInfo(sql);
 		} catch (ParseException e) {
 			throw new TableQueryParseException(e.getMessage());
 		}
