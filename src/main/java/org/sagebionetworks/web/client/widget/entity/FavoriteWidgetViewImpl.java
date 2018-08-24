@@ -5,10 +5,12 @@ import org.gwtbootstrap3.client.ui.html.Span;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.widget.LoadingSpinner;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -21,11 +23,15 @@ public class FavoriteWidgetViewImpl implements FavoriteWidgetView {
 	@UiField
 	Span favWidgetContainer;
 	@UiField
-	Anchor favoriteIcon;
+	HTMLPanel favoriteIcon;
 	@UiField
 	Anchor notFavoriteIcon;
 	@UiField
 	LoadingSpinner loadingUI;
+	@UiField
+	Element svgEmptyStar;
+	@UiField
+	Element svgStar;
 	
 	private Widget widget;
 	
@@ -33,12 +39,9 @@ public class FavoriteWidgetViewImpl implements FavoriteWidgetView {
 	public FavoriteWidgetViewImpl(Binder binder) {
 		widget = binder.createAndBindUi(this);
 		
-		favoriteIcon.addClickHandler(new ClickHandler() {			
-			@Override
-			public void onClick(ClickEvent event) {
-				presenter.favoriteClicked();
-			}
-		});
+		favoriteIcon.addDomHandler(event -> {			
+			presenter.favoriteClicked();
+		}, ClickEvent.getType());
 		notFavoriteIcon.addClickHandler(new ClickHandler() {			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -80,5 +83,12 @@ public class FavoriteWidgetViewImpl implements FavoriteWidgetView {
 	@Override
 	public Widget asWidget() {
 		return widget;
+	}
+	@Override
+	public void setSize(String px) {
+		svgEmptyStar.setAttribute("width", px);
+		svgEmptyStar.setAttribute("height", px);
+		svgStar.setAttribute("width", px);
+		svgStar.setAttribute("height", px);
 	}
 }

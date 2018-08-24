@@ -133,7 +133,10 @@ public class FavoriteWidget implements Presenter, IsWidget {
 			});			
 		}
 	}
-
+	public void setSize(String px) {
+		view.setSize(px);
+	}
+	
 	private void updateStoredFavorites(final AsyncCallback<Void> callback) {
 		jsClient.getFavorites(new AsyncCallback<List<EntityHeader>>() {
 			@Override

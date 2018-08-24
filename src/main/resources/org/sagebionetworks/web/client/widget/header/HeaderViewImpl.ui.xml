@@ -28,12 +28,12 @@
 			</t:Table>
 		</b:Alert>
 		<bh:Div ui:field="headerDiv" addStyleNames="notopmargin synapse-blue-bg-gradient">
-		    <bh:Div ui:field="headingPanel" addStyleNames="margin-left-15 inline-block" paddingTop="13">
+		    <bh:Div ui:field="headingPanel" addStyleNames="margin-left-15 inline-block" paddingTop="10">
 	        	<g:Image ui:field="synapseLogo" url="images/logo.svg" 
 	        	    addStyleNames="imageButton margin-right-5 moveup-5" width="35px" height="35px"/>
 	            <b:Heading size="H3" addStyleNames="displayInline color-white">
 	            	<b:Anchor ui:field="projectHeadingAnchor" addStyleNames="color-white textDecorationNone lato notransition"/>
-	        		<g:SimplePanel ui:field="projectFavoritePanel" addStyleNames="displayInline favoriteIcon margin-left-10" visible="false"/>
+	        		<g:SimplePanel ui:field="projectFavoritePanel" addStyleNames="displayInline margin-left-10" visible="false"/>
 	        	</b:Heading>
 		  	</bh:Div>
 		  	<bh:Span ui:field="headerButtons" addStyleNames="right">

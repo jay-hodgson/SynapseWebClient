@@ -8,10 +8,14 @@
   >
   	<bh:Span addStyleNames="margin-left-2 displayInlineBlock" ui:field="favWidgetContainer">
 		<b:Tooltip trigger="HOVER" placement="RIGHT" title="Click the star to remove this from your favorites!">
-			<b:Anchor addStyleNames="favoriteIcon textDecorationNone" ui:field="favoriteIcon" icon="STAR" visible="false"/>
+			<g:HTMLPanel addStyleNames="displayInlineBlock imageButton" ui:field="favoriteIcon" visible="false">
+				<svg ui:field="svgStar" width="25" height="25" viewBox="0 0 24 24"><path d="M12 .288l2.833 8.718h9.167l-7.417 5.389 2.833 8.718-7.416-5.388-7.417 5.388 2.833-8.718-7.416-5.389h9.167z" fill="#E4B528"/></svg>
+			</g:HTMLPanel>
 		</b:Tooltip>
 		<b:Tooltip trigger="HOVER" placement="RIGHT" title="Click the star to add this to your favorites!">
-			<b:Anchor addStyleNames="greyText-imp textDecorationNone" ui:field="notFavoriteIcon" icon="STAR_O" visible="false"/>
+			<g:HTMLPanel addStyleNames="displayInlineBlock imageButton" ui:field="notFavoriteIcon" visible="false">
+				<svg ui:field="svgEmptyStar" width="25" height="25" viewBox="0 0 24 24"><path d="M12 6.76l1.379 4.246h4.465l-3.612 2.625 1.379 4.246-3.611-2.625-3.612 2.625 1.379-4.246-3.612-2.625h4.465l1.38-4.246zm0-6.472l-2.833 8.718h-9.167l7.416 5.389-2.833 8.718 7.417-5.388 7.416 5.388-2.833-8.718 7.417-5.389h-9.167l-2.833-8.718z" fill="#909090"/></svg>
+			</g:HTMLPanel>
 		</b:Tooltip>
 		<w:LoadingSpinner ui:field="loadingUI" size="16px" />
 	</bh:Span>

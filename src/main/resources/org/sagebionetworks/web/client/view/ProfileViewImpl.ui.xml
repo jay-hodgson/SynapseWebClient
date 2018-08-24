@@ -196,7 +196,7 @@
 												<b:ButtonGroup ui:field="projectFiltersUI">
 													<b:Button ui:field="allProjectsFilter" size="SMALL">All</b:Button>
 													<b:Button ui:field="myProjectsFilter" size="SMALL">Created by me</b:Button>
-													<b:Button ui:field="favoritesFilter" icon="STAR" addStyleNames="favoriteIcon" size="SMALL">Favorites</b:Button>
+													<b:Button ui:field="favoritesFilter" addStyleNames="favoriteIcon" size="SMALL">Favorites</b:Button>
 													<b:Button ui:field="sharedDirectlyWithMeFilter" size="SMALL">Shared directly with me</b:Button>
 													<b:ButtonGroup>
 														<b:Button ui:field="teamFilters" dataToggle="DROPDOWN" size="SMALL">By Team</b:Button>
