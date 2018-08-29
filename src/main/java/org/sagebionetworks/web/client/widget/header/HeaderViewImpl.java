@@ -67,7 +67,7 @@ public class HeaderViewImpl extends Composite implements HeaderView {
 	@UiField
 	AnchorListItem trashLink;
 	@UiField
-	AnchorListItem logoutLink;
+	org.sagebionetworks.web.client.widget.Anchor logoutLink;
 	@UiField
 	AnchorListItem myDashboardLink;
 	@UiField

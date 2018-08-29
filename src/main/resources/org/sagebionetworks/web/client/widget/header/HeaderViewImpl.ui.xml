@@ -56,7 +56,9 @@
 						<b:AnchorListItem href="#!SynapseForum:default">Help Forum</b:AnchorListItem>
 						<b:AnchorListItem ui:field="emailSynapseSupportLink" icon="ENVELOPE_O" href="mailto:synapseinfo@sagebionetworks.org" iconFixedWidth="true" iconPosition="RIGHT">Contact Us</b:AnchorListItem>
 						<b:Divider/>
-						<b:AnchorListItem ui:field="logoutLink" icon="SIGN_OUT" iconFixedWidth="true" iconPosition="RIGHT">Sign out</b:AnchorListItem>
+						<b:ListItem>
+							<w:Anchor ui:field="logoutLink" text="Sign out" iconStyles="fa fa-sign-out fa-fw" />
+						</b:ListItem>
 					</b:DropDownMenu>
 				</b:DropDown>
 				<bh:Span addStyleNames="border-left-1 right" height="25px" marginTop="12"/>
