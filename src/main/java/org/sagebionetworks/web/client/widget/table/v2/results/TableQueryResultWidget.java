@@ -29,8 +29,11 @@ import org.sagebionetworks.web.client.widget.asynch.AsynchronousProgressHandler;
 import org.sagebionetworks.web.client.widget.asynch.AsynchronousProgressWidget;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
 import org.sagebionetworks.web.client.widget.table.modal.fileview.TableType;
+import org.sagebionetworks.web.client.widget.table.v2.results.facets.FacetsWidget;
 import org.sagebionetworks.web.shared.asynch.AsynchType;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -75,8 +78,8 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 	GWTWrapper gwt;
 	int currentJobIndex = 0;
 	QueryResultBundle cachedFullQueryResultBundle = null;
-	boolean facetsVisible = true;
 	public static final Map<String, List<SortItem>> SQL_2_SORT_ITEMS_CACHE = new HashMap<>();
+	FacetsWidget facetsWidget;
 	
 	@Inject
 	public TableQueryResultWidget(TableQueryResultView view, 
@@ -84,7 +87,8 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 			PortalGinInjector ginInjector, 
 			SynapseAlert synapseAlert,
 			ClientCache clientCache,
-			GWTWrapper gwt) {
+			GWTWrapper gwt,
+			FacetsWidget facetsWidget) {
 		this.synapseClient = synapseClient;
 		fixServiceEntryPoint(synapseClient);
 		this.view = view;
@@ -93,6 +97,8 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 		this.synapseAlert = synapseAlert;
 		this.clientCache = clientCache;
 		this.gwt = gwt;
+		this.facetsWidget = facetsWidget;
+		view.setFacetsWidget(facetsWidget);
 		this.view.setPageWidget(this.pageViewerWidget);
 		this.view.setPresenter(this);
 		this.view.setSynapseAlertWidget(synapseAlert.asWidget());
@@ -156,15 +162,14 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 		String entityId = QueryBundleUtils.getTableId(this.startingQuery);
 		String viewEtag = clientCache.get(entityId + QueryResultEditorWidget.VIEW_RECENTLY_CHANGED_KEY);
 		if (viewEtag == null) {
+			facetsWidget.configure(startingQuery, facetChangedHandler, resetFacetsHandler);
+			
 			// run the job
 			QueryBundleRequest qbr = new QueryBundleRequest();
 			long partMask = BUNDLE_MASK_QUERY_RESULTS;
 			// do not ask for query count
 			if (cachedFullQueryResultBundle == null) {
 				partMask = partMask | BUNDLE_MASK_QUERY_COLUMN_MODELS | BUNDLE_MASK_QUERY_SELECT_COLUMNS;
-				if (facetsVisible) {
-					partMask = partMask | BUNDLE_MASK_QUERY_FACETS;
-				}
 			} else {
 				// we can release the old query result
 				cachedFullQueryResultBundle.setQueryResult(null);
@@ -310,7 +315,7 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 		this.view.setErrorVisible(false);
 		this.view.setProgressWidgetVisible(false);
 		// configure the page widget
-		this.pageViewerWidget.configure(bundle, this.startingQuery, sortItems, false, tableType, null, this, facetChangedHandler, resetFacetsHandler);
+		this.pageViewerWidget.configure(bundle, this.startingQuery, sortItems, false, tableType, null, this, facetChangedHandler);
 		pageViewerWidget.setTableVisible(true);
 		fireFinishEvent(true, isQueryResultEditable());
 	}
@@ -431,8 +436,7 @@ public class TableQueryResultWidget implements TableQueryResultView.Presenter, I
 	}
 	
 	public void setFacetsVisible(boolean visible) {
-		facetsVisible = visible;
-		pageViewerWidget.setFacetsVisible(visible);
+		view.setFacetsVisible(visible);
 	}
 	
 }
