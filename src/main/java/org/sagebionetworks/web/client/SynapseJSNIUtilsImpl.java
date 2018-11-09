@@ -1,5 +1,6 @@
 package org.sagebionetworks.web.client;
 
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.extras.notify.client.constants.NotifyType;
 import org.gwtbootstrap3.extras.notify.client.ui.Notify;
 import org.gwtbootstrap3.extras.notify.client.ui.NotifySettings;
@@ -25,7 +26,19 @@ import com.google.gwt.xhr.client.XMLHttpRequest;
 public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 	
 	private static ProgressCallback progressCallback;
-	
+
+	@Override
+	public void setAnalyticsUserId(String userID) {
+		_setAnalyticsUserId(userID);
+	}
+	private static native void _setAnalyticsUserId(String userID) /*-{
+		try {
+			$wnd.ga('set', 'userId', userID);
+		} catch (err) {
+			console.error(err);
+		}
+	}-*/;
+
 	@Override
 	public void recordPageVisit(String token) {
 		_recordPageVisit(token);
@@ -40,6 +53,10 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 		}
 	}-*/;
 	
+	@Override
+	public void sendAnalyticsEvent(String eventCategory, String eventAction, String eventLabelValue) {
+		_sendAnalyticsEvent(eventCategory, eventAction, eventLabelValue);
+	}
 	@Override
 	public void sendAnalyticsEvent(String eventCategory, String eventAction) {
 		_sendAnalyticsEvent(eventCategory, eventAction, getCurrentURL());
@@ -131,6 +148,11 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 				WebConstants.FILE_HANDLE_ID_PARAM_KEY + "=" + fileHandleId;
 	}
 
+	@Override
+	public String getSessionCookieUrl() {
+		return GWTWrapperImpl.getRealGWTModuleBaseURL() + WebConstants.SESSION_COOKIE_SERVLET;
+	}
+	
 	@Override
 	public int randomNextInt() {
 		return Random.nextInt();
@@ -439,9 +461,13 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 	public void consoleError(String message) {
 		_consoleError(message);
 	}
+	@Override
+	public void consoleError(Throwable t) {
+		_consoleError(t);
+	}
 
-	public final static native void _consoleError(String message) /*-{
-		console.error(message);
+	public final static native void _consoleError(Object ob) /*-{
+		console.error(ob);
 	}-*/;
 	
 	@Override
@@ -457,6 +483,14 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 		}
 	}-*/;
 
+	public final static native void _scrollIntoView(Element el) /*-{
+		try {
+			el.scrollIntoView({behavior: 'smooth'});
+		} catch (err) {
+			console.error(err);
+		}
+	}-*/;
+	
 	@Override
 	public void loadCss(final String url) {
 		final LinkElement link = Document.get().createLinkElement();
@@ -486,30 +520,6 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 				$wnd.location.reload(false);
 			}
 		});
-	}-*/;
-	
-	@Override
-	public void showTwitterFeed(String dataWidgetId, String elementId,
-			String linkColor, String borderColor, int tweetCount) {
-		_showTwitterFeed(dataWidgetId, elementId, linkColor, borderColor, tweetCount);		
-	}
-
-	private final static native void _showTwitterFeed(String dataWidgetId,
-			String elementId, String linkColorHex, String borderColorHex,
-			int tweetCount) /*-{
-		try {
-			if (typeof $wnd.twttr !== 'undefined') {
-				var element = $doc.getElementById(elementId);
-				$wnd.twttr.widgets.createTimeline(dataWidgetId, element, {
-					chrome : "nofooter noheader",
-					linkColor : linkColorHex,
-					borderColor : borderColorHex,
-					tweetLimit : tweetCount
-				});
-			}
-		} catch (err) {
-			console.error(err);
-		}
 	}-*/;
 	
 	@Override
@@ -588,7 +598,7 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 				    s:      [],
 				    section:[],
 				    small:  [],
-				    span:   ['widgetparams', 'class', 'id'],
+				    span:   ['data-widgetparams', 'class', 'id'],
 				    sub:    [],
 				    summary: [],
 				    sup:    [],
@@ -721,7 +731,7 @@ public class SynapseJSNIUtilsImpl implements SynapseJSNIUtils {
 			Notify.hideAll();
 			NotifySettings settings = DisplayUtils.getDefaultSettings();
 			settings.setType(NotifyType.INFO);
-			Notify.notify("Copied to clipboard", settings);
+			Notify.notify("", "Copied to clipboard", IconType.CHECK_CIRCLE, settings);
 		} catch (Throwable t) {
 			consoleError(t.getMessage());
 		}

@@ -45,9 +45,9 @@ public class RegisterAccountPresenter extends AbstractActivity implements Regist
 	
 	public void init() {
 		if (!authController.isLoggedIn()) {
-			view.setRegisterWidget(registerWidget.asWidget());
-			headerWidget.configure(false);
-			headerWidget.refresh();
+		view.setRegisterWidget(registerWidget.asWidget());
+		headerWidget.configure();
+		headerWidget.refresh();
 		} else {
 			// SWC-4363
 			globalAppState.getPlaceChanger().goTo(new Profile(Profile.VIEW_PROFILE_TOKEN));

@@ -15,10 +15,11 @@ import org.sagebionetworks.repo.model.file.S3UploadDestination;
 import org.sagebionetworks.repo.model.file.UploadDestination;
 import org.sagebionetworks.repo.model.file.UploadType;
 import org.sagebionetworks.repo.model.table.TableEntity;
+import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.SynapseJavascriptClient;
-import org.sagebionetworks.web.client.events.EntityUpdatedEvent;
-import org.sagebionetworks.web.client.events.EntityUpdatedHandler;
+import org.sagebionetworks.web.client.cookie.CookieProvider;
+import org.sagebionetworks.web.client.widget.doi.DoiWidgetV2;
 import org.sagebionetworks.web.client.widget.entity.EntityMetadataView.Presenter;
 import org.sagebionetworks.web.client.widget.entity.annotation.AnnotationsRendererWidget;
 import org.sagebionetworks.web.client.widget.entity.menu.v2.Action;
@@ -32,30 +33,40 @@ import com.google.inject.Inject;
 public class EntityMetadata implements Presenter {
 
 	private EntityMetadataView view;
-	private EntityUpdatedHandler entityUpdatedHandler;
 	private AnnotationsRendererWidget annotationsWidget;
 	private DoiWidget doiWidget;
+	private DoiWidgetV2 doiWidgetV2;
 	private FileHistoryWidget fileHistoryWidget;
 	private SynapseJavascriptClient jsClient;
 	private SynapseJSNIUtils jsni;
 	private org.sagebionetworks.web.client.widget.entity.restriction.v2.RestrictionWidget restrictionWidgetV2;
+	private CookieProvider cookies;
+
 	boolean isShowingAnnotations, isShowingFileHistory;
 	@Inject
-	public EntityMetadata(EntityMetadataView view, 
-			DoiWidget doiWidget,
+	public EntityMetadata(EntityMetadataView view,
+						  DoiWidget doiWidget,
+						  DoiWidgetV2 doiWidgetV2,
 			AnnotationsRendererWidget annotationsWidget,
 			FileHistoryWidget fileHistoryWidget, 
 			SynapseJavascriptClient jsClient, 
 			SynapseJSNIUtils jsni,
-			RestrictionWidget restrictionWidgetV2) {
+			RestrictionWidget restrictionWidgetV2,
+			CookieProvider cookies) {
 		this.view = view;
 		this.doiWidget = doiWidget;
+		this.doiWidgetV2 = doiWidgetV2;
 		this.annotationsWidget = annotationsWidget;
 		this.fileHistoryWidget = fileHistoryWidget;
 		this.jsClient = jsClient;
 		this.jsni = jsni;
 		this.restrictionWidgetV2 = restrictionWidgetV2;
-		this.view.setDoiWidget(doiWidget);
+		this.cookies = cookies;
+		if (DisplayUtils.isInTestWebsite(cookies)) {
+			this.view.setDoiWidget(doiWidgetV2);
+		} else {
+			this.view.setDoiWidget(doiWidget);
+		}
 		this.view.setAnnotationsRendererWidget(annotationsWidget);
 		this.view.setFileHistoryWidget(fileHistoryWidget);
 		this.view.setRestrictionWidgetV2(restrictionWidgetV2);
@@ -85,7 +96,11 @@ public class EntityMetadata implements Presenter {
 					|| en instanceof Folder || en instanceof DockerRepository);
 		}
 		configureStorageLocation(en);
-		doiWidget.configure(bundle.getDoi(), en.getId());
+		if (DisplayUtils.isInTestWebsite(cookies)) {
+			doiWidgetV2.configure(bundle.getDoiAssociation());
+		} else {
+			doiWidget.configure(bundle.getDoi(), en.getId());
+		}
 		annotationsWidget.configure(bundle, canEdit, isCurrentVersion);
 		restrictionWidgetV2.configure(en, bundle.getPermissions().getCanChangePermissions());
 		isShowingAnnotations = false;
@@ -105,17 +120,7 @@ public class EntityMetadata implements Presenter {
 	public void setVisible(boolean visible) {
 		view.setDetailedMetadataVisible(visible);
 	}
-	@Override
-	public void fireEntityUpdatedEvent() {
-		if (entityUpdatedHandler != null)
-			entityUpdatedHandler.onPersistSuccess(new EntityUpdatedEvent());
-	}
-	
-	public void setEntityUpdatedHandler(EntityUpdatedHandler handler) {
-		this.entityUpdatedHandler = handler;
-		this.annotationsWidget.setEntityUpdatedHandler(entityUpdatedHandler);
-	}
-
+		
 	public void setAnnotationsVisible(boolean visible) {
 		view.setAnnotationsVisible(visible);
 	}
@@ -126,6 +131,7 @@ public class EntityMetadata implements Presenter {
 	
 	public void clear() {
 		doiWidget.clear();
+		doiWidgetV2.clear();
 		view.clear();
 	}
 	

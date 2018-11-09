@@ -56,6 +56,7 @@ import org.sagebionetworks.web.client.widget.accessrequirements.requestaccess.Cr
 import org.sagebionetworks.web.client.widget.accessrequirements.submission.ACTDataAccessSubmissionWidget;
 import org.sagebionetworks.web.client.widget.accessrequirements.submission.OpenSubmissionWidget;
 import org.sagebionetworks.web.client.widget.asynch.AsynchronousProgressWidget;
+import org.sagebionetworks.web.client.widget.asynch.InlineAsynchronousProgressViewImpl;
 import org.sagebionetworks.web.client.widget.biodalliance13.BiodallianceWidget;
 import org.sagebionetworks.web.client.widget.biodalliance13.editor.BiodallianceEditor;
 import org.sagebionetworks.web.client.widget.biodalliance13.editor.BiodallianceSourceEditor;
@@ -71,6 +72,7 @@ import org.sagebionetworks.web.client.widget.docker.DockerCommitRowWidget;
 import org.sagebionetworks.web.client.widget.docker.DockerRepoListWidget;
 import org.sagebionetworks.web.client.widget.docker.DockerRepoWidget;
 import org.sagebionetworks.web.client.widget.docker.modal.AddExternalRepoModal;
+import org.sagebionetworks.web.client.widget.doi.CreateOrUpdateDoiModal;
 import org.sagebionetworks.web.client.widget.entity.ChallengeBadge;
 import org.sagebionetworks.web.client.widget.entity.EditFileMetadataModalWidget;
 import org.sagebionetworks.web.client.widget.entity.EditProjectMetadataModalWidget;
@@ -133,6 +135,8 @@ import org.sagebionetworks.web.client.widget.entity.editor.VideoConfigEditor;
 import org.sagebionetworks.web.client.widget.entity.file.BasicTitleBar;
 import org.sagebionetworks.web.client.widget.entity.file.FileTitleBar;
 import org.sagebionetworks.web.client.widget.entity.file.S3DirectLoginDialog;
+import org.sagebionetworks.web.client.widget.entity.file.downloadlist.DownloadListWidget;
+import org.sagebionetworks.web.client.widget.entity.file.downloadlist.FileHandleAssociationRow;
 import org.sagebionetworks.web.client.widget.entity.renderer.APITableColumnRendererCancelControl;
 import org.sagebionetworks.web.client.widget.entity.renderer.APITableColumnRendererDate;
 import org.sagebionetworks.web.client.widget.entity.renderer.APITableColumnRendererEntityIdAnnotations;
@@ -192,6 +196,7 @@ import org.sagebionetworks.web.client.widget.sharing.AclAddPeoplePanel;
 import org.sagebionetworks.web.client.widget.sharing.SharingPermissionsGrid;
 import org.sagebionetworks.web.client.widget.subscription.TopicRowWidget;
 import org.sagebionetworks.web.client.widget.table.KeyboardNavigationHandler;
+import org.sagebionetworks.web.client.widget.table.TableEntityListGroupItem;
 import org.sagebionetworks.web.client.widget.table.TableListWidget;
 import org.sagebionetworks.web.client.widget.table.modal.download.DownloadTableQueryModalWidget;
 import org.sagebionetworks.web.client.widget.table.modal.fileview.CreateTableViewWizard;
@@ -405,7 +410,7 @@ public interface PortalGinInjector extends Ginjector {
 	UserBadge getUserBadgeWidget();
 	EmailInvitationBadge getEmailInvitationBadgeWidget();
 	VersionTimer getVersionTimer();
-	SessionTokenDetector getSessionTokenDetector();
+	SessionDetector getSessionDetector();
 	QuestionContainerWidget getQuestionContainerWidget();
 	SynapseAlert getSynapseAlertWidget();
 	EntityRefProvEntryView getEntityRefEntry();
@@ -446,6 +451,7 @@ public interface PortalGinInjector extends Ginjector {
 
 	// Asynchronous
 	AsynchronousProgressWidget creatNewAsynchronousProgressWidget();
+	InlineAsynchronousProgressViewImpl getInlineAsynchronousProgressView();
 
 	UserTeamBadge getUserTeamBadgeWidget();
 	TeamBadge getTeamBadgeWidget();
@@ -533,6 +539,7 @@ public interface PortalGinInjector extends Ginjector {
 	StorageLocationWidget getStorageLocationWidget();
 	EvaluationEditorModal getEvaluationEditorModal();
 	SelectTeamModal getSelectTeamModal();
+	CreateOrUpdateDoiModal getCreateOrUpdateDoiModal();
 	ApproveUserAccessModal getApproveUserAccessModal();
 	ChallengeClientAsync getChallengeClientAsync();
 	EntityIdCellRendererImpl getEntityIdCellRenderer();
@@ -581,4 +588,8 @@ public interface PortalGinInjector extends Ginjector {
 	QuizInfoDialog getQuizInfoDialog();
 	EvaluationRowWidget getEvaluationRowWidget();
 	EditDiscussionThreadModal getEditDiscussionThreadModal();
+	DownloadListWidget getDownloadListWidget();
+	FileHandleAssociationRow getFileHandleAssociationRow(); 
+	TableEntityListGroupItem getTableEntityListGroupItem();
+	SynapseJSNIUtilsImpl getSynapseJSNIUtils();
 }

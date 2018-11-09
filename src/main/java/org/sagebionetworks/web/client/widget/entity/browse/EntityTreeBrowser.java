@@ -47,7 +47,6 @@ public class EntityTreeBrowser implements EntityTreeBrowserView.Presenter,
 	private String rootEntityId;
 	public static final SortBy DEFAULT_SORT_BY = SortBy.NAME;
 	public static final Direction DEFAULT_DIRECTION = Direction.ASC;
-	
 	@Inject
 	public EntityTreeBrowser(PortalGinInjector ginInjector,
 			EntityTreeBrowserView view, 

@@ -1,8 +1,8 @@
 package org.sagebionetworks.web.client.widget.table;
 
 import org.gwtbootstrap3.client.ui.ListGroup;
-import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.html.Div;
+import org.gwtbootstrap3.client.ui.html.Span;
 import org.sagebionetworks.repo.model.EntityHeader;
 import org.sagebionetworks.repo.model.entity.Direction;
 import org.sagebionetworks.repo.model.entity.SortBy;
@@ -10,8 +10,6 @@ import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.PortalGinInjector;
 import org.sagebionetworks.web.client.widget.LoadingSpinner;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -21,23 +19,21 @@ import com.google.inject.Inject;
 
 /**
  * View of a widget that lists table entities.  
- * 
- * @author jmhill
- *
  */
 public class TableListWidgetViewImpl implements TableListWidgetView {
 	
 	public interface Binder extends UiBinder<HTMLPanel, TableListWidgetViewImpl> {}
 	
 	@UiField
-	ListGroup tablesList;
+	Div tablesList;
 	@UiField
 	Div loadMoreWidgetContainer;
 	@UiField
 	Div sortButtonContainer;
 	@UiField
 	Div synAlertContainer;
-	
+	@UiField
+	Span emptyUI;
 	HTMLPanel panel;
 	Presenter presenter;
 	PortalGinInjector ginInjector;
@@ -56,17 +52,20 @@ public class TableListWidgetViewImpl implements TableListWidgetView {
 
 	@Override
 	public void addTableListItem(final EntityHeader header) {
-		tablesList.add(new TableEntityListGroupItem(HeadingSize.H4, header, new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				presenter.onTableClicked(header);
-			}
-		}));
+		emptyUI.setVisible(false);
+		sortButtonContainer.setVisible(true);
+		TableEntityListGroupItem item = ginInjector.getTableEntityListGroupItem();
+		item.configure(header, event -> {
+			presenter.onTableClicked(header);
+		});
+		tablesList.add(item);
 	}
 	
 	@Override
 	public void clearTableWidgets() {
 		tablesList.clear();
+		emptyUI.setVisible(true);
+		sortButtonContainer.setVisible(false);
 	}
 	
 	@Override
@@ -96,8 +95,8 @@ public class TableListWidgetViewImpl implements TableListWidgetView {
 	}
 
 	@Override
-	public void showInfo(String title, String message) {
-		DisplayUtils.showInfo(title, message);
+	public void showInfo(String message) {
+		DisplayUtils.showInfo(message);
 	}
 
 	@Override

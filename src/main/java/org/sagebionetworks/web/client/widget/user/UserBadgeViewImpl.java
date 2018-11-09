@@ -73,7 +73,9 @@ public class UserBadgeViewImpl implements UserBadgeView {
 	public UserBadgeViewImpl(Binder uiBinder, GlobalApplicationState globalAppState) {
 		widget = uiBinder.createAndBindUi(this);
 		placeChanger = globalAppState.getPlaceChanger();
-		pictureSpan.setHeight((BadgeSize.LARGE.pictureHeightPx() + 4) + "px");
+		String px = (BadgeSize.LARGE.pictureHeightPx() + 4) + "px";
+		pictureSpan.setHeight(px);
+		pictureSpan.setWidth(px);
 		handlerRegistration = usernameLink.addClickHandler(STANDARD_CLICKHANDLER);
 		pictureHandlerRegistration = pictureFocusPanel.addClickHandler(STANDARD_CLICKHANDLER);
 		userPicture.addErrorHandler(new ErrorHandler() {
@@ -130,6 +132,8 @@ public class UserBadgeViewImpl implements UserBadgeView {
 	public void doNothingOnClick() {
 		handlerRegistration.removeHandler();
 		handlerRegistration = usernameLink.addClickHandler(DO_NOTHING_CLICKHANDLER);
+		pictureHandlerRegistration.removeHandler();
+		pictureHandlerRegistration = pictureFocusPanel.addClickHandler(DO_NOTHING_CLICKHANDLER);
 	}
 	
 	@Override
@@ -152,8 +156,10 @@ public class UserBadgeViewImpl implements UserBadgeView {
 		usernameLink.setStyleName(size.textStyle());
 		int pictureHeightPx = size.pictureHeightPx();
 		userPicture.setHeight(pictureHeightPx + "px");
+		userPicture.setWidth(pictureHeightPx + "px");
 		usernameLink.setVisible(size.isTextVisible());
 		pictureSpan.setHeight((pictureHeightPx + 6) + "px");
+		pictureSpan.setWidth((pictureHeightPx + 6) + "px");
 	}
 
 	@Override
@@ -178,7 +184,7 @@ public class UserBadgeViewImpl implements UserBadgeView {
 	}
 
 	@Override
-	public void showInfo(String title, String message) {
+	public void showInfo(String message) {
 		// TODO Auto-generated method stub
 	}
 
@@ -217,5 +223,9 @@ public class UserBadgeViewImpl implements UserBadgeView {
 	@Override
 	public void setHeight(String height) {
 		widget.setHeight(height);
+	}
+	@Override
+	public void addUsernameLinkStyle(String style) {
+		usernameLink.addStyleName(style);
 	}
 }

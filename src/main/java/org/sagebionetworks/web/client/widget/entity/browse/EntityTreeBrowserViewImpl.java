@@ -8,12 +8,13 @@ import org.gwtbootstrap3.client.ui.html.Hr;
 import org.gwtbootstrap3.client.ui.html.Span;
 import org.sagebionetworks.web.client.DisplayConstants;
 import org.sagebionetworks.web.client.DisplayUtils;
+import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.IconsImageBundle;
+import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.view.bootstrap.table.Table;
 import org.sagebionetworks.web.client.widget.LoadingSpinner;
 import org.sagebionetworks.web.client.widget.entity.EntityTreeItem;
 import org.sagebionetworks.web.client.widget.entity.MoreTreeItem;
-import org.sagebionetworks.web.client.widget.table.SortEntityChildrenDropdownButton;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -56,11 +57,17 @@ public class EntityTreeBrowserViewImpl extends FlowPanel implements
 	@UiField
 	Div synAlertContainer;
 	Div entityTreeContainer = new Div();
+	AuthenticationController authController;
+	GlobalApplicationState globalAppState;
 	private Widget widget;
 	@Inject
 	public EntityTreeBrowserViewImpl(IconsImageBundle iconsImageBundle,
-			Binder uiBinder) {
+			Binder uiBinder, 
+			AuthenticationController authController, 
+			GlobalApplicationState globalAppState) {
 		this.iconsImageBundle = iconsImageBundle;
+		this.authController = authController;
+		this.globalAppState = globalAppState;
 		this.widget = uiBinder.createAndBindUi(this);
 		// Make sure to show this and hide the tree on empty.
 		hideEmptyUI();
@@ -94,8 +101,8 @@ public class EntityTreeBrowserViewImpl extends FlowPanel implements
 	}
 
 	@Override
-	public void showInfo(String title, String message) {
-		DisplayUtils.showInfo(title, message);
+	public void showInfo(String message) {
+		DisplayUtils.showInfo(message);
 	}
 
 	@Override

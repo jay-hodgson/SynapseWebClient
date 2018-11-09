@@ -15,6 +15,7 @@ import org.gwtbootstrap3.client.ui.Divider;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.html.Div;
 import org.gwtbootstrap3.client.ui.html.Paragraph;
 import org.gwtbootstrap3.client.ui.html.Span;
@@ -35,7 +36,6 @@ import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.widget.FitImage;
 import org.sagebionetworks.web.client.widget.LoadingSpinner;
 import org.sagebionetworks.web.client.widget.header.Header;
-import org.sagebionetworks.web.client.widget.header.Header.MenuItems;
 import org.sagebionetworks.web.client.widget.team.OpenTeamInvitationsWidget;
 import org.sagebionetworks.web.client.widget.verification.VerificationIDCardViewImpl;
 
@@ -57,7 +57,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -93,13 +92,21 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	Button linkORCIDButton;
 	@UiField
 	SimplePanel editUserProfilePanel;
-	
+	HTML noChallengesHtml = new HTML("<p>This tab shows you challenges you have registered for.</p>" + 
+			"<p><a href=\"https://docs.synapse.org/articles/challenge_participation.html#overview\" target=\"_blank\">Challenges</a> are computational contests organized through the Dream Challenges.</p>");
 	@UiField
 	SimplePanel picturePanel;
 	@UiField
 	VerificationIDCardViewImpl idCard;
 	
 	//////Tabs
+	@UiField
+	LIElement profileListItem;
+	@UiField
+	FocusPanel profileFocusPanel;
+	@UiField
+	Anchor profileLink;
+
 	@UiField
 	FocusPanel projectsFocusPanel;
 	@UiField
@@ -112,6 +119,14 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	Anchor teamsLink;
 	@UiField
 	LIElement teamsListItem;
+	
+	@UiField
+	FocusPanel downloadsFocusPanel;
+	@UiField
+	Anchor downloadsLink;
+	@UiField
+	LIElement downloadsListItem;
+	
 	@UiField
 	FocusPanel settingsFocusPanel;
 	@UiField
@@ -132,13 +147,17 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 
 	@UiField
 	DivElement navtabContainer;
-	
+
+	@UiField
+	DivElement profileTabContainer;
 	@UiField
 	DivElement projectsTabContainer;
 	@UiField
 	DivElement challengesTabContainer;
 	@UiField
 	DivElement teamsTabContainer;
+	@UiField
+	DivElement downloadsTabContainer;
 	@UiField
 	DivElement settingsTabContainer;
 	
@@ -206,10 +225,13 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	@UiField
 	Button moreChallengesButton;
 
+	//Downloads
+	@UiField
+	Div downloadsTabContent;
+	
 	//Settings
 	@UiField
 	FlowPanel settingsTabContent;
-	
 	
 	//highlight boxes
 	@UiField 
@@ -226,10 +248,6 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	
 	@UiField
 	FlowPanel favoritesHelpPanel;
-	@UiField
-	Button showProfileButton;
-	@UiField
-	Button hideProfileButton;
 	@UiField
 	Alert getCertifiedAlert;
 	
@@ -294,8 +312,7 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		this.headerWidget = headerWidget;
 		this.synapseJSNIUtils = synapseJSNIUtils;
 		this.dateTimeUtils = dateTimeUtils;
-		headerWidget.configure(false);
-		headerWidget.setMenuItemActive(MenuItems.PROJECTS);
+		headerWidget.configure();
 		picturePanel.clear();
 		initTabs();
 		projectSearchTextBox.getElement().setAttribute("placeholder", "Project name");
@@ -412,19 +429,6 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 				presenter.applyFilterClicked(ProjectFilterEnum.SHARED_DIRECTLY_WITH_ME, null);
 			}
 		});		
-		
-		showProfileButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				presenter.showProfileButtonClicked();
-			}
-		});
-		hideProfileButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				presenter.hideProfileButtonClicked();
-			}
-		});
 		ClickHandler editProfileClickHandler = new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -546,7 +550,7 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	@Override
 	public void setPresenter(final Presenter presenter) {
 		this.presenter = presenter;
-		headerWidget.configure(false);
+		headerWidget.configure();
 		headerWidget.refresh();
 		Window.scrollTo(0, 0); // scroll user to top of page
 	}
@@ -585,12 +589,20 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	}
 	
 	@Override
+	public void setDownloadListWidget(IsWidget w) {
+		downloadsTabContent.clear();
+		downloadsTabContent.add(w);
+	}
+	
+	@Override
 	public void showTabs(boolean isOwner) {
 		DisplayUtils.hide(settingsListItem);
+		DisplayUtils.hide(downloadsListItem);
 		openInvitesContainer.setVisible(isOwner);
 		if (isOwner) {
 			resetHighlightBoxes();
 			DisplayUtils.show(settingsListItem);
+			DisplayUtils.show(downloadsListItem);
 			//show create project and team UI
 			DisplayUtils.show(createProjectUI);
 			DisplayUtils.show(createTeamUI);
@@ -657,6 +669,8 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	@Override
 	public void clearChallenges() {
 		challengesTabContent.clear();
+		challengesTabContent.add(noChallengesHtml);
+		noChallengesHtml.setVisible(true);
 		setIsMoreChallengesVisible(false);
 	}
 	
@@ -668,7 +682,7 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	
 	@Override
 	public void addChallengeWidget(Widget toAdd) {
-		DisplayUtils.show(challengesListItem);
+		noChallengesHtml.setVisible(false);
 		toAdd.addStyleName("margin-top-10");
 		challengesTabContent.add(toAdd);
 	}
@@ -693,7 +707,7 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 			 //use default picture
 			 profilePicture = defaultProfilePicture;
 		 }
-		 profilePicture.addStyleName("margin-10 userProfileImage");
+		 profilePicture.addStyleName("margin-10");
 		 return profilePicture;
 	 }
 	 
@@ -775,8 +789,8 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	}
 	
 	@Override
-	public void showInfo(String title, String message) {
-		DisplayUtils.showInfo(title, message);
+	public void showInfo(String message) {
+		DisplayUtils.showInfo(message);
 	}
 	
 	@Override
@@ -796,14 +810,13 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		projectsTabContent.add(DisplayUtils.getSmallLoadingWidget());
 		
 		settingsTabContent.clear();
-		
+		downloadsTabContent.clear();
 		challengesTabContent.clear();
 		hideTabContainers();
 		getCertifiedAlert.setVisible(false);
 		verifyAlert.setVisible(false);
 		DisplayUtils.hide(createProjectUI);
 		DisplayUtils.hide(createTeamUI);
-		DisplayUtils.hide(challengesListItem);
 		teamSearchTextBox.setValue("");
 		projectSearchTextBox.setValue("");
 		
@@ -820,9 +833,11 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	
 	private void hideTabContainers() {
 		//hide all tab containers
+		DisplayUtils.hide(profileTabContainer);
 		DisplayUtils.hide(projectsTabContainer);
 		DisplayUtils.hide(challengesTabContainer);
 		DisplayUtils.hide(teamsTabContainer);
+		DisplayUtils.hide(downloadsTabContainer);
 		DisplayUtils.hide(settingsTabContainer);
 	}
 	
@@ -835,16 +850,20 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	@Override
 	public void setTabSelected(Synapse.ProfileArea targetTab) {
 		// tell presenter what tab we're on only if the user clicked
-		if(targetTab == null) targetTab = Synapse.ProfileArea.PROJECTS; // select tab, set default if needed
+		if(targetTab == null) targetTab = Synapse.ProfileArea.PROFILE; // select tab, set default if needed
 		hideTabContainers();
-		removeClass("active", projectsListItem, teamsListItem, settingsListItem, challengesListItem);
-		
-		if (targetTab == Synapse.ProfileArea.PROJECTS) {
+		removeClass("active", profileListItem, projectsListItem, teamsListItem, downloadsListItem, settingsListItem, challengesListItem);
+
+		if (targetTab == Synapse.ProfileArea.PROFILE) {
+			setTabSelected(profileListItem, profileTabContainer);
+		} else if (targetTab == Synapse.ProfileArea.PROJECTS) {
 			setTabSelected(projectsListItem, projectsTabContainer);
 		} else if(targetTab == Synapse.ProfileArea.TEAMS) {
 			setTabSelected(teamsListItem, teamsTabContainer);
 		} else if(targetTab == Synapse.ProfileArea.SETTINGS) {
 			setTabSelected(settingsListItem, settingsTabContainer);
+		} else if(targetTab == Synapse.ProfileArea.DOWNLOADS) {
+			setTabSelected(downloadsListItem, downloadsTabContainer);
 		} else if (targetTab == Synapse.ProfileArea.CHALLENGES) {
 			setTabSelected(challengesListItem, challengesTabContainer);
 		} else {
@@ -859,9 +878,9 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 			listItem.addClassName("active");
 			DisplayUtils.show(container);
 		} else {
-			//if tab is not visible, select projects tab
-			projectsListItem.addClassName("active");
-			DisplayUtils.show(projectsTabContainer);
+			//if tab is not visible, select profile tab
+			profileListItem.addClassName("active");
+			DisplayUtils.show(profileTabContainer);
 		}
 	}
 	
@@ -872,21 +891,27 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 	}
 	
 	private void initTabs() {
+		profileFocusPanel.addClickHandler(getTabClickHandler(Synapse.ProfileArea.PROFILE));
 		projectsFocusPanel.addClickHandler(getTabClickHandler(Synapse.ProfileArea.PROJECTS));
 		teamsFocusPanel.addClickHandler(getTabClickHandler(Synapse.ProfileArea.TEAMS));
+		downloadsFocusPanel.addClickHandler(getTabClickHandler(Synapse.ProfileArea.DOWNLOADS));
 		settingsFocusPanel.addClickHandler(getTabClickHandler(Synapse.ProfileArea.SETTINGS));
 		challengesFocusPanel.addClickHandler(getTabClickHandler(Synapse.ProfileArea.CHALLENGES));
 		
+		profileLink.addClickHandler(DO_NOTHING_CLICKHANDLER);
 		projectsLink.addClickHandler(DO_NOTHING_CLICKHANDLER);
 		teamsLink.addClickHandler(DO_NOTHING_CLICKHANDLER);
+		downloadsLink.addClickHandler(DO_NOTHING_CLICKHANDLER);
 		settingsLink.addClickHandler(DO_NOTHING_CLICKHANDLER);
 		challengesLink.addClickHandler(DO_NOTHING_CLICKHANDLER);
 	}
 	
 	private void updateHrefs(String userId) {
 		String place = "#!Profile:"+userId;
+		profileLink.setHref(place + "/" + Synapse.ProfileArea.PROFILE.toString().toLowerCase());
 		projectsLink.setHref(place + "/" + Synapse.ProfileArea.PROJECTS.toString().toLowerCase());
 		teamsLink.setHref(place + "/" + Synapse.ProfileArea.TEAMS.toString().toLowerCase());
+		downloadsLink.setHref(place + "/" + Synapse.ProfileArea.DOWNLOADS.toString().toLowerCase());
 		settingsLink.setHref(place + "/" + Synapse.ProfileArea.SETTINGS.toString().toLowerCase());
 		challengesLink.setHref(place + "/" + Synapse.ProfileArea.CHALLENGES.toString().toLowerCase());
 	}
@@ -945,28 +970,6 @@ public class ProfileViewImpl extends Composite implements ProfileView {
 		myProjectsFilter.setActive(false);
 		teamFilters.setActive(false);
 		sharedDirectlyWithMeFilter.setActive(false);
-	}
-	
-	@Override
-	public void setHideProfileButtonVisible(boolean isVisible) {
-		hideProfileButton.setVisible(isVisible);
-	}
-	
-	@Override
-	public void setShowProfileButtonVisible(boolean isVisible) {
-		showProfileButton.setVisible(isVisible);
-	}
-	
-	@Override
-	public void showProfile() {
-		UIObject.setVisible(profileUI, true);
-		dashboardUI.addClassName("col-md-7");
-	}
-	
-	@Override
-	public void hideProfile() {
-		UIObject.setVisible(profileUI, false);
-		dashboardUI.removeClassName("col-md-7");
 	}
 	
 	@Override

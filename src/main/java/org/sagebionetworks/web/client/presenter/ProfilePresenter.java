@@ -49,6 +49,7 @@ import org.sagebionetworks.web.client.widget.entity.ProjectBadge;
 import org.sagebionetworks.web.client.widget.entity.PromptModalView;
 import org.sagebionetworks.web.client.widget.entity.browse.EntityBrowserUtils;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
+import org.sagebionetworks.web.client.widget.entity.file.downloadlist.DownloadListWidget;
 import org.sagebionetworks.web.client.widget.profile.UserProfileModalWidget;
 import org.sagebionetworks.web.client.widget.team.OpenTeamInvitationsWidget;
 import org.sagebionetworks.web.client.widget.team.TeamListWidget;
@@ -57,6 +58,7 @@ import org.sagebionetworks.web.shared.exceptions.ConflictException;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -67,7 +69,6 @@ import com.google.inject.Inject;
 
 public class ProfilePresenter extends AbstractActivity implements ProfileView.Presenter, Presenter<Profile> {
 	public static final int DELAY_GET_MY_TEAMS = 300;
-	public static final String USER_PROFILE_VISIBLE_STATE_KEY = "org.sagebionetworks.synapse.user.profile.visible.state";
 	public static final String USER_PROFILE_CERTIFICATION_VISIBLE_STATE_KEY = "org.sagebionetworks.synapse.user.profile.certification.message.visible.state";
 	public static final String USER_PROFILE_VERIFICATION_VISIBLE_STATE_KEY = "org.sagebionetworks.synapse.user.profile.validation.message.visible.state";
 	
@@ -119,6 +120,7 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 	public PromptModalView promptForProjectNameDialog;
 	public PromptModalView promptForTeamNameDialog;
 	public SynapseJavascriptClient jsClient;
+	public DownloadListWidget downloadListWidget;
 	@Inject
 	public ProfilePresenter(ProfileView view,
 			AuthenticationController authenticationController,
@@ -221,6 +223,13 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 		return settingsPresenter;
 	}
 	
+	public DownloadListWidget getDownloadListWidget() {
+		if (downloadListWidget == null) {
+			downloadListWidget = ginInjector.getDownloadListWidget();
+		}
+		return downloadListWidget;
+	}
+	
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
 		// Install the view
@@ -266,6 +275,7 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 	}
 	
 	public void updateArea(ProfileArea area, boolean pushState) {
+		currentArea = area;
 		if (area != null && place != null && !area.equals(place.getArea())) {
 			place.setArea(area, filterType, filterTeamId);
 			if (pushState) {
@@ -284,7 +294,7 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 				&& authenticationController.getCurrentUserPrincipalId().equals(
 						userId);
 		if (currentArea == null || (ProfileArea.SETTINGS.equals(currentArea) && !isOwner)) {
-			currentArea = ProfileArea.PROJECTS;
+			currentArea = ProfileArea.PROFILE;
 		}
 		this.currentProjectSort = SortOptionEnum.LATEST_ACTIVITY;
 		view.clear();
@@ -329,7 +339,6 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 			public void onSuccess(UserBundle bundle) {
 				view.hideLoading();
 				currentUserBundle = bundle;
-				initializeShowHideProfile(isOwner);
 				boolean isCertified = bundle.getIsCertified();
 				if (isCertified) {
 					view.addCertifiedBadge();
@@ -369,7 +378,7 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 			@Override
 			public void onSuccess(Void result) {
 				//ORC id successfully removed.  refresh so that the user bundle and UI are up to date
-				view.showInfo("Success", "ORC ID has been unbound.");
+				view.showInfo("ORC ID has been successfully unbound.");
 				globalApplicationState.refreshPage();
 			}
 			@Override
@@ -377,26 +386,6 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 				profileSynAlert.handleException(caught);
 			}
 		});	
-	}
-	
-	public void initializeShowHideProfile(boolean isOwner) {
-		if (isOwner) {
-			boolean isProfileVisible = true;
-			try {
-				String cookieValue = cookies.getCookie(USER_PROFILE_VISIBLE_STATE_KEY);
-				if (cookieValue != null && !cookieValue.isEmpty()) {
-					isProfileVisible = Boolean.valueOf(cookieValue);	
-				}
-			} catch (Exception e) {
-				//if there are any problems getting the profile visibility state, ignore and use default (show)
-			}
-			setIsProfileVisible(isProfileVisible);
-		} else {
-			//not the owner
-			//show the profile, and hide the profile button
-			setIsProfileVisible(true);
-			view.setHideProfileButtonVisible(false);
-		}
 	}
 	
 	public void initializeShowHideCertification(boolean isOwner) {
@@ -484,34 +473,6 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 		}
 	}
 	
-	@Override
-	public void hideProfileButtonClicked() {
-		setIsProfileVisible(false);
-		setIsProfileVisibleCookie(false);
-	}
-	
-	@Override
-	public void showProfileButtonClicked() {
-		setIsProfileVisible(true);
-		setIsProfileVisibleCookie(true);
-	}
-	
-	private void setIsProfileVisible(boolean isVisible) {
-		if (isVisible){
-			view.showProfile();
-		} else {
-			view.hideProfile();
-		}
-		view.setShowProfileButtonVisible(!isVisible);
-		view.setHideProfileButtonVisible(isVisible);
-	}
-	
-	public void setIsProfileVisibleCookie(boolean isVisible) {
-		Date yearFromNow = new Date();
-		CalendarUtil.addMonthsToDate(yearFromNow, 12);
-		cookies.setCookie(USER_PROFILE_VISIBLE_STATE_KEY, Boolean.toString(isVisible), yearFromNow);
-	}
-	
 	public void refreshProjects() {
 		currentProjectOffset = 0;
 		loadMoreProjectsWidgetContainer = ginInjector.getLoadMoreProjectsWidgetContainer();
@@ -519,10 +480,7 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 		loadMoreProjectsWidgetContainer.setIsMore(false);
 		loadMoreProjectsWidgetContainer.configure(getMoreProjectsCallback);
 		getMoreProjects();
-		if (isOwner) {
-			// refresh owner teams to update the team notification count, and team filter
-			gwt.scheduleExecution(refreshTeamsCallback, DELAY_GET_MY_TEAMS);
-		}
+		scheduleRefreshTeamsIfOwner();
 	}
 	
 	public void refreshChallenges() {
@@ -821,7 +779,6 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 	public void addProjectResults(List<ProjectHeader> projectHeaders) {
 		for (int i = 0; i < projectHeaders.size(); i++) {
 			ProjectBadge badge = ginInjector.getProjectBadgeWidget();
-			badge.addStyleName("margin-bottom-10 col-xs-12");
 			badge.configure(projectHeaders.get(i));
 			Widget widget = badge.asWidget();
 			loadMoreProjectsWidgetContainer.add(widget);
@@ -835,10 +792,6 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 			badge.configure(challenge);
 			Widget widget = badge.asWidget();
 			view.addChallengeWidget(widget);
-		}
-		if (!challenges.isEmpty() && currentArea != null && currentArea.equals(ProfileArea.CHALLENGES)) {
-			// SWC-3213: extra call to make sure challenge tab is currently shown
-			view.setTabSelected(ProfileArea.CHALLENGES);
 		}
 	}
 	
@@ -905,7 +858,7 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 						@Override
 						public void onSuccess(Entity entity) {
 							getPromptForProjectNameDialog().hide();
-							view.showInfo(DisplayConstants.LABEL_PROJECT_CREATED, name);
+							view.showInfo(DisplayConstants.LABEL_PROJECT_CREATED + name);
 							globalApplicationState.getPlaceChanger().goTo(new Synapse(entity.getId()));	
 						}
 	
@@ -944,7 +897,7 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 			@Override
 			public void onSuccess(Team team) {
 				getPromptForTeamNameDialog().hide();
-				view.showInfo(DisplayConstants.LABEL_TEAM_CREATED, teamName);
+				view.showInfo(DisplayConstants.LABEL_TEAM_CREATED + teamName);
 				globalApplicationState.getPlaceChanger().goTo(new org.sagebionetworks.web.client.place.Team(team.getId()));						
 			}
 			
@@ -969,7 +922,7 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 	}
 	
 	private void profileUpdated() {
-		view.showInfo("Success", "Your profile has been updated.");
+		view.showInfo("Your profile has been successfully updated.");
 		editMyProfile();
 		view.refreshHeader();
 	}
@@ -991,8 +944,8 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 		}
 		
 		if (token.equals("oauth_bound")) {
-			view.showInfo("", DisplayConstants.SUCCESSFULLY_LINKED_OAUTH2_ACCOUNT);
-			token = Profile.VIEW_PROFILE_TOKEN;
+			view.showInfo(DisplayConstants.SUCCESSFULLY_LINKED_OAUTH2_ACCOUNT);
+			token = "v";
 		}
 		if (token.equals(Profile.VIEW_PROFILE_TOKEN) || token.startsWith(Profile.VIEW_PROFILE_TOKEN + "/") || token.isEmpty()) {
 			Place gotoPlace = null;
@@ -1146,6 +1099,10 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 	
 	private void refreshData(ProfileArea tab) {
 		switch (tab) {
+			case PROFILE:
+				//update teams (for notification count)
+				scheduleRefreshTeamsIfOwner();
+				break;
 			case PROJECTS:
 				setProjectFilterAndRefresh(filterType, filterTeamId);
 				break;
@@ -1157,11 +1114,22 @@ public class ProfilePresenter extends AbstractActivity implements ProfileView.Pr
 				view.setSettingsWidget(getSettingsPresenter().asWidget());
 				break;
 			case CHALLENGES:
+				refreshChallenges();
+				break;
+			case DOWNLOADS:
+				getDownloadListWidget().refresh();
+				view.setDownloadListWidget(getDownloadListWidget().asWidget());
+				break;
 			default:
 				break;
 		}
-		//always refreshes challenges to determine if tab should be shown
-		refreshChallenges();
+	}
+	
+	private void scheduleRefreshTeamsIfOwner() {
+		if (isOwner) {
+			// refresh owner teams to update the team notification count, and team filter
+			gwt.scheduleExecution(refreshTeamsCallback, DELAY_GET_MY_TEAMS);
+		}
 	}
 	
 	/**

@@ -10,6 +10,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.html.Div;
 import org.gwtbootstrap3.client.ui.html.Italic;
 import org.sagebionetworks.web.client.DisplayUtils;
+import org.sagebionetworks.web.client.SynapseJSNIUtilsImpl;
 import org.sagebionetworks.web.client.DisplayUtils.MessagePopup;
 import org.sagebionetworks.web.client.place.WikiDiff;
 import org.sagebionetworks.web.client.utils.Callback;
@@ -155,8 +156,8 @@ public class WikiPageWidgetViewImpl extends FlowPanel implements WikiPageWidgetV
 	
 	@Override
 	public void scrollWikiHeadingIntoView() {
-		if (wikiHeading != null) {
-			wikiHeading.getElement().scrollIntoView();	
+		if (wikiHeading != null && !DisplayUtils.isInViewport(wikiHeading)) {
+			SynapseJSNIUtilsImpl._scrollIntoView(wikiHeading.getElement());
 		}
 	}
 	
@@ -191,8 +192,8 @@ public class WikiPageWidgetViewImpl extends FlowPanel implements WikiPageWidgetV
 	}
 
 	@Override
-	public void showInfo(String title, String message) {
-		DisplayUtils.showInfo(title, message);
+	public void showInfo(String message) {
+		DisplayUtils.showInfo(message);
 	}
 
 	@Override
@@ -332,7 +333,6 @@ public class WikiPageWidgetViewImpl extends FlowPanel implements WikiPageWidgetV
 		wikiCompareButton.setVisible(visible);
 	}
 	
-
 	/** Event binder code **/
 	interface EBinder extends EventBinder<WikiPageWidget> {};
 	private final EBinder eventBinder = GWT.create(EBinder.class);
