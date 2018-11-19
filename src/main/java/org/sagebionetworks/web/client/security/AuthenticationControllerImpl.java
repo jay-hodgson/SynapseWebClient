@@ -135,10 +135,10 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 				currentUserSessionToken = newData.getSession().getSessionToken();
 				currentUserProfile = newData.getProfile();
 				ginInjector.getSessionDetector().initializeSessionTokenState();
+				jsniUtils.setAnalyticsUserId(getCurrentUserPrincipalId());
 				if (!newData.getSession().getAcceptsTermsOfUse()) {
 					ginInjector.getGlobalApplicationState().getPlaceChanger().goTo(new LoginPlace(LoginPlace.SHOW_TOU));
 				} else {
-					jsniUtils.setAnalyticsUserId(getCurrentUserPrincipalId());
 					callback.onSuccess(newData.getProfile());	
 				}
 			}
