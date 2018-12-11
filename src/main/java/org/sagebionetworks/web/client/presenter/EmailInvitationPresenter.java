@@ -14,6 +14,7 @@ import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.PlaceChanger;
 import org.sagebionetworks.web.client.SynapseFutureClient;
+import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.SynapseJavascriptClient;
 import org.sagebionetworks.web.client.place.EmailInvitation;
 import org.sagebionetworks.web.client.place.LoginPlace;
@@ -38,6 +39,7 @@ public class EmailInvitationPresenter extends AbstractActivity implements EmailI
 	private SynapseAlert synapseAlert;
 	private AuthenticationController authController;
 	private PlaceChanger placeChanger;
+	private SynapseJSNIUtils jsniUtils;
 	private String teamId, email;
 	@Inject
 	public EmailInvitationPresenter(
@@ -46,11 +48,13 @@ public class EmailInvitationPresenter extends AbstractActivity implements EmailI
 			SynapseFutureClient futureClient,
 			SynapseAlert synapseAlert,
 			AuthenticationController authController,
-			GlobalApplicationState globalApplicationState) {
+			GlobalApplicationState globalApplicationState,
+			SynapseJSNIUtils jsniUtils) {
 		this.view = view;
 		this.jsClient = jsClient;
 		this.futureClient = futureClient;
 		this.synapseAlert = synapseAlert;
+		this.jsniUtils = jsniUtils;
 		this.view.setSynapseAlertContainer(this.synapseAlert.asWidget());
 		this.authController = authController;
 		this.placeChanger = globalApplicationState.getPlaceChanger();
@@ -146,7 +150,7 @@ public class EmailInvitationPresenter extends AbstractActivity implements EmailI
 							view.setInvitationTitle(title);
 							String message = mis.getMessage();
 							if (message != null) {
-								view.setInvitationMessage(mis.getMessage());
+								view.setInvitationMessageSanitizedHtml(jsniUtils.sanitizeHtml(message));
 							}
 							return null;
 						},

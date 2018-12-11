@@ -24,6 +24,7 @@ import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.PlaceChanger;
 import org.sagebionetworks.web.client.SynapseFutureClient;
+import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.SynapseJavascriptClient;
 import org.sagebionetworks.web.client.place.EmailInvitation;
 import org.sagebionetworks.web.client.place.LoginPlace;
@@ -47,7 +48,8 @@ public class EmailInvitationPresenterTest {
 	@Mock private MembershipInvitation mis;
 	@Mock private Team team;
 	@Mock private UserProfile inviterProfile;
-
+	@Mock private SynapseJSNIUtils mockSynapseJSNIUtils;
+	private static final String SANITIZED_MESSAGE = "<b>message</b>";
 	private EmailInvitationPresenter presenter;
 	private String encodedMISignedToken;
 
@@ -55,7 +57,7 @@ public class EmailInvitationPresenterTest {
 	public void before() {
 		when(globalApplicationState.getPlaceChanger()).thenReturn(placeChanger);
 		presenter = new EmailInvitationPresenter(
-				view, jsClient, futureClient, synapseAlert, authController, globalApplicationState);
+				view, jsClient, futureClient, synapseAlert, authController, globalApplicationState, mockSynapseJSNIUtils);
 	}
 
 	public void beforeSetPlace(boolean loggedIn) {
@@ -70,6 +72,7 @@ public class EmailInvitationPresenterTest {
 		when(mis.getTeamId()).thenReturn("teamId");
 		when(mis.getCreatedBy()).thenReturn("createdBy");
 		when(mis.getMessage()).thenReturn("message");
+		when(mockSynapseJSNIUtils.sanitizeHtml(anyString())).thenReturn(SANITIZED_MESSAGE);
 	}
 
 	@Test
@@ -98,6 +101,7 @@ public class EmailInvitationPresenterTest {
 		presenter.setPlace(place);
 		verify(view).setSynapseAlertContainer(synapseAlert.asWidget());
 		verify(view).showNotLoggedInUI();
+		verify(view).setInvitationMessageSanitizedHtml(SANITIZED_MESSAGE);
 		
 		presenter.onRegisterClick();
 		ArgumentCaptor<RegisterAccount> captor = ArgumentCaptor.forClass(RegisterAccount.class);

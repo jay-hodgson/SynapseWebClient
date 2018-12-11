@@ -5,7 +5,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public interface EmailInvitationView extends IsWidget {
 	void setInvitationTitle(String title);
-	void setInvitationMessage(String message);
+	void setInvitationMessageSanitizedHtml(String html);
 	void setSynapseAlertContainer(Widget w);
 	void setPresenter(Presenter presenter);
 	void showLoading();
