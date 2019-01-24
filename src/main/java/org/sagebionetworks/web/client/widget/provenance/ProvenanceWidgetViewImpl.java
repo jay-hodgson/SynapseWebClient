@@ -20,6 +20,7 @@ import org.sagebionetworks.web.shared.provenance.ProvGraph;
 import org.sagebionetworks.web.shared.provenance.ProvGraphEdge;
 import org.sagebionetworks.web.shared.provenance.ProvGraphNode;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -140,6 +141,7 @@ public class ProvenanceWidgetViewImpl extends FlowPanel implements ProvenanceWid
 			// look for old versions
 			presenter.findOldVersions();
 			afterJSPlumbLoad();
+			print(prov.getElement());
 		}
 		
 		if (startingNodeContainer != null && graph.getNodes().size() > 3 && DisplayUtils.isInViewport(startingNodeContainer)) {
@@ -168,6 +170,16 @@ public class ProvenanceWidgetViewImpl extends FlowPanel implements ProvenanceWid
 		}
 		return null;
 	}
+	
+	private static native void print(Element el) /*-{
+		$wnd.domtoimage.toPng(el).then(function(dataUrl) {
+			var img = new Image();
+			img.src = dataUrl;
+			$doc.body.appendChild(img);
+		}, function(error) {
+			console.error('Failed to create provenance image.', error);
+		})
+	}-*/;
 	
 	private static native void connect(String parentId, String childId) /*-{
 		try {
