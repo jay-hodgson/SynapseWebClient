@@ -1288,7 +1288,6 @@ public class SynapseClientImpl extends SynapseClientBase implements
 		org.sagebionetworks.client.SynapseClient synapseClient = createSynapseClient();
 		try {
 			//resend the invitation.  get the invitation, clear out system specified values, re-create the invitation, and delete the old one.
-			String emailInvitationEndpoint = NotificationTokenType.EmailInvitation.getNotificationEndpoint(hostPageBaseURL);
 			String settingsEndpoint = NotificationTokenType.Settings.getNotificationEndpoint(hostPageBaseURL);
 			MembershipInvitation membershipInvitation = synapseClient.getMembershipInvitation(membershipInvitationId);
 			membershipInvitation.setCreatedBy(null);
@@ -1300,7 +1299,11 @@ public class SynapseClientImpl extends SynapseClientBase implements
 				membershipInvitation.setInviteeEmail(null);
 			}
 			
-			synapseClient.createMembershipInvitation(membershipInvitation, emailInvitationEndpoint, settingsEndpoint);
+			String invitationEndpoint = membershipInvitation.getInviteeId() == null ? 
+					NotificationTokenType.EmailInvitation.getNotificationEndpoint(hostPageBaseURL) : 
+					NotificationTokenType.JoinTeam.getNotificationEndpoint(hostPageBaseURL);
+			
+			synapseClient.createMembershipInvitation(membershipInvitation, invitationEndpoint, settingsEndpoint);
 			synapseClient.deleteMembershipInvitation(membershipInvitationId);
 		} catch (SynapseException e) {
 			throw ExceptionUtil.convertSynapseException(e);
