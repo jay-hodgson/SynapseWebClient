@@ -96,7 +96,7 @@ public class CroppedImageUploadViewImpl implements ImageUploadView {
 		saveCropButton.addClickHandler(event -> {
 			saveCroppedImage();
 		});
-		previewModal.getElement().setAttribute("style", "z-index: 3000; height: 700px;");
+		previewModal.getElement().setAttribute("style", "z-index: 3000; height: 960px;");
 		previewModal.addShownHandler(event -> {
 			previewModalBody.clear();
 			Image image = new Image();
@@ -133,8 +133,8 @@ public class CroppedImageUploadViewImpl implements ImageUploadView {
 			$wnd.cropping = new $wnd.Croppie(imagePreviewEl, {
 				enableExif: true,
 				enableOrientation: true,
-			    viewport: { width: 200, height: 200, type: 'circle' },
-			    boundary: { width: 400, height: 400 }
+			    viewport: { width: 300, height: 300, type: 'circle' },
+			    boundary: { width: 500, height: 500 }
 			});
 			$wnd.cropping.bind({
 			    url: fileUrl
