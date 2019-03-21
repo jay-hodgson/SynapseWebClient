@@ -2760,6 +2760,11 @@ div.border {
 		padding: 0 10px 30px 15px;
 		margin-top: -8px;
 	}
+
+	.fixed-position-top {
+		position: fixed;
+		top:0;
+	}
 }
 #rootPanel {
 	summary { color:$synapse-blue; }

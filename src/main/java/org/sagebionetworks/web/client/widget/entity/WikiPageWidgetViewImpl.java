@@ -21,8 +21,10 @@ import org.sagebionetworks.web.shared.WikiPageKey;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -82,6 +84,8 @@ public class WikiPageWidgetViewImpl extends FlowPanel implements WikiPageWidgetV
 	
 	@UiField
 	FlowPanel wikiSubpagesPanel;
+	@UiField
+	Div wikiSubpagesPanelPlaceholder;
 	
 	@UiField
 	SimplePanel synAlertPanel;
@@ -103,6 +107,7 @@ public class WikiPageWidgetViewImpl extends FlowPanel implements WikiPageWidgetV
 	Heading wikiHeading;
 	Widget widget;
 	WikiPageKey key;
+	HandlerRegistration windowScrollHandlerRegistration;
 
 	@Override
 	public void setPresenter(Presenter presenter) {
@@ -146,6 +151,22 @@ public class WikiPageWidgetViewImpl extends FlowPanel implements WikiPageWidgetV
 			WikiDiff place = new WikiDiff(key);
 			DisplayUtils.newWindow("#!WikiDiff:" + place.toToken(), "_blank", "");
 		});
+		windowScrollHandlerRegistration = Window.addWindowScrollHandler(event -> {
+			if (wikiSubpagesPanel.isAttached()) {
+				int top = wikiSubpagesPanel.getElement().getAbsoluteTop();
+				int placeholderTop = wikiSubpagesPanelPlaceholder.getElement().getAbsoluteTop();
+				int scrollTop = event.getScrollTop();
+				if (scrollTop >= top && scrollTop >= placeholderTop) {
+					wikiSubpagesPanel.addStyleName("fixed-position-top");
+					wikiSubpagesPanelPlaceholder.setVisible(true);
+				} else {
+					wikiSubpagesPanel.removeStyleName("fixed-position-top");
+					wikiSubpagesPanelPlaceholder.setVisible(false);
+				}
+			} else {
+				windowScrollHandlerRegistration.removeHandler();
+			}
+		});
 	}
 	
 	@Override
@@ -187,6 +208,7 @@ public class WikiPageWidgetViewImpl extends FlowPanel implements WikiPageWidgetV
 	@Override
 	public void setWikiSubpagesWidgetVisible(boolean isVisible) {
 		wikiSubpagesPanel.setVisible(isVisible);
+		wikiSubpagesPanelPlaceholder.setVisible(isVisible);
 	}
 	
 	public void showErrorMessage(String message) {
@@ -241,6 +263,7 @@ public class WikiPageWidgetViewImpl extends FlowPanel implements WikiPageWidgetV
 		wikiSubpagesPanel.addStyleName(COL_XS_12);
 		wikiSubpagesPanel.addStyleName(WELL);
 		wikiSubpagesPanel.addStyleName(COL_MD_3);
+		wikiSubpagesPanelPlaceholder.setStyleName(COL_XS_12 + " " + COL_MD_3);
 	}
 	
 	@Override
@@ -250,6 +273,7 @@ public class WikiPageWidgetViewImpl extends FlowPanel implements WikiPageWidgetV
 		
 		wikiSubpagesPanel.setStyleName("");
 		wikiSubpagesPanel.addStyleName(COL_XS_12);
+		wikiSubpagesPanelPlaceholder.setVisible(false);
 	}
 	
 	@Override
