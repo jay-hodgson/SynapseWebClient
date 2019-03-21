@@ -9,11 +9,10 @@
 	<g:FlowPanel>
 		<g:SimplePanel ui:field="synAlertPanel"/>
 		<g:FlowPanel ui:field="mainPanel">
-			<bh:Div ui:field="wikiSubpagesPanelPlaceholder" visible="false"/>
 			<g:FlowPanel ui:field="wikiSubpagesPanel"/>
+			<bh:Div ui:field="wikiSubpagesPanelPlaceholder" visible="false"/>
 			<g:FlowPanel ui:field="wikiPagePanel">
-					<w:LoadingSpinner ui:field="loadingPanel" size="31px"/>
-				
+				<w:LoadingSpinner ui:field="loadingPanel" size="31px"/>
 				<bh:Div ui:field="wikiHeadingContainer"></bh:Div>
 				<b:Alert ui:field="diffVersionAlert" visible="false">
 					<g:HTMLPanel>

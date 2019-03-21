@@ -156,11 +156,15 @@ public class WikiPageWidgetViewImpl extends FlowPanel implements WikiPageWidgetV
 				int top = wikiSubpagesPanel.getElement().getAbsoluteTop();
 				int placeholderTop = wikiSubpagesPanelPlaceholder.getElement().getAbsoluteTop();
 				int scrollTop = event.getScrollTop();
-				if (scrollTop >= top && scrollTop >= placeholderTop) {
-					wikiSubpagesPanel.addStyleName("fixed-position-top");
+				int wikiPageHeight = wikiPagePanel.getOffsetHeight();
+				int wikiSubpagesHeight = wikiSubpagesPanel.getOffsetHeight();
+				if (wikiPageHeight > wikiSubpagesHeight && scrollTop >= top && scrollTop >= placeholderTop) {
+					wikiSubpagesPanel.addStyleName("fixed-position-top scroll-y");
+					wikiSubpagesPanel.setHeight(Window.getClientHeight() + "px");
 					wikiSubpagesPanelPlaceholder.setVisible(true);
 				} else {
-					wikiSubpagesPanel.removeStyleName("fixed-position-top");
+					wikiSubpagesPanel.removeStyleName("fixed-position-top scroll-y");
+					wikiSubpagesPanel.setHeight("100%");
 					wikiSubpagesPanelPlaceholder.setVisible(false);
 				}
 			} else {
