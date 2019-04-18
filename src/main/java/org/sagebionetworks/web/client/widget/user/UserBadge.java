@@ -5,6 +5,9 @@ import static org.sagebionetworks.web.client.ServiceEntryPointUtils.fixServiceEn
 import java.util.Map;
 
 import org.sagebionetworks.repo.model.UserProfile;
+import org.sagebionetworks.repo.model.file.FileHandleAssociateType;
+import org.sagebionetworks.repo.model.file.FileHandleAssociation;
+import org.sagebionetworks.repo.model.file.FileResult;
 import org.sagebionetworks.schema.adapter.AdapterFactory;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
@@ -15,6 +18,7 @@ import org.sagebionetworks.web.client.cache.ClientCache;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
 import org.sagebionetworks.web.client.widget.WidgetRendererPresenter;
+import org.sagebionetworks.web.client.widget.asynch.PresignedURLAsyncHandler;
 import org.sagebionetworks.web.client.widget.asynch.UserProfileAsyncHandler;
 import org.sagebionetworks.web.shared.WebConstants;
 import org.sagebionetworks.web.shared.WidgetConstants;
@@ -39,6 +43,7 @@ public class UserBadge implements  SynapseWidgetPresenter, WidgetRendererPresent
 	private String principalId = null, username = null;
 	UserProfileAsyncHandler userProfileAsyncHandler;
 	private AdapterFactory adapterFactory;
+	PresignedURLAsyncHandler presignedURLAsyncHandler;
 	
 	public static final ClickHandler DO_NOTHING_ON_CLICK = new ClickHandler() {
 		@Override
@@ -54,12 +59,14 @@ public class UserBadge implements  SynapseWidgetPresenter, WidgetRendererPresent
 			SynapseJSNIUtils synapseJSNIUtils,
 			ClientCache clientCache,
 			UserProfileAsyncHandler userProfileAsyncHandler,
-			AdapterFactory adapterFactory) {
+			AdapterFactory adapterFactory,
+			PresignedURLAsyncHandler presignedURLAsyncHandler) {
 		this.view = view;
 		this.synapseClient = synapseClient;
 		fixServiceEntryPoint(synapseClient);
 		this.globalApplicationState = globalApplicationState;
 		this.synapseJSNIUtils = synapseJSNIUtils;
+		this.presignedURLAsyncHandler = presignedURLAsyncHandler;
 		this.clientCache = clientCache;
 		this.userProfileAsyncHandler = userProfileAsyncHandler;
 		this.adapterFactory = adapterFactory;
@@ -74,7 +81,24 @@ public class UserBadge implements  SynapseWidgetPresenter, WidgetRendererPresent
 	public void configure(UserProfile profile) {
 		this.profile = profile;
 		useCachedImage = true;
-		view.configure(profile);
+		if (profile.getProfilePicureFileHandleId() != null) {
+			FileHandleAssociation fha = new FileHandleAssociation();
+			fha.setAssociateObjectId(profile.getOwnerId());
+			fha.setAssociateObjectType(FileHandleAssociateType.UserProfileAttachment);
+			fha.setFileHandleId(profile.getProfilePicureFileHandleId());
+			presignedURLAsyncHandler.getFileResult(fha, new AsyncCallback<FileResult>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					synapseJSNIUtils.consoleError("Failed to load profile picture for " + profile.getOwnerId() + " : " + caught.getMessage());
+					view.configure(profile, null);
+				}
+				public void onSuccess(FileResult fileResult) {
+					view.configure(profile, fileResult.getPreSignedURL());
+				};
+			});
+		} else {
+			view.configure(profile, null);	
+		}
 	}
 
 	public void setTextHidden(boolean isTextHidden) {

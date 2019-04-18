@@ -2,10 +2,13 @@ package org.sagebionetworks.web.client.widget.team;
 
 import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.repo.model.file.FileHandleAssociateType;
+import org.sagebionetworks.repo.model.file.FileHandleAssociation;
+import org.sagebionetworks.repo.model.file.FileResult;
 import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.SynapseProperties;
 import org.sagebionetworks.web.client.widget.HasNotificationUI;
 import org.sagebionetworks.web.client.widget.SynapseWidgetPresenter;
+import org.sagebionetworks.web.client.widget.asynch.PresignedURLAsyncHandler;
 import org.sagebionetworks.web.client.widget.asynch.TeamAsyncHandler;
 import org.sagebionetworks.web.shared.WebConstants;
 
@@ -26,15 +29,18 @@ public class TeamBadge implements SynapseWidgetPresenter, HasNotificationUI, IsW
 	public static final String PUBLIC_GROUP_NAME = "Anyone on the web";
 	public static final String AUTHENTICATED_USERS_GROUP_NAME = "All registered Synapse users";
 	SynapseJSNIUtils synapseJsniUtils;
+	PresignedURLAsyncHandler presignedURLAsyncHandler;
 	
 	@Inject
 	public TeamBadge(TeamBadgeView view, 
 			TeamAsyncHandler teamAsyncHandler,
 			SynapseProperties synapseProperties,
-			SynapseJSNIUtils synapseJsniUtils) {
+			SynapseJSNIUtils synapseJsniUtils,
+			PresignedURLAsyncHandler presignedURLAsyncHandler) {
 		this.view = view;
 		this.teamAsyncHandler = teamAsyncHandler;
 		this.synapseJsniUtils = synapseJsniUtils;
+		this.presignedURLAsyncHandler = presignedURLAsyncHandler;
 		publicAclPrincipalId = synapseProperties.getSynapseProperty(WebConstants.PUBLIC_ACL_PRINCIPAL_ID);
 		authenticatedAclPrincipalId = synapseProperties.getSynapseProperty(WebConstants.AUTHENTICATED_ACL_PRINCIPAL_ID);
 	}
@@ -75,8 +81,28 @@ public class TeamBadge implements SynapseWidgetPresenter, HasNotificationUI, IsW
 	}
 	
 	public void configure(Team team) {
-		String teamIconUrl = synapseJsniUtils.getFileHandleAssociationUrl(team.getId(), FileHandleAssociateType.TeamAttachment, team.getIcon());
-		view.setTeam(team, maxNameLength, teamIconUrl, customClickHandler);
+		if (team.getIcon() != null) {
+			FileHandleAssociation fha = new FileHandleAssociation();
+			fha.setAssociateObjectId(team.getId());
+			fha.setAssociateObjectType(FileHandleAssociateType.TeamAttachment);
+			fha.setFileHandleId(team.getIcon());
+			presignedURLAsyncHandler.getFileResult(fha, new AsyncCallback<FileResult>() {
+				
+				@Override
+				public void onSuccess(FileResult fileResult) {
+					String teamIconUrl = fileResult.getPreSignedURL();
+					view.setTeam(team, maxNameLength, teamIconUrl, customClickHandler);
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					synapseJsniUtils.consoleError("Failed to load team picture for " + team.getId() + " : " + caught.getMessage());
+					view.setTeam(team, maxNameLength, null, customClickHandler);
+				}
+			});
+		} else {
+			view.setTeam(team, maxNameLength, null, customClickHandler);	
+		}
 	}
 	
 	/**

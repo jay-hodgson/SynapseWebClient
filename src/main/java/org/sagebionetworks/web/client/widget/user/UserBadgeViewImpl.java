@@ -73,7 +73,7 @@ public class UserBadgeViewImpl extends Div implements UserBadgeView {
 		});
 	}
 	@Override
-	public void configure(UserProfile profile) {
+	public void configure(UserProfile profile, String profilePictureUrl) {
 		userId = profile.getOwnerId();
 		clear();
 		add(userBadgeContainer);
@@ -85,10 +85,8 @@ public class UserBadgeViewImpl extends Div implements UserBadgeView {
 		} catch (Throwable e) {
 			jsniUtils.consoleError(e);
 		}
-		String pictureUrl = profile.getProfilePicureFileHandleId() != null ? 
-				jsniUtils.getFileHandleAssociationUrl(profile.getOwnerId(), FileHandleAssociateType.UserProfileAttachment, profile.getProfilePicureFileHandleId()) : null;
 		
-		_showBadge(userBadgeContainer.getElement(), profileJson, badgeSize.reactClientSize, isTextHidden, isTooltipHidden, pictureUrl, !authController.isLoggedIn(), menuActionsArray, this);
+		_showBadge(userBadgeContainer.getElement(), profileJson, badgeSize.reactClientSize, isTextHidden, isTooltipHidden, profilePictureUrl, !authController.isLoggedIn(), menuActionsArray, this);
 	}
 	
 	public void setClickHandler(ClickHandler clickHandler) {

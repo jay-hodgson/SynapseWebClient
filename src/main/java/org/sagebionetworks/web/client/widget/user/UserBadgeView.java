@@ -8,7 +8,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface UserBadgeView extends IsWidget, SynapseView {
-	void configure(UserProfile profile);
+	void configure(UserProfile profile, String profilePictureUrl);
 	void showLoadError(String error);
 	void setSize(BadgeSize size);
 	void addStyleName(String styles);
