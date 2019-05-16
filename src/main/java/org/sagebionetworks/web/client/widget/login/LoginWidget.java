@@ -1,13 +1,18 @@
 package org.sagebionetworks.web.client.widget.login;
 
+import static org.sagebionetworks.web.client.ClientProperties.DEFAULT_PLACE_TOKEN;
+
 import org.sagebionetworks.repo.model.ErrorResponseCode;
 import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.web.client.GlobalApplicationState;
+import org.sagebionetworks.web.client.place.Down;
 import org.sagebionetworks.web.client.place.users.PasswordReset;
 import org.sagebionetworks.web.client.security.AuthenticationController;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
 import org.sagebionetworks.web.shared.exceptions.NotFoundException;
+import org.sagebionetworks.web.shared.exceptions.ReadOnlyModeException;
+import org.sagebionetworks.web.shared.exceptions.SynapseDownException;
 import org.sagebionetworks.web.shared.exceptions.UnauthorizedException;
 
 import com.google.gwt.place.shared.Place;
@@ -71,6 +76,8 @@ public class LoginWidget implements LoginWidgetView.Presenter {
 					} else {
 						synAlert.showError(caught.getMessage() + PLEASE_TRY_AGAIN);	
 					}
+				} else if (caught instanceof ReadOnlyModeException || caught instanceof SynapseDownException) {
+					globalApplicationState.getPlaceChanger().goTo(new Down(DEFAULT_PLACE_TOKEN));	
 				} else {
 					synAlert.handleException(caught);	
 				}

@@ -84,7 +84,7 @@ public class SynapseAlertImpl implements SynapseAlert, SynapseAlertView.Presente
 				view.showError(SERVER_STATUS_CODE_MESSAGE + sce.getStatusCode());
 			}
 		} else if(ex instanceof ReadOnlyModeException || ex instanceof SynapseDownException) {
-			globalApplicationState.getPlaceChanger().goTo(new Down(DEFAULT_PLACE_TOKEN));
+			view.showError("Synapse is temporarily down for maintenance. "  + " " + message);
 		} else if(ex instanceof UnauthorizedException) {
 			// send user to login page
 			// invalid session token.  log out user and send to login place
