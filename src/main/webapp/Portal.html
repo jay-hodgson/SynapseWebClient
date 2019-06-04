@@ -8,16 +8,16 @@
 		<meta name="msvalidate.01" content="E37AC1589F823723B64275D4BC890B1A" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	    <!--[if lt IE 10]>
-	    	<div class="alert alert-warning" role="alert"> 
-	    		<a class="alert-link" href="http://windows.microsoft.com/en-us/internet-explorer/download-ie" target="_blank">
+		<!--[if lt IE 10]>
+			<div class="alert alert-warning" role="alert"> 
+				<a class="alert-link" href="http://windows.microsoft.com/en-us/internet-explorer/download-ie" target="_blank">
 				You are using an outdated browser. For a faster, safer browsing experience, click here to upgrade today.</a>
 			</div>
  		<![endif]-->
-	    <!--[if lt IE 9]>
-	      <script src="bootstrap-3.0/assets/js/html5shiv.js"></script>
-	      <script src="bootstrap-3.0/assets/js/respond.min.js"></script>
-	    <![endif]-->		
+		<!--[if lt IE 9]>
+			<script src="bootstrap-3.0/assets/js/html5shiv.js"></script>
+			<script src="bootstrap-3.0/assets/js/respond.min.js"></script>
+		<![endif]-->		
 
 		<!-- 
 		Adding the following meta tag should tell the crawler to try to crawl the ugly version of *this* URL.
@@ -53,66 +53,66 @@
 				cdnEndpoint = "";
 			}
 			window.cdnEndpoint = cdnEndpoint;
-			
-			var link = document.createElement( "link" );
-			link.href = cdnEndpoint + "loadinglogo.css";
-			link.rel = "stylesheet";
-			document.head.appendChild(link);
-
-			var script = document.createElement('script');
-			script.onload = function () {
-				head.load(cdnEndpoint + "swc.css");
-				head.load(cdnEndpoint + "css/bootstrap-custom-theme.min.css?v=1");
-				head.load("//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js");
-				head.load("//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js");
-				head.load("https://cdn.pendo.io/agent/static/f155f8f7-30b9-4cc3-671a-70f99f803504/pendo.js");
-				head.load(cdnEndpoint + "js/moment.min.js");
-				head.load("//cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.1.8/jsPlumb.min.js");
-				head.load("//cdnjs.cloudflare.com/ajax/libs/swfobject/2.2/swfobject.min.js");
-				head.load(cdnEndpoint + "js/jquery.tablesorter.min.js");
-				head.load(cdnEndpoint + "js/jquery.tablesorter.scinot.js");
-				head.load(cdnEndpoint + "icons/font/synapseicons.css?v=1");
-				head.load("//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css");
-				head.load(cdnEndpoint + "js/highlight.pack.js");
-				head.load(cdnEndpoint + "js/init-nchart.js");
-				head.load(cdnEndpoint + "js/markdown-it.min.js");
-				head.load(cdnEndpoint + "js/markdown-it-plugins-17.min.js");
-				head.load(cdnEndpoint + "js/polyfill-2.js");
-				head.load(cdnEndpoint + "js/details-shim.min.js");
-				head.load(cdnEndpoint + "js/xss.min.js");
-				head.load("//cdnjs.cloudflare.com/ajax/libs/pica/4.1.1/pica.min.js");
-				head.load("//www.google-analytics.com/analytics.js");
-				head.load("//unpkg.com/react@16/umd/react.production.min.js");
-				head.load("//unpkg.com/react-dom@16/umd/react-dom.production.min.js");
-				head.load("https://unpkg.com/react-transition-group@2.6.0/dist/react-transition-group.min.js");
-				head.load("https://unpkg.com/prop-types@15.6.2/prop-types.min.js");
-				head.load("https://unpkg.com/react-measure@2.2.2/dist/index.umd.js");
-				head.load("https://unpkg.com/react-tooltip@3.9.2/standalone/react-tooltip.min.js");
-				head.load("https://unpkg.com/synapse-react-client@1.11.25/dist/umd/synapse-react-client.production.min.js");
-				head.load("//cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.min.js");
-				head.load("//cdnjs.cloudflare.com/ajax/libs/spark-md5/3.0.0/spark-md5.min.js");
-				head.load(cdnEndpoint + "js/diff/diffview.css");
-				head.load(cdnEndpoint + "css/details-shim.min.css");
-				head.load("//cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.min.css");
-				head.load("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css");
-				head.load("//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css");
-				head.load(cdnEndpoint + "js/linkify.min.js");
-				head.load(cdnEndpoint + "js/linkify-string.min.js");
-				head.load("https://unpkg.com/synapse-react-client@1.11.25/dist/umd/synapse-react-client.production.styles.css");
-				head.load(cdnEndpoint + "css/katex-0.10.1.min.css");
+			function loadJs(src) {
+				// these are dynamically added, so they do not block rendering while being downloaded
+				let scriptElement = document.createElement('script');
+				scriptElement.src = src;
+				scriptElement.async = false; // in order
+				document.head.appendChild(scriptElement);
 			};
-			script.src = cdnEndpoint + "js/head.load.min.js";
-			document.head.appendChild(script);
-			
-			script = document.createElement('script');
-			script.src = cdnEndpoint + "js/compiled-closure-lib.js";
-			document.head.appendChild(script);
-			 
-			script = document.createElement('script');
-			script.src = cdnEndpoint + "Portal/Portal.nocache.js";
-			document.head.appendChild(script);
-			
-	   	</script>
+			function loadCss(src){
+				if (document.createStyleSheet) document.createStyleSheet(src);
+				else {
+					var linkElement = document.createElement('link');
+					linkElement.href = src;
+					linkElement.rel = 'stylesheet';
+					linkElement.type = 'text/css';
+					document.head.appendChild(linkElement);
+				}
+			}
+			loadCss(cdnEndpoint + "loadinglogo.css");
+			loadJs(cdnEndpoint + "js/compiled-closure-lib.js");
+			loadJs(cdnEndpoint + "Portal/Portal.nocache.js");
+			loadCss(cdnEndpoint + "swc.css");
+			loadCss(cdnEndpoint + "css/bootstrap-custom-theme.min.css?v=1");
+			loadJs("//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js");
+			loadJs("//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js");
+			loadJs("https://cdn.pendo.io/agent/static/f155f8f7-30b9-4cc3-671a-70f99f803504/pendo.js");
+			loadJs(cdnEndpoint + "js/moment.min.js");
+			loadJs("//cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.1.8/jsPlumb.min.js");
+			loadJs("//cdnjs.cloudflare.com/ajax/libs/swfobject/2.2/swfobject.min.js");
+			loadJs(cdnEndpoint + "js/jquery.tablesorter.min.js");
+			loadJs(cdnEndpoint + "js/jquery.tablesorter.scinot.js");
+			loadCss(cdnEndpoint + "icons/font/synapseicons.css?v=1");
+			loadCss("//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css");
+			loadJs(cdnEndpoint + "js/highlight.pack.js");
+			loadJs(cdnEndpoint + "js/init-nchart.js");
+			loadJs(cdnEndpoint + "js/markdown-it.min.js");
+			loadJs(cdnEndpoint + "js/markdown-it-plugins-17.min.js");
+			loadJs(cdnEndpoint + "js/polyfill-2.js");
+			loadJs(cdnEndpoint + "js/details-shim.min.js");
+			loadJs(cdnEndpoint + "js/xss.min.js");
+			loadJs("//cdnjs.cloudflare.com/ajax/libs/pica/4.1.1/pica.min.js");
+			loadJs("//www.google-analytics.com/analytics.js");
+			loadJs("//unpkg.com/react@16/umd/react.production.min.js");
+			loadJs("//unpkg.com/react-dom@16/umd/react-dom.production.min.js");
+			loadJs("https://unpkg.com/react-transition-group@2.6.0/dist/react-transition-group.min.js");
+			loadJs("https://unpkg.com/prop-types@15.6.2/prop-types.min.js");
+			loadJs("https://unpkg.com/react-measure@2.2.2/dist/index.umd.js");
+			loadJs("https://unpkg.com/react-tooltip@3.9.2/standalone/react-tooltip.min.js");
+			loadJs("https://unpkg.com/synapse-react-client@1.11.25/dist/umd/synapse-react-client.production.min.js");
+			loadJs("//cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.min.js");
+			loadJs("//cdnjs.cloudflare.com/ajax/libs/spark-md5/3.0.0/spark-md5.min.js");
+			loadCss(cdnEndpoint + "js/diff/diffview.css");
+			loadCss(cdnEndpoint + "css/details-shim.min.css");
+			loadCss("//cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.min.css");
+			loadCss("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css");
+			loadCss("//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css");
+			loadJs(cdnEndpoint + "js/linkify.min.js");
+			loadJs(cdnEndpoint + "js/linkify-string.min.js");
+			loadCss("https://unpkg.com/synapse-react-client@1.11.25/dist/umd/synapse-react-client.production.styles.css");
+			loadCss(cdnEndpoint + "css/katex-0.10.1.min.css");
+		</script>
 	</head>
 	<body id="body">
 		
@@ -135,7 +135,7 @@
 						application crawl link</a>
 				</div>
 			</noscript>
-            <!-- This is the GWT-generated body -->
+			<!-- This is the GWT-generated body -->
 			<div id="alertWrapper">
 				<div id="alertContainer"></div>
 			</div>
