@@ -23,6 +23,7 @@ import org.sagebionetworks.web.shared.WebConstants;
 import org.sagebionetworks.web.shared.users.AclEntry;
 import org.sagebionetworks.web.shared.users.PermissionLevel;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -230,7 +231,7 @@ public class AccessControlListEditorViewImpl extends FlowPanel implements Access
 						} else {
 							if (publicAclPrincipalId != null) {
 								presenter.setAccess(publicAclPrincipalId, PermissionLevel.CAN_VIEW);
-								presenter.setAccess(authenticatedPrincipalId, PermissionLevel.CAN_DOWNLOAD);
+								presenter.setAccess(authenticatedPrincipalId, PermissionLevel.CAN_SCORE_EVALUATION);
 							}
 						}
 					}

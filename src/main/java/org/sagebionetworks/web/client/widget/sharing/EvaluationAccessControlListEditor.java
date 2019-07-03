@@ -31,6 +31,7 @@ import org.sagebionetworks.web.shared.users.AclEntry;
 import org.sagebionetworks.web.shared.users.AclUtils;
 import org.sagebionetworks.web.shared.users.PermissionLevel;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -135,6 +136,7 @@ public class EvaluationAccessControlListEditor implements AccessControlListEdito
 	private void initViewPrincipalIds(){
 		if (publicPrincipalIds != null) {
 			view.setPublicAclPrincipalId(publicPrincipalIds.getPublicAclPrincipalId());
+			view.setAuthenticatedAclPrinciapalId(publicPrincipalIds.getAuthenticatedAclPrincipalId());
 		}
 	}
 	
