@@ -286,7 +286,12 @@ public class SynapseJavascriptClient {
 	public static final String TEAM_MEMBERS = "/teamMembers/";
 	public static final String NAME_FRAGMENT_FILTER = "fragment=";
 	public static final String NAME_MEMBERTYPE_FILTER = "memberType=";
-
+	public static final String VERSION_INFO = "/version";
+	public static final String FILE_PREVIEW = "/filepreview";
+	public static final String REDIRECT_PARAMETER = "redirect=";
+	public static final String ACCOUNT = "/account";
+	public static final String EMAIL_VALIDATION = "/emailValidation";
+	public static final String PORTAL_ENDPOINT_PARAM = "portalEndpoint=";
 	public static final int LIMIT_50 = 50;
 	
 	public Map<String, List<Request>> requestsMap;
@@ -1675,5 +1680,20 @@ public class SynapseJavascriptClient {
 		return doGet(url, OBJECT_TYPE.NotificationEmail, cb);
 	}
 
+	public Request getFileEntityTemporaryUrlForVersion(String entityId, Long versionNumber, boolean preview, AsyncCallback<String> cb) {
+		String filePath = preview ? FILE_PREVIEW : FILE;
+		String url = getRepoServiceUrl() + ENTITY + "/" + entityId + VERSION_INFO + "/"
+				+ versionNumber + filePath + "?" + REDIRECT_PARAMETER
+				+ "false";
+		return doGet(url, OBJECT_TYPE.String, cb);
+	}
+	
+	public void additionalEmailValidation(String userId, String emailAddress, String callbackUrl, AsyncCallback<Void> cb) {
+		String url = getRepoServiceUrl() + ACCOUNT + "/" + userId + "/"
+				+ EMAIL_VALIDATION + "?" + PORTAL_ENDPOINT_PARAM + callbackUrl;
+		Username username = new Username();
+		username.setEmail(emailAddress);
+		doPost(url, username, OBJECT_TYPE.None, false, cb);
+	}
 }
 
