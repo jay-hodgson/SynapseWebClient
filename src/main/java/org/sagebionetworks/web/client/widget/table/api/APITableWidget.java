@@ -223,7 +223,7 @@ public class APITableWidget implements APITableWidgetView.Presenter, WidgetRende
 						view.addRow(columnWidgets);
 					}
 
-					if (tableConfig.isPaging() && total > tableConfig.getPageSize()) {
+					if (tableConfig.isPaging()) {
 						int start = tableConfig.getOffset() + 1;
 						int end = start + rowCount - 1;
 						view.configurePager(start, end, total);

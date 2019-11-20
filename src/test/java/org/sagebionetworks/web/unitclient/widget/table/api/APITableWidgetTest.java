@@ -261,15 +261,6 @@ public class APITableWidgetTest {
 	}
 
 	@Test
-	public void testPagerNotNecessary() throws JSONObjectAdapterException {
-		testReturnJSONObject.put("totalNumberOfResults", 2);
-		widget.configure(testWikiKey, descriptor, null, null);
-		verify(mockView).setColumnHeaders(anyList());
-		verify(mockView).addRow(anyList());
-		verify(mockView, never()).configurePager(anyInt(), anyInt(), anyInt());
-	}
-
-	@Test
 	public void testPagingURI() throws JSONObjectAdapterException {
 		widget.configure(testWikiKey, descriptor, null, null);
 		String pagedURI = widget.getPagedURI(TESTSERVICE_PATH);
