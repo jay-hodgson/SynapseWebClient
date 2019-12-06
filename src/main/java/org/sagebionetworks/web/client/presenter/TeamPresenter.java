@@ -1,10 +1,12 @@
 package org.sagebionetworks.web.client.presenter;
 
 import static org.sagebionetworks.web.client.ServiceEntryPointUtils.fixServiceEntryPoint;
+import static org.sagebionetworks.web.client.presenter.ProfilePresenter.IS_CERTIFIED;
 import org.sagebionetworks.repo.model.RestrictableObjectType;
 import org.sagebionetworks.repo.model.Team;
 import org.sagebionetworks.repo.model.TeamMemberTypeFilterOptions;
 import org.sagebionetworks.repo.model.TeamMembershipStatus;
+import org.sagebionetworks.repo.model.UserBundle;
 import org.sagebionetworks.web.client.DisplayUtils;
 import org.sagebionetworks.web.client.GlobalApplicationState;
 import org.sagebionetworks.web.client.PortalGinInjector;
@@ -17,6 +19,7 @@ import org.sagebionetworks.web.client.utils.CallbackP;
 import org.sagebionetworks.web.client.view.TeamView;
 import org.sagebionetworks.web.client.widget.asynch.IsACTMemberAsyncHandler;
 import org.sagebionetworks.web.client.widget.entity.controller.SynapseAlert;
+import org.sagebionetworks.web.client.widget.entity.download.QuizInfoDialog;
 import org.sagebionetworks.web.client.widget.googlemap.GoogleMap;
 import org.sagebionetworks.web.client.widget.team.InviteWidget;
 import org.sagebionetworks.web.client.widget.team.JoinTeamWidget;
@@ -56,6 +59,7 @@ public class TeamPresenter extends AbstractActivity implements TeamView.Presente
 	private IsACTMemberAsyncHandler isACTMemberAsyncHandler;
 	private TeamProjectsModalWidget teamProjectsModalWidget;
 	private PortalGinInjector ginInjector;
+	private QuizInfoDialog quizInfoDialog;
 	Callback refreshCallback = () -> {
 		refresh();
 	};
@@ -254,11 +258,33 @@ public class TeamPresenter extends AbstractActivity implements TeamView.Presente
 		refresh();
 	}
 
+	public QuizInfoDialog getQuizInfoDialog() {
+		if (quizInfoDialog == null) {
+			quizInfoDialog = ginInjector.getQuizInfoDialog();
+		}
+		return quizInfoDialog;
+	}
+
 	@Override
 	public void showInviteModal() {
 		synAlert.clear();
-		inviteWidget.configure(team);
-		inviteWidget.show();
+		// Check to see if user is certified.
+		ginInjector.getSynapseJavascriptClient().getUserBundle(Long.parseLong(authenticationController.getCurrentUserPrincipalId()), IS_CERTIFIED, new AsyncCallback<UserBundle>() {
+			@Override
+			public void onSuccess(UserBundle bundle) {
+				if (bundle.getIsCertified()) {
+					inviteWidget.configure(team);
+					inviteWidget.show();
+				} else {
+					getQuizInfoDialog().show();
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				synAlert.handleException(caught);
+			}
+		});
 	}
 
 	@Override
