@@ -15,6 +15,7 @@ import org.sagebionetworks.web.client.PortalGinInjector;
 import org.sagebionetworks.web.client.SynapseJSNIUtils;
 import org.sagebionetworks.web.client.UserAccountServiceAsync;
 import org.sagebionetworks.web.client.cache.ClientCache;
+import org.sagebionetworks.web.client.cache.SessionStorage;
 import org.sagebionetworks.web.client.cookie.CookieKeys;
 import org.sagebionetworks.web.client.cookie.CookieProvider;
 import org.sagebionetworks.web.client.place.Down;
@@ -40,15 +41,17 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 	private static UserProfile currentUserProfile;
 	private UserAccountServiceAsync userAccountService;
 	private ClientCache localStorage;
+	private SessionStorage sessionStorage;
 	private PortalGinInjector ginInjector;
 	private SynapseJSNIUtils jsniUtils;
 	private CookieProvider cookies;
 
 	@Inject
-	public AuthenticationControllerImpl(UserAccountServiceAsync userAccountService, ClientCache localStorage, CookieProvider cookies, PortalGinInjector ginInjector, SynapseJSNIUtils jsniUtils) {
+	public AuthenticationControllerImpl(UserAccountServiceAsync userAccountService, ClientCache localStorage, SessionStorage sessionStorage, CookieProvider cookies, PortalGinInjector ginInjector, SynapseJSNIUtils jsniUtils) {
 		this.userAccountService = userAccountService;
 		fixServiceEntryPoint(userAccountService);
 		this.localStorage = localStorage;
+		this.sessionStorage = sessionStorage;
 		this.cookies = cookies;
 		this.ginInjector = ginInjector;
 		this.jsniUtils = jsniUtils;
@@ -171,6 +174,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 		jsniUtils.setAnalyticsUserId("");
 		String receipt = localStorage.get(USER_AUTHENTICATION_RECEIPT);
 		localStorage.clear();
+		sessionStorage.clear();
 		storeAuthenticationReceipt(receipt);
 		currentUserSessionToken = null;
 		currentUserProfile = null;
