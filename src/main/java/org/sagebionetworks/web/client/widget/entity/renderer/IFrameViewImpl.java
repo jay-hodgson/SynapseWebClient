@@ -1,6 +1,10 @@
 package org.sagebionetworks.web.client.widget.entity.renderer;
 
 import org.sagebionetworks.web.client.DisplayUtils;
+
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -32,6 +36,21 @@ public class IFrameViewImpl extends FlowPanel implements IFrameView {
 		frame.setWidth("100%");
 		frame.setHeight(height + "px");
 		frame.setUrl(siteUrl);
+		frame.addLoadHandler(new LoadHandler() {
+			@Override
+			public void onLoad(LoadEvent event) {
+				HtmlPreviewViewImpl._autoAdjustFrameHeight(frame.getElement());
+				Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+					@Override
+					public boolean execute() {
+						HtmlPreviewViewImpl._autoAdjustFrameHeight(frame.getElement());
+						// keep executing as long as frame is attached
+						return frame.isAttached();
+					}
+				}, 200);
+			}
+		});
+
 		return frame;
 	}
 
