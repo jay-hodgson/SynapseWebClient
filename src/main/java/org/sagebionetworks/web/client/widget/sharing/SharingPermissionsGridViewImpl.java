@@ -107,7 +107,6 @@ public class SharingPermissionsGridViewImpl extends Composite implements Sharing
 		}
 
 		ListBox permListBox = createEditAccessListBox(aclEntry, permissionLevels, permissionDisplay);
-		permListBox.setEnabled(!aclEntry.getOwnerId().equals(publicAclPrincipalId));
 		permListBox.addStyleName("input-xs");
 		data = new TableData();
 		row.add(data);
