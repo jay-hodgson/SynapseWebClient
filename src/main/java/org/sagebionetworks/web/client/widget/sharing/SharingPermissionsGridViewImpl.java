@@ -2,12 +2,14 @@ package org.sagebionetworks.web.client.widget.sharing;
 
 import java.util.HashSet;
 import java.util.Map;
+
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.html.Text;
 import org.sagebionetworks.repo.model.ACCESS_TYPE;
 import org.sagebionetworks.web.client.PortalGinInjector;
+import org.sagebionetworks.web.client.SynapseProperties;
 import org.sagebionetworks.web.client.utils.CallbackP;
 import org.sagebionetworks.web.client.view.bootstrap.table.TBody;
 import org.sagebionetworks.web.client.view.bootstrap.table.TableData;
@@ -16,9 +18,11 @@ import org.sagebionetworks.web.client.view.bootstrap.table.TableRow;
 import org.sagebionetworks.web.client.widget.sharing.AccessControlListEditorViewImpl.SetAccessCallback;
 import org.sagebionetworks.web.client.widget.team.TeamBadge;
 import org.sagebionetworks.web.client.widget.user.UserBadge;
+import org.sagebionetworks.web.shared.WebConstants;
 import org.sagebionetworks.web.shared.users.AclEntry;
 import org.sagebionetworks.web.shared.users.AclUtils;
 import org.sagebionetworks.web.shared.users.PermissionLevel;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -42,11 +46,14 @@ public class SharingPermissionsGridViewImpl extends Composite implements Sharing
 	TableHeader deleteColumnHeader;
 
 	private PortalGinInjector ginInjector;
-
+	String publicAclPrincipalId;
+	boolean isEntityOpenData;
+	
 	@Inject
-	public SharingPermissionsGridViewImpl(SharingPermissionsGridViewImplUiBinder uiBinder, PortalGinInjector ginInjector) {
+	public SharingPermissionsGridViewImpl(SharingPermissionsGridViewImplUiBinder uiBinder, PortalGinInjector ginInjector, SynapseProperties synapseProperties) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.ginInjector = ginInjector;
+		publicAclPrincipalId = synapseProperties.getSynapseProperty(WebConstants.PUBLIC_ACL_PRINCIPAL_ID);
 	}
 
 	@Override
@@ -55,9 +62,10 @@ public class SharingPermissionsGridViewImpl extends Composite implements Sharing
 	}
 
 	@Override
-	public void configure(CallbackP<Long> deleteButtonCallback, SetAccessCallback setAccessCallback) {
+	public void configure(CallbackP<Long> deleteButtonCallback, SetAccessCallback setAccessCallback, boolean isEntityOpenData) {
 		this.deleteButtonCallback = deleteButtonCallback;
 		this.setAccessCallback = setAccessCallback;
+		this.isEntityOpenData = isEntityOpenData;
 	}
 
 	@Override
@@ -88,7 +96,18 @@ public class SharingPermissionsGridViewImpl extends Composite implements Sharing
 
 		// Permissions List Box
 
+		// SWC-5683:  if this is the anonymous entry, restrict permission levels accordingly.
+		boolean isAnonymousEntry = aclEntry.getOwnerId().equals(publicAclPrincipalId);
+		if (isAnonymousEntry) {
+			if (isEntityOpenData) {
+				permissionLevels = new PermissionLevel[]{PermissionLevel.CAN_VIEW, PermissionLevel.CAN_DOWNLOAD};
+			} else {
+				permissionLevels = new PermissionLevel[]{PermissionLevel.CAN_VIEW};
+			}
+		}
+
 		ListBox permListBox = createEditAccessListBox(aclEntry, permissionLevels, permissionDisplay);
+		permListBox.setEnabled(!aclEntry.getOwnerId().equals(publicAclPrincipalId));
 		permListBox.addStyleName("input-xs");
 		data = new TableData();
 		row.add(data);
