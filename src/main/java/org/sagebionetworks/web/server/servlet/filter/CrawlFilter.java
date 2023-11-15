@@ -85,6 +85,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 public class CrawlFilter extends OncePerRequestFilter {
 
+  public static final String HTML_PAGE_PREFIX =
+    "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>";
   public static final String META_ROBOTS_NOINDEX =
     "<meta name=\"robots\" content=\"noindex\">";
   SynapseClientImpl synapseClient = null;
@@ -226,7 +228,7 @@ public class CrawlFilter extends OncePerRequestFilter {
     SynapseClient synClient = synapseClient.createAnonymousSynapseClient();
     StringBuilder html = new StringBuilder();
     html.append(
-      "<!DOCTYPE html><html><head><title>" +
+      HTML_PAGE_PREFIX +
       DisplayConstants.DEFAULT_PAGE_TITLE +
       "</title><meta name=\"description\" content=\"" +
       DisplayConstants.DEFAULT_PAGE_DESCRIPTION +
@@ -385,13 +387,7 @@ public class CrawlFilter extends OncePerRequestFilter {
     StringBuilder html = new StringBuilder();
 
     // note: can't set description meta tag, since it might be markdown.
-    html.append(
-      "<!DOCTYPE html><html><head><title>" +
-      name +
-      " - " +
-      entity.getId() +
-      "</title>"
-    );
+    html.append(HTML_PAGE_PREFIX + name + " - " + entity.getId() + "</title>");
     if (annotations.getAnnotations().containsKey("noindex")) {
       html.append(META_ROBOTS_NOINDEX);
     }
@@ -563,11 +559,7 @@ public class CrawlFilter extends OncePerRequestFilter {
     throws JSONObjectAdapterException, RestServiceException, IOException {
     StringBuilder html = new StringBuilder();
     DiscussionThreadBundle thread = discussionForumClient.getThread(threadId);
-    html.append(
-      "<!DOCTYPE html><html><head><title>" +
-      thread.getTitle() +
-      "</title></head><body>"
-    );
+    html.append(HTML_PAGE_PREFIX + thread.getTitle() + "</title></head><body>");
     html.append("<h1>" + thread.getTitle() + "</h1>");
     try {
       String url = discussionForumClient.getThreadUrl(thread.getMessageKey());
@@ -605,11 +597,7 @@ public class CrawlFilter extends OncePerRequestFilter {
     StringBuilder html = new StringBuilder();
     Team team = synapseClient.getTeam(teamId);
 
-    html.append(
-      "<!DOCTYPE html><html><head><title>" +
-      team.getName() +
-      "</title></head><body>"
-    );
+    html.append(HTML_PAGE_PREFIX + team.getName() + "</title></head><body>");
     html.append("<h1>" + team.getName() + "</h1>");
     if (team.getDescription() != null) {
       html.append("<h3>" + team.getDescription() + "</h3>");
@@ -640,9 +628,7 @@ public class CrawlFilter extends OncePerRequestFilter {
       profile.getLastName() +
       " " +
       profile.getUserName();
-    html.append(
-      "<!DOCTYPE html><html><head><title>" + display + "</title></head><body>"
-    );
+    html.append(HTML_PAGE_PREFIX + display + "</title></head><body>");
     html.append("<h1>" + display + "</h1>");
     if (profile.getSummary() != null) {
       html.append("<h4>" + profile.getSummary() + "</h4>");
@@ -705,7 +691,8 @@ public class CrawlFilter extends OncePerRequestFilter {
     // append this set to the list
     StringBuilder html = new StringBuilder();
     html.append(
-      "<!DOCTYPE html><html><head><title>Sage Synapse: All Projects - starting from " +
+      HTML_PAGE_PREFIX +
+      "Sage Synapse: All Projects - starting from " +
       inputQuery.getStart() +
       "</title><meta name=\"description\" content=\"\" /></head><body>"
     );
@@ -745,7 +732,8 @@ public class CrawlFilter extends OncePerRequestFilter {
     // append this set to the list
     StringBuilder html = new StringBuilder();
     html.append(
-      "<!DOCTYPE html><html><head><title>Sage Synapse: All Teams - from " +
+      HTML_PAGE_PREFIX +
+      "Sage Synapse: All Teams - from " +
       startIndex +
       "</title><meta name=\"description\" content=\"\" /></head><body>"
     );
