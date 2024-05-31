@@ -3,6 +3,7 @@ package org.sagebionetworks.web.client.place;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 import com.google.gwt.place.shared.Prefix;
+import com.google.gwt.user.client.Window.Location;
 import java.util.LinkedList;
 import org.sagebionetworks.web.client.StringUtils;
 
@@ -65,17 +66,25 @@ public class Synapse extends Place {
         // invalid entity area, ignore
       }
     }
-
-    // remaining tokens are recognized is the area token
-    if (tokens.size() > 0) {
+    if (!tokens.isEmpty()) {
       areaToken = "";
-    }
-    while (tokens.size() > 0) {
-      areaToken += tokens.poll();
-      if (tokens.size() > 0) {
-        areaToken += "/";
+      // This is an old area token (not contained in the hash)
+      while (tokens.size() > 0) {
+        areaToken += tokens.poll();
+        if (tokens.size() > 0) {
+          areaToken += "/";
+        }
+      }
+    } else {
+      // SWC-6854: items in the hash fragment are the area token
+      areaToken = Location.getHash();
+      if (areaToken.length() > 0) {
+        // strip off '#'
+        areaToken = areaToken.substring(1);
       }
     }
+    // recalculate token after parsing (to update synapsePlaceToken)
+    calculateToken(entityId, versionNumber, area, areaToken);
   }
 
   public static String getDelimiter(Synapse.EntityArea tab) {
@@ -106,7 +115,7 @@ public class Synapse extends Place {
     if (area != null) {
       this.synapsePlaceToken += getDelimiter(area);
       if (areaToken != null) {
-        this.synapsePlaceToken += areaToken;
+        this.synapsePlaceToken += "#" + areaToken;
       }
     }
   }

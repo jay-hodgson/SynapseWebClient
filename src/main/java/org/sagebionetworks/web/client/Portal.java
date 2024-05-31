@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapter;
 import org.sagebionetworks.web.client.mvp.AppActivityMapper;
 import org.sagebionetworks.web.client.mvp.AppPlaceHistoryMapper;
+import org.sagebionetworks.web.client.place.Synapse;
 import org.sagebionetworks.web.client.utils.Callback;
 import org.sagebionetworks.web.client.widget.footer.Footer;
 import org.sagebionetworks.web.client.widget.header.Header;
@@ -57,6 +58,15 @@ public class Portal implements EntryPoint {
     if (initToken.length() > 0 && initToken.startsWith("!")) {
       String fullUrl = Window.Location.getHref();
       fullUrl = fullUrl.replace("#!", "");
+      // SWC-6854: special case - if this is a Synapse place, inject the hash after the area
+      if (initToken.startsWith("!Synapse")) {
+        Synapse place = new Synapse(initToken.substring("!Synapse:".length()));
+        String newToken = place.toToken();
+        int indexOfSynapsePlace = fullUrl.indexOf("Synapse:");
+        fullUrl =
+          fullUrl.substring(0, indexOfSynapsePlace + "Synapse:".length()) +
+          newToken;
+      }
       Window.Location.assign(fullUrl);
     } else {
       // This is a split point where the browser can download the first large code file.
