@@ -39,7 +39,6 @@ import org.sagebionetworks.web.server.servlet.FileHandleServlet;
 import org.sagebionetworks.web.server.servlet.FileUploaderJnlp;
 import org.sagebionetworks.web.server.servlet.InitSessionServlet;
 import org.sagebionetworks.web.server.servlet.JsonLdContentServlet;
-import org.sagebionetworks.web.server.servlet.LinkedInServiceImpl;
 import org.sagebionetworks.web.server.servlet.ProjectAliasServlet;
 import org.sagebionetworks.web.server.servlet.SlackServlet;
 import org.sagebionetworks.web.server.servlet.StackConfigServiceImpl;
@@ -164,10 +163,6 @@ public class PortalServletModule extends ServletModule {
     bind(FileEntityResolverServlet.class).in(Singleton.class);
     serve("/Portal/" + WebConstants.FILE_ENTITY_RESOLVER_SERVLET)
       .with(FileEntityResolverServlet.class);
-
-    // Setup the LinkedIn service mapping
-    bind(LinkedInServiceImpl.class).in(Singleton.class);
-    serve("/Portal/linkedin").with(LinkedInServiceImpl.class);
 
     // Setup the Discussion Forum service mapping
     bind(DiscussionForumClientImpl.class).in(Singleton.class);
